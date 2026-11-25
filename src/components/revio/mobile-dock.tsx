@@ -16,12 +16,15 @@ export function MobileDock({
   items,
   activeHref,
   reviseHref,
+  reviseActive = false,
   className,
 }: {
   /** Exactly four items: two on each side of the central button. */
   items: [NavItem, NavItem, NavItem, NavItem];
   activeHref: string;
   reviseHref: string;
+  /** The revise button leads to the current page: marks it `aria-current`. */
+  reviseActive?: boolean;
   className?: string;
 }) {
   const reduced = useReducedMotion();
@@ -62,6 +65,7 @@ export function MobileDock({
           <li className="flex flex-1 justify-center">
             <Link
               href={reviseHref}
+              aria-current={reviseActive ? "page" : undefined}
               className="bg-revio-gradient-solid -mt-7 flex size-14 flex-col items-center justify-center rounded-full border-4 border-background text-white shadow-lg outline-none focus-visible:ring-[3px] focus-visible:ring-ring/60"
             >
               <Zap className="size-5" aria-hidden />

@@ -1,11 +1,31 @@
 import { AppShell } from "@/components/layout/app-shell";
 import { requireUser } from "@/lib/auth";
+import { levelProgress } from "@/modules/gamification/domain/levels";
 import { UsernameGate } from "@/modules/profile/components/username-gate";
-import { lacksUsername } from "@/modules/profile/server/queries";
+import { loadShellProfile } from "@/modules/profile/server/queries";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
   const { supabase, user } = await requireUser();
+  const me = await loadShellProfile(supabase, user.id);
   // No username yet (right after signing up): nothing else is shown until one is chosen.
-  if (await lacksUsername(supabase, user.id)) return <UsernameGate email={user.email ?? ""} />;
-  return <AppShell email={user.email ?? ""}>{children}</AppShell>;
+  if (!me.username) return <UsernameGate email={user.email ?? ""} />;
+
+  const level = levelProgress(me.totalXp);
+  const name = me.displayName || me.username;
+  return (
+    <AppShell
+      email={user.email ?? ""}
+      profile={{
+        name,
+        subtitle: `${level.current.name}`,
+        initials: name.slice(0, 2).toUpperCase(),
+        level: level.current.number,
+        xp: level.totalXp,
+        // At the last level the bar is full.
+        xpMax: level.next?.minXp ?? Math.max(level.totalXp, 1),
+      }}
+    >
+      {children}
+    </AppShell>
+  );
 }

@@ -1,65 +1,60 @@
 "use client";
 
-import Link from "next/link";
+import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { cn } from "cn";
+import { DesktopSidebar } from "@/components/revio/desktop-sidebar";
+import { MobileDock, type NavItem as RevioNavItem } from "@/components/revio/mobile-dock";
 import { NAV_ITEMS } from "./nav-items";
 
-function useIsActive() {
+export type ShellProfile = {
+  name: string;
+  subtitle: string;
+  initials: string;
+  level: number;
+  xp: number;
+  xpMax: number;
+};
+
+const FOCUS = "/focus";
+const matches = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
+const toRevio = (
+  items: readonly { href: string; label: string; icon: RevioNavItem["Icon"] }[],
+): RevioNavItem[] => items.map(({ href, label, icon }) => ({ href, label, Icon: icon }));
+
+function useActiveHref() {
   const pathname = usePathname();
-  return (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  return {
+    activeHref: NAV_ITEMS.find((i) => matches(pathname, i.href))?.href ?? "",
+    onFocus: matches(pathname, FOCUS),
+  };
 }
 
-/** Desktop: vertical sidebar links. */
-export function SidebarNav() {
-  const isActive = useIsActive();
+/** Desktop (md+): the ink sidebar with the "Réviser maintenant" button and the profile card. */
+export function ShellSidebar({ profile, footer }: { profile: ShellProfile; footer: ReactNode }) {
+  const { activeHref, onFocus } = useActiveHref();
   return (
-    <nav aria-label="Navigation principale" className="flex flex-col gap-1">
-      {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
-        <Link
-          key={href}
-          href={href}
-          aria-current={isActive(href) ? "page" : undefined}
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-            isActive(href)
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground",
-          )}
-        >
-          <Icon className="size-4" aria-hidden />
-          {label}
-        </Link>
-      ))}
-    </nav>
+    <DesktopSidebar
+      className="h-full"
+      items={toRevio(NAV_ITEMS)}
+      activeHref={activeHref}
+      homeHref="/accueil"
+      reviseHref={FOCUS}
+      reviseActive={onFocus}
+      profile={profile}
+      footer={footer}
+    />
   );
 }
 
-/** Mobile: fixed bottom tab bar. */
-export function BottomNav() {
-  const isActive = useIsActive();
-  return (
-    <nav
-      aria-label="Navigation principale"
-      className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur supports-[backdrop-filter]:bg-background/80 md:hidden"
-    >
-      <ul className="grid grid-cols-5">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
-          <li key={href}>
-            <Link
-              href={href}
-              aria-current={isActive(href) ? "page" : undefined}
-              className={cn(
-                "flex flex-col items-center gap-1 py-2 text-[11px] font-medium",
-                isActive(href) ? "text-primary" : "text-muted-foreground",
-              )}
-            >
-              <Icon className="size-5" aria-hidden />
-              {label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
+/** Mobile (< md): the floating ink dock, four tabs and the raised "Réviser" button (Focus) in the middle. */
+export function ShellDock() {
+  const { activeHref, onFocus } = useActiveHref();
+  const tabs = toRevio(NAV_ITEMS.filter((i) => i.href !== FOCUS)) as [
+    RevioNavItem,
+    RevioNavItem,
+    RevioNavItem,
+    RevioNavItem,
+  ];
+  return <MobileDock items={tabs} activeHref={activeHref} reviseHref={FOCUS} reviseActive={onFocus} />;
 }
