@@ -15,6 +15,8 @@ test.describe("reminders mock-up (connected)", () => {
     await page.addInitScript(() => {
       const w = window as unknown as { __spy: { permission: number; storage: number; requests: string[] } };
       w.__spy = { permission: 0, storage: 0, requests: [] };
+      (window as unknown as { __initialPermission: string }).__initialPermission =
+        "Notification" in window ? Notification.permission : "unsupported";
       if ("Notification" in window) {
         const original = Notification.requestPermission.bind(Notification);
         Notification.requestPermission = (...args: []) => {
@@ -60,7 +62,11 @@ test.describe("reminders mock-up (connected)", () => {
       () => (window as unknown as { __spy: { permission: number; storage: number } }).__spy,
     );
     expect(spy).toMatchObject({ permission: 0, storage: 0 });
-    expect(await page.evaluate(() => Notification.permission)).toBe("default");
+    // The permission is whatever the browser had before the page ran (it differs between browsers and CI).
+    const initial = await page.evaluate(
+      () => (window as unknown as { __initialPermission: string }).__initialPermission,
+    );
+    expect(await page.evaluate(() => Notification.permission)).toBe(initial);
     await page.reload();
     await expect(page.locator("#rappels").getByRole("status")).toHaveText(
       "Un rappel du lundi au vendredi à 18 h 00.",
