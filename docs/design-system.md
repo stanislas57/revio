@@ -61,6 +61,9 @@ Texte : 4,5:1 minimum. Éléments non textuels (remplissages, bordures de champ,
 | clair  | texte de marque sur zone secondaire              | `brand-text` / `muted`                         | 5,27  | 4,5     | ✅       |
 | clair  | texte de marque sur teinte douce                 | `brand-text` / `brand-soft`                    | 5,27  | 4,5     | ✅       |
 | clair  | texte sur teinte douce                           | `brand-soft-foreground` / `brand-soft`         | 9,50  | 4,5     | ✅       |
+| clair  | magenta-texte sur la page                        | `revio-magenta-text` / `background`            | 5,79  | 4,5     | ✅       |
+| clair  | magenta-texte sur carte                          | `revio-magenta-text` / `card`                  | 5,79  | 4,5     | ✅       |
+| clair  | magenta-texte sur face secondaire                | `revio-magenta-text` / `secondary`             | 5,22  | 4,5     | ✅       |
 | clair  | texte secondaire sur la page                     | `muted-foreground` / `background`              | 5,70  | 4,5     | ✅       |
 | clair  | texte secondaire sur carte                       | `muted-foreground` / `card`                    | 5,70  | 4,5     | ✅       |
 | clair  | texte secondaire sur zone secondaire             | `muted-foreground` / `muted`                   | 5,14  | 4,5     | ✅       |
@@ -83,6 +86,9 @@ Texte : 4,5:1 minimum. Éléments non textuels (remplissages, bordures de champ,
 | sombre | texte de marque sur zone secondaire              | `brand-text` / `muted`                         | 6,26  | 4,5     | ✅       |
 | sombre | texte de marque sur teinte douce                 | `brand-text` / `brand-soft`                    | 4,84  | 4,5     | ✅       |
 | sombre | texte sur teinte douce                           | `brand-soft-foreground` / `brand-soft`         | 9,57  | 4,5     | ✅       |
+| sombre | magenta-texte sur la page                        | `revio-magenta-text` / `background`            | 8,48  | 4,5     | ✅       |
+| sombre | magenta-texte sur carte                          | `revio-magenta-text` / `card`                  | 7,54  | 4,5     | ✅       |
+| sombre | magenta-texte sur face secondaire                | `revio-magenta-text` / `secondary`             | 5,83  | 4,5     | ✅       |
 | sombre | texte secondaire sur la page                     | `muted-foreground` / `background`              | 11,09 | 4,5     | ✅       |
 | sombre | texte secondaire sur carte                       | `muted-foreground` / `card`                    | 9,87  | 4,5     | ✅       |
 | sombre | texte secondaire sur zone secondaire             | `muted-foreground` / `muted`                   | 9,87  | 4,5     | ✅       |
@@ -108,6 +114,33 @@ Texte : 4,5:1 minimum. Éléments non textuels (remplissages, bordures de champ,
 | clair  | violet clair (texte) sur encre                   | `#b58cff` / `#1A1030`                          | 7,03  | 4,5     | ✅       |
 | clair  | violet clair (texte) sur surface encre           | `#b58cff` / `#261A40`                          | 6,26  | 4,5     | ✅       |
 | clair  | magenta (flamme, icône) sur encre                | `#e11d8f` / `#1A1030`                          | 4,11  | 3       | ✅       |
+
+## Composants (`src/components/revio/`)
+
+Page de démonstration : **`/design-system`** (publique, non indexée, données d'exemple de `src/lib/mock/revio-demo.ts`).
+Règles communes : vrais `<button>` et `<a>`, noms accessibles, cibles de 44 px, jetons du thème (clair et sombre),
+icônes Lucide uniquement, `prefers-reduced-motion` respecté (fondu au lieu du mouvement, aucune célébration).
+
+| Composant                       | Rôle                                                                                         |
+| ------------------------------- | -------------------------------------------------------------------------------------------- |
+| `RevioRing`                     | anneau : `progress` (violet + gain lime) et `presence` (dégradé + point « en direct »)       |
+| `AvatarPresence`, `PresenceRow` | « En révision maintenant »                                                                   |
+| `XpBar`, `AnimatedNumber`       | niveau, barre avec gain lime, chiffres qui glissent                                          |
+| `RevioStreakCard`               | série sur fond encre, 7 jours (joker en violet, aujourd'hui en pointillés)                   |
+| `QuestList`                     | 3 quêtes ; confettis à la 3ᵉ, **une fois par jour** (`claimDaily`)                           |
+| `KudosButton`, `ReactionBar`    | encouragement (**un par jour et par ami**, **aucun compteur**) et 4 réactions                |
+| `SharedSheetCard`               | fiche partagée présentée comme un post                                                       |
+| `LiveActivityFeed`              | 3 entrées au plus, les anciennes pâlissent par la couleur (jamais par l'opacité : contraste) |
+| `LeagueTable`                   | ~30 élèves, réordonnancement animé, badge « ▲ N »                                            |
+| `BuddyBeam`                     | binôme et « série à deux »                                                                   |
+| `FlashcardStack`                | pile : tap pour retourner, glisser, **toujours deux boutons équivalents**                    |
+| `FocusTimer`                    | anneau en dégradé sur encre, libellé « Focus » / « Pause »                                   |
+| `RevioSubjectCard`, `BadgeCard` | matière (anneau, fiches, échéance) ; badge en trois raretés écrites                          |
+| `MobileDock`, `DesktopSidebar`  | navigation (dock sous 768 px, barre latérale au-dessus) ; `aria-current="page"`              |
+
+Les noms `RevioStreakCard` et `RevioSubjectCard` évitent la collision avec les composants `StreakCard` (gamification)
+et `SubjectCard` (academic). La logique pure (géométrie des anneaux, classement, règles « une fois par jour ») est dans
+`logic.ts`, testée dans `logic.test.ts`. Aucun composant n'appelle le serveur.
 
 ## Licences
 
