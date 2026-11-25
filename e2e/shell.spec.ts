@@ -1,19 +1,33 @@
 import { expect, test } from "@playwright/test";
 import { newAccount } from "./support/new-account";
 
-// The app shell of the Revio design: the ink sidebar from 768 px, the floating dock below.
+// The app shell of the charter: the white sidebar from 768 px, the bottom bar below.
 // Connected scenario: `npm run test:e2e:connected`.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
 
 test.describe("desktop sidebar", () => {
-  test("lists the five tabs, marks the current one, and shows the real profile card", async ({ page }) => {
+  test("lists the entries of the charter, marks the current one, and shows the real profile card", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     const username = await newAccount(page, "shell");
     await page.goto("/social");
     const nav = page.getByRole("navigation", { name: "Navigation principale" });
     await expect(nav).toBeVisible();
-    await expect(nav.getByRole("link")).toHaveText(["Accueil", "Agenda", "Focus", "Social", "Profil"]);
-    await expect(nav.locator('a[aria-current="page"]')).toHaveText("Social");
+    await expect(nav.getByRole("link")).toHaveText([
+      "Accueil",
+      "Mon agenda",
+      "Focus",
+      "Statistiques",
+      "Mes amis",
+      "Classement",
+      "Mon profil",
+    ]);
+    await expect(nav.locator('a[aria-current="page"]')).toHaveText("Mes amis");
+    // A sub-page belongs to its own entry, not to its parent's.
+    await page.goto("/social/classement");
+    await expect(nav.locator('a[aria-current="page"]')).toHaveText("Classement");
+    await page.goto("/social");
 
     // The profile card is the user's own: username and level 1 (a new account), with the XP bar.
     const aside = page.getByRole("complementary");
@@ -65,7 +79,7 @@ test.describe("desktop sidebar", () => {
     await page.goto("/accueil");
     const link = page
       .getByRole("navigation", { name: "Navigation principale" })
-      .getByRole("link", { name: "Profil" });
+      .getByRole("link", { name: "Mon profil" });
     await link.focus();
     await expect(link).toBeFocused();
     await page.keyboard.press("Enter");
@@ -74,7 +88,7 @@ test.describe("desktop sidebar", () => {
 });
 
 test.describe("mobile dock", () => {
-  test("shows four tabs and the raised Réviser button, no sidebar, the right tab marked", async ({
+  test("the bottom bar shows four tabs and the raised Réviser button, no sidebar, the right tab marked", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 800 });
@@ -83,8 +97,8 @@ test.describe("mobile dock", () => {
     await expect(page.getByRole("complementary")).toBeHidden();
     const dock = page.getByRole("navigation", { name: "Navigation principale" });
     await expect(dock).toBeVisible();
-    await expect(dock.getByRole("link")).toHaveText(["Accueil", "Agenda", "Réviser", "Social", "Profil"]);
-    await expect(dock.locator('a[aria-current="page"]')).toHaveText("Social");
+    await expect(dock.getByRole("link")).toHaveText(["Accueil", "Agenda", "Réviser", "Amis", "Profil"]);
+    await expect(dock.locator('a[aria-current="page"]')).toHaveText("Amis");
     const small = await dock
       .locator("a")
       .evaluateAll((els) =>

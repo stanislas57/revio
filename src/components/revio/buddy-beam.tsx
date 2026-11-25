@@ -4,15 +4,15 @@
 import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
-function Avatar({ initials, tone }: { initials: string; tone: "violet" | "magenta" }) {
+function Avatar({ initials, tone }: { initials: string; tone: "violet" | "pink" }) {
   return (
     <span
       aria-hidden
       className={cn(
-        "flex size-12 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold text-revio-ink",
+        "flex size-12 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold",
         tone === "violet"
-          ? "border-revio-violet bg-revio-lilac"
-          : "border-revio-magenta bg-[color-mix(in_oklab,var(--revio-magenta)_12%,white)]",
+          ? "border-revio-primary bg-brand-soft text-brand-soft-foreground"
+          : "border-revio-social bg-card text-revio-social-text",
       )}
     >
       {initials}
@@ -20,7 +20,7 @@ function Avatar({ initials, tone }: { initials: string; tone: "violet" | "magent
   );
 }
 
-/** The buddy: two avatars joined by a gradient beam, with the "Série à deux" counter. */
+/** The buddy: two avatars joined by a violet beam, with the "Série à deux" counter (streak orange). */
 export function BuddyBeam({
   me,
   buddy,
@@ -36,8 +36,8 @@ export function BuddyBeam({
   return (
     <section aria-label={`Ton binôme : ${buddy.name}`} className="space-y-3 rounded-xl border bg-card p-4">
       <div className="flex items-baseline justify-between gap-2">
-        <h2 className="font-heading text-lg font-semibold">Ton binôme</h2>
-        <span className="text-xs font-semibold text-revio-magenta-text">Série à deux · {days} j</span>
+        <h2 className="font-heading text-lg font-bold">Ton binôme</h2>
+        <span className="text-xs font-semibold text-revio-streak-text">Série à deux · {days} j</span>
       </div>
       <div
         className="flex items-center gap-2"
@@ -45,8 +45,11 @@ export function BuddyBeam({
         aria-label={`${me.name} et ${buddy.name}, série à deux de ${days} jours`}
       >
         <Avatar initials={me.initials} tone="violet" />
-        <div className="relative h-1.5 flex-1 overflow-hidden rounded-pill bg-revio-border" aria-hidden>
-          <div className="bg-revio-gradient absolute inset-0" />
+        <div
+          className="relative h-1.5 flex-1 overflow-hidden rounded-pill bg-revio-primary-light"
+          aria-hidden
+        >
+          <div className="absolute inset-0 bg-revio-primary" />
           {!reduced && (
             <motion.span
               className="absolute top-0 h-full w-8 rounded-pill bg-white/70"
@@ -56,7 +59,7 @@ export function BuddyBeam({
             />
           )}
         </div>
-        <Avatar initials={buddy.initials} tone="magenta" />
+        <Avatar initials={buddy.initials} tone="pink" />
       </div>
       <p className="text-sm text-muted-foreground">{status}</p>
     </section>

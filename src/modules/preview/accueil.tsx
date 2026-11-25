@@ -54,9 +54,7 @@ export function PreviewAccueil() {
               stroke={12}
             />
             <div className="min-w-0 flex-1 space-y-2">
-              <p className="text-xs font-semibold tracking-wide text-revio-magenta-text uppercase">
-                Révision du jour
-              </p>
+              <p className="text-xs font-bold tracking-widest text-brand-text uppercase">Révision du jour</p>
               <h2 id="revision-title" className="font-heading text-2xl font-bold">
                 Chimie · Les réactions acido-basiques
               </h2>
@@ -64,10 +62,10 @@ export function PreviewAccueil() {
                 Il reste 14 cartes, environ 12 minutes. Sarah révise le même chapitre en ce moment.
               </p>
               <div className="flex flex-wrap gap-2 pt-1">
-                <Button disabled className="min-h-11 rounded-pill px-5">
+                <Button disabled className="min-h-11 px-5">
                   Reprendre
                 </Button>
-                <Button disabled variant="outline" className="min-h-11 rounded-pill px-5">
+                <Button disabled variant="outline" className="min-h-11 px-5">
                   Défier Sarah
                 </Button>
               </div>
@@ -87,10 +85,10 @@ export function PreviewAccueil() {
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
               <SharedSheetCard sheet={DEMO_SHEET} />
-              <div className="flex flex-col justify-between gap-4 rounded-lg bg-revio-ink p-5 text-white">
+              <div className="flex flex-col justify-between gap-4 rounded-lg bg-revio-primary p-5 text-white">
                 <div>
                   <p className="text-sm font-semibold">Léo · 23 jours de série</p>
-                  <p className="text-xs text-revio-muted-on-ink">Nouveau record perso · à l&apos;instant</p>
+                  <p className="text-xs text-white">Nouveau record perso · à l&apos;instant</p>
                   <p className="mt-3 font-heading text-xl font-bold">Envoie-lui un kudos pour fêter ça.</p>
                 </div>
                 <div>

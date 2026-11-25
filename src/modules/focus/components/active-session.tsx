@@ -91,23 +91,23 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
         aria-label="Séance en cours"
         aria-hidden={immersive || undefined}
         inert={immersive}
-        className="flex flex-col items-center gap-6 rounded-xl bg-revio-ink px-4 py-10 text-center text-white"
+        className="flex flex-col items-center gap-6 rounded-xl border bg-card px-4 py-10 text-center text-card-foreground shadow-sm"
       >
         <div className="space-y-1">
-          <p className="text-sm text-revio-muted-on-ink">{paused ? "En pause" : "Séance en cours"}</p>
-          <h2 className="text-xl font-semibold">{session.subject?.name ?? "Révision"}</h2>
+          <p className="text-sm text-muted-foreground">{paused ? "En pause" : "Séance en cours"}</p>
+          <h2 className="text-xl font-bold">{session.subject?.name ?? "Révision"}</h2>
         </div>
 
         <div className={cn("relative flex items-center justify-center", planned !== null && "size-60")}>
           {planned !== null && elapsed !== null && (
             <div aria-hidden className="absolute inset-0">
-              <RevioRing variant="presence" tone="ink" value={elapsed / planned} size={240} stroke={12}>
+              <RevioRing variant="presence" value={elapsed / planned} size={240} stroke={12}>
                 <span />
               </RevioRing>
             </div>
           )}
           <p
-            className="relative font-heading text-6xl font-bold tabular-nums sm:text-7xl"
+            className="relative font-heading text-6xl font-extrabold tabular-nums sm:text-7xl"
             role="timer"
             aria-label={planned ? "Temps restant" : "Temps écoulé"}
           >
@@ -124,12 +124,12 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
           />
         )}
         {timeUp && (
-          <p role="status" className="text-sm font-medium text-emerald-300">
+          <p role="status" className="text-sm font-medium text-revio-success-text">
             Temps écoulé, bravo ! Tu peux terminer la séance ou continuer.
           </p>
         )}
         {planned !== null && elapsed !== null && !timeUp && (
-          <p className="text-sm text-revio-muted-on-ink">Écoulé : {formatDuration(elapsed)}</p>
+          <p className="text-sm text-muted-foreground">Écoulé : {formatDuration(elapsed)}</p>
         )}
 
         <div className="flex w-full max-w-sm flex-col gap-2 sm:flex-row">
@@ -158,7 +158,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
           </Button>
         </div>
         <Button
-          className="min-h-11 text-white hover:bg-revio-ink-3 hover:text-white"
+          className="min-h-11"
           variant="ghost"
           size="sm"
           disabled={pending}
@@ -170,12 +170,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
         >
           <X aria-hidden /> Abandonner
         </Button>
-        <Button
-          className="min-h-11 border-revio-ink-3 bg-revio-ink-2 text-white hover:bg-revio-ink-3 hover:text-white"
-          variant="outline"
-          size="sm"
-          onClick={() => setImmersive(true)}
-        >
+        <Button className="min-h-11" variant="outline" size="sm" onClick={() => setImmersive(true)}>
           <Maximize2 aria-hidden /> Plein écran
         </Button>
       </section>

@@ -14,7 +14,7 @@ export type SubjectSummary = {
   due: number;
   /** "Contrôle J-12" */
   deadline?: string;
-  /** The deadline is close: its text uses the magenta text colour. */
+  /** The deadline is close: its text uses the streak-orange text colour. */
   soon?: boolean;
   href: string;
 };
@@ -25,7 +25,7 @@ export function RevioSubjectCard({ subject, className }: { subject: SubjectSumma
     <Link
       href={subject.href}
       className={cn(
-        "flex min-h-11 items-center gap-4 rounded-lg border bg-card p-4 transition-colors outline-none hover:border-revio-violet focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none",
+        "flex min-h-11 items-center gap-4 rounded-lg border bg-card p-4 transition-colors outline-none hover:border-revio-primary focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none",
         className,
       )}
     >
@@ -49,7 +49,7 @@ export function RevioSubjectCard({ subject, className }: { subject: SubjectSumma
           <span
             className={cn(
               "block text-xs font-semibold",
-              subject.soon ? "text-revio-magenta-text" : "text-muted-foreground",
+              subject.soon ? "text-revio-streak-text" : "text-muted-foreground",
             )}
           >
             {subject.deadline}

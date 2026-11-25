@@ -68,11 +68,11 @@ export function PreviewFiches() {
             </h2>
             <p className="text-sm text-muted-foreground">32 cartes · ≈ 14 min · 4 matières</p>
             <p>
-              <span className="rounded-pill bg-revio-xp px-2.5 py-1 text-xs font-bold text-revio-ink">
+              <span className="rounded-pill bg-revio-lime px-2.5 py-1 text-xs font-bold text-revio-midnight">
                 +60 XP
               </span>
             </p>
-            <Button disabled className="min-h-11 rounded-pill px-5">
+            <Button disabled className="min-h-11 px-5">
               Commencer
             </Button>
           </div>

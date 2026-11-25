@@ -32,10 +32,10 @@ export function ReactionButton({
       disabled={pending}
       className={cn(
         "min-h-11 rounded-pill px-4",
-        // The gradient is the kudos pill; once the bravo is sent it becomes a quiet outlined state.
+        // The Social Pink kudos pill; once the bravo is sent it becomes a quiet outlined state.
         state.reacted
-          ? "border border-revio-magenta-text text-revio-magenta-text"
-          : "bg-revio-gradient-solid text-white hover:text-white hover:opacity-90",
+          ? "border border-revio-social-text text-revio-social-text"
+          : "bg-revio-social text-revio-midnight hover:bg-revio-social hover:text-revio-midnight hover:opacity-90",
       )}
       onClick={() =>
         startTransition(async () => {

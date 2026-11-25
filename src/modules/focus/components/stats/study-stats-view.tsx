@@ -1,4 +1,5 @@
 import { BarChart3 } from "lucide-react";
+import { StatCard } from "@/components/revio/stat-card";
 import { EmptyState } from "@/components/states/empty-state";
 import type { StudyStats } from "../../contracts";
 import { formatMinutes } from "../../domain/format";
@@ -10,15 +11,6 @@ import {
   LazyWeeklyMinutesChart,
 } from "./lazy-charts";
 import { RegularityHeatmap } from "./heatmap";
-
-function Tile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border p-4">
-      <dt className="text-sm text-muted-foreground">{label}</dt>
-      <dd className="mt-1 text-xl font-bold tabular-nums">{value}</dd>
-    </div>
-  );
-}
 
 /**
  * Study statistics. Every number is the one the server sends: nothing is recomputed here
@@ -38,12 +30,12 @@ export function StudyStatsView({ stats }: { stats: StudyStats }) {
     <div className="space-y-6">
       <h2 className="sr-only">Chiffres clés</h2>
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <Tile label="Aujourd'hui" value={formatMinutes(stats.todayMinutes)} />
-        <Tile label="Cette semaine" value={formatMinutes(stats.weekMinutes)} />
-        <Tile label="Ce mois-ci" value={formatMinutes(stats.monthMinutes)} />
-        <Tile label="Au total" value={formatMinutes(stats.totalMinutes)} />
-        <Tile label="Séances" value={String(stats.sessionsCount)} />
-        <Tile label="Durée moyenne" value={formatMinutes(stats.averageSessionMinutes)} />
+        <StatCard label="Aujourd'hui" value={formatMinutes(stats.todayMinutes)} />
+        <StatCard label="Cette semaine" value={formatMinutes(stats.weekMinutes)} />
+        <StatCard label="Ce mois-ci" value={formatMinutes(stats.monthMinutes)} />
+        <StatCard label="Au total" value={formatMinutes(stats.totalMinutes)} />
+        <StatCard label="Séances" value={String(stats.sessionsCount)} />
+        <StatCard label="Durée moyenne" value={formatMinutes(stats.averageSessionMinutes)} />
       </dl>
 
       <h2 className="sr-only">Graphiques</h2>

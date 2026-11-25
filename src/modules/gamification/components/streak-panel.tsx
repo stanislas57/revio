@@ -6,7 +6,7 @@ import { weekStreakDays } from "../domain/week-streak";
 import { XP_RULES } from "../domain/xp";
 
 /**
- * The streak of the user as the Revio ink card: the days of the week, the record, and below the next milestone and
+ * The streak of the user as the Revio streak card (white, Streak Orange): the days of the week, the record, and below the next milestone and
  * the rule. Real data only: the product has no joker, so none is shown.
  */
 export function StreakPanel({
@@ -30,7 +30,7 @@ export function StreakPanel({
         weekDays={weekStreakDays(today, minutesByDate, XP_RULES.streakDayMinutes)}
       />
       <p className="flex gap-2 text-sm text-muted-foreground">
-        <Flame className="mt-0.5 size-4 shrink-0 text-revio-magenta-text" aria-hidden />
+        <Flame className="mt-0.5 size-4 shrink-0 text-revio-streak-text" aria-hidden />
         <span>
           {nextMilestone !== null
             ? `Prochain palier : ${nextMilestone} jours (encore ${nextMilestone - currentDays})${bonus ? `, +${bonus} XP` : ""}. `

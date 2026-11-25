@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrbitStage } from "./orbit-stage";
 
-const LOOP = ["Planifier", "Réviser", "Gagner de l'XP", "Partager", "Recommencer"];
+const LOOP = ["Planifie", "Révise", "Gagne de l'XP", "Recommence"];
 
 export function Hero() {
   return (
@@ -13,38 +13,34 @@ export function Hero() {
     >
       <OrbitStage>
         <div className="orbit-text mx-auto max-w-2xl space-y-6 text-center">
-          <p className="inline-flex items-center rounded-full border bg-transparent px-3 py-1 text-xs text-muted-foreground">
-            Version de démonstration, en cours de construction
+          <p className="inline-flex items-center rounded-pill bg-brand-soft px-3 py-1 text-xs font-bold tracking-wide text-brand-soft-foreground uppercase">
+            La nouvelle façon de réviser
           </p>
-          {/* TITRE PROVISOIRE : à valider avant toute mise en ligne (aucun slogan officiel). */}
+          {/* Title of the charter (bêta 01, page 1). Not an official slogan until the founders validate it. */}
           <h1
             id="hero-title"
-            className="landing-display text-5xl leading-[1.05] text-balance sm:text-6xl lg:text-7xl"
+            className="landing-display text-[2.625rem] leading-[0.98] text-balance sm:text-[4rem] lg:text-[5.5rem]"
           >
-            Révise mieux,
+            Moins de stress.
             <br />
-            <em className="text-brand-text">ensemble.</em>
+            <em className="text-brand-text">Plus de progrès.</em>
           </h1>
           <p className="mx-auto max-w-xl text-lg text-pretty text-muted-foreground lg:max-w-md">
-            Suis tes notes, organise tes révisions et progresse avec tes amis : une application pensée pour
-            les étudiants.
+            Organise tes révisions, gagne de l&apos;XP et progresse avec tes amis.
           </p>
           <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild size="lg" className="min-h-11 w-full sm:w-auto">
               <Link href="/connexion">
-                Créer mon compte <ArrowRight aria-hidden />
+                Rejoindre la bêta <ArrowUpRight aria-hidden />
               </Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="min-h-11 w-full bg-transparent hover:bg-card sm:w-auto"
-            >
-              <Link href="/connexion">Se connecter</Link>
+            <Button asChild size="lg" variant="outline" className="min-h-11 w-full bg-card sm:w-auto">
+              <Link href="/demo">Explorer la démo</Link>
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">Aucun paiement n&apos;est demandé.</p>
+          <p className="text-sm text-muted-foreground">
+            Version de démonstration, en cours de construction. Aucun paiement n&apos;est demandé.
+          </p>
         </div>
       </OrbitStage>
 
@@ -55,12 +51,16 @@ export function Hero() {
 
       <ol
         aria-label="La boucle de Revio"
-        className="mx-auto mt-8 flex max-w-3xl flex-wrap items-center justify-center gap-x-2 gap-y-2 text-sm"
+        className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-2 border-y py-4 text-sm font-extrabold tracking-wide uppercase"
       >
         {LOOP.map((step, i) => (
-          <li key={step} className="flex items-center gap-2">
-            <span className="rounded-full border bg-card px-3 py-1 font-medium">{step}</span>
-            {i < LOOP.length - 1 && <ArrowRight className="size-3.5 text-muted-foreground" aria-hidden />}
+          <li key={step} className="flex items-center gap-3">
+            <span>{step}</span>
+            {i < LOOP.length - 1 && (
+              <span aria-hidden className="text-revio-primary dark:text-revio-lime">
+                ✦
+              </span>
+            )}
           </li>
         ))}
       </ol>

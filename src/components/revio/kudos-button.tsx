@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { celebrate } from "./confetti";
 
 /**
- * The kudos pill (gradient, the only place besides presence and the "Réviser" button). A burst of violet, magenta
- * and white particles plays once per click. Anti-pressure rules: one kudos per day and per friend (`sent`
+ * The kudos pill, in Social Pink (charter: likes and reactions) with midnight text. A burst of violet, pink and lime
+ * particles plays once per click. Anti-pressure rules: one kudos per day and per friend (`sent`
  * disables the button) and the number of kudos is NEVER shown here: it stays private to its owner.
  */
 export function KudosButton({
@@ -47,7 +47,7 @@ export function KudosButton({
         onClick={send}
         disabled={sent}
         className={cn(
-          "bg-revio-gradient-solid inline-flex min-h-11 items-center gap-2 rounded-pill px-5 text-sm font-semibold text-white outline-none",
+          "inline-flex min-h-11 items-center gap-2 rounded-pill bg-revio-social px-5 text-sm font-semibold text-revio-midnight outline-none",
           "transition-transform duration-[var(--dur-micro)] hover:scale-[1.03] active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100",
           "focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-70 disabled:hover:scale-100",
           className,
