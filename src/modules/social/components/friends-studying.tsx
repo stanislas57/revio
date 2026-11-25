@@ -32,8 +32,8 @@ export function FriendsStudying({ friends }: { friends: LiveFriend[] }) {
             <li key={f.sessionId} className="flex min-w-56 items-center gap-3 rounded-lg border px-3 py-2">
               <UserAvatar user={f.user} live={f.status === "running"} className="size-9" />
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{userLabel(f.user)}</p>
-                <p className="truncate text-xs text-muted-foreground">
+                <p className="text-sm font-medium break-words">{userLabel(f.user)}</p>
+                <p className="text-xs break-words text-muted-foreground">
                   {f.subjectName ?? "Révision"} · {seconds === null ? "…" : formatMinutes(seconds / 60)}
                   {f.status === "paused" && " (pause)"}
                 </p>

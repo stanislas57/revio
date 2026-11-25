@@ -10,7 +10,7 @@ export function FriendRequests({ requests }: { requests: FriendRequest[] }) {
         <li key={r.id} className="flex flex-wrap items-center gap-3 px-3 py-2">
           <UserAvatar user={r.user} className="size-9" />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">{userLabel(r.user)}</p>
+            <p className="text-sm font-medium break-words">{userLabel(r.user)}</p>
             {r.user.username && <p className="text-xs text-muted-foreground">@{r.user.username}</p>}
           </div>
           {r.direction === "incoming" ? (
