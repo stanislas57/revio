@@ -45,7 +45,8 @@ export function AuthForm({ next }: { next?: string }) {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                aria-label={showPassword ? "Masquer la saisie" : "Afficher la saisie"}
+                aria-controls="password"
                 aria-pressed={showPassword}
                 className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground"
               >
