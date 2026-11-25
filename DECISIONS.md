@@ -136,6 +136,29 @@ Polices : Space Grotesk (titres, chiffres) et Inter (texte), SIL OFL, auto-hébe
   démonstration marquées `MockBadge`.
 - `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : la refonte a été mise en production sur décision de Charles, **sans attendre la confirmation de Stan** (PR #43, #44 et #45). Stan peut la contester ou la modifier : tout est dans ces trois PR.
 
+### D-24 — Charte graphique bêta 01 (remplace la palette de D-23)
+
+Décidé par Charles, qui a fourni la « Charte graphique & interface produit, version bêta 01 »
+(`design/charte-beta-01.pdf`), avec la consigne de remplacer le design précédent. Palette : Revio Purple
+`#6950EE`, Electric Lime `#D6FA72` (XP, récompenses), Cream White (landing), Cloud White (application), Midnight
+Black `#181921`, Soft Purple, Success Green, Streak Orange, Social Pink. Police : **Inter seule** (Space Grotesk
+est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#303041`).
+
+- **Ce qui ne change pas** : l'architecture, les routes, les données, le backend, les composants de
+  `src/components/revio/` (restylés, mêmes API) et les règles de D-23 (licences, anti-pression, une dépendance
+  par PR). Aucune dépendance ajoutée, aucune retirée.
+- **Contrastes** : les valeurs de la charte sont gardées ; sa note d'accessibilité est appliquée (`#656371`,
+  `#5840D8`, citron jamais en texte). Où une couleur de la charte n'est qu'un fond (rose, orange, vert, rouge),
+  un jeton de texte AA l'accompagne. Détail mesuré dans `docs/design-system.md`.
+- **Navigation** : les entrées de la barre latérale de la charte, sur les routes existantes. « Ma ligue » devient
+  « Classement » : les ligues (divisions, podium) n'existent pas ; la page est le classement entre amis.
+- **Landing** : titre et boutons de la charte (« Moins de stress. Plus de progrès. », « Rejoindre la bêta »,
+  « Explorer la démo »). Le titre reste provisoire tant que les deux fondateurs ne l'ont pas validé.
+- **Ce que la charte montre sans que le produit le fasse** (ses maquettes sont fictives, la charte le dit) :
+  ligues, podium, XP par séance « +50 XP », publications automatiques. Rien de cela n'est ajouté ici.
+- `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : cette mise à jour est faite sur décision
+  de Charles, **sans attendre la confirmation de Stan**. Stan peut la contester dans la PR.
+
 ## Ouvertes
 
 - Confirmation d'e-mail activée ou non pour la démo.

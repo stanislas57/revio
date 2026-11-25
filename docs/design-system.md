@@ -1,119 +1,148 @@
-# Design system Revio
+# Design system Revio : charte graphique bêta 01
 
-Source : les maquettes « Revio, ADN d'interface » (`design/revio-adn/`, référence visuelle uniquement) et le prompt
-d'intégration. Décision D-23 de `DECISIONS.md`. Les jetons sont dans `src/app/globals.css`, en clair (`:root`) et en
-sombre (`.dark`), et disponibles comme classes Tailwind (`bg-revio-violet`, `text-revio-magenta-text`,
-`bg-revio-ink`…) et via les variables shadcn (`--primary`, `--background`, `--ring`…).
+Source : **« Charte graphique & interface produit », version bêta 01** (`design/charte-beta-01.pdf`). Elle remplace la
+palette « Revio ADN » (violet `#7B2FF7`, magenta, encre, Space Grotesk) : décision D-24 de `DECISIONS.md`.
+Direction : violet électrique et citron vert, Inter, cartes arrondies, interfaces épurées.
 
-## Palette
+Les jetons sont dans `src/app/globals.css`, en clair (`:root`) et en sombre (`.dark`). Ils sont utilisables comme classes
+Tailwind (`bg-revio-primary`, `bg-revio-lime`, `text-revio-streak-text`…) et à travers les variables shadcn
+(`--primary`, `--background`, `--ring`…). Les composants consomment ces jetons : aucune couleur écrite en dur, à part les
+couleurs des matières choisies par l'utilisateur et la page de démonstration de la palette.
 
-| Jeton                                             | Valeur                          | Usage                                                                                     |
-| ------------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
-| `--revio-violet`                                  | `#7B2FF7`                       | actions, liens, primaire (5,85:1 sur blanc)                                               |
-| `--revio-violet-hover`                            | `#5B1BC4`                       | survol                                                                                    |
-| `--revio-magenta`                                 | `#E11D8F`                       | présence « live », kudos, série : **en fond seulement**                                   |
-| `--revio-magenta-text`                            | `#C0157A`                       | magenta en texte sur blanc (5,79:1)                                                       |
-| `--revio-xp`                                      | `#C6F432`                       | lime : **uniquement** les gains d'XP, toujours sous du texte encre, jamais en texte       |
-| `--revio-ink`, `-2`, `-3`                         | `#1A1030`, `#261A40`, `#3A2D55` | texte, surfaces sombres, bordures sur encre                                               |
-| `--revio-lilac`, `--revio-border`, `--revio-grid` | `#F6F1FF`, `#E7DDFB`, `#F1EAFD` | zones secondaires, bordures, grille                                                       |
-| `--revio-muted`, `--revio-muted-on-ink`           | `#6B6280`, `#CFC6E6`            | texte secondaire                                                                          |
-| `--revio-gradient`                                | violet → magenta                | **trois usages seulement** : présence des amis, kudos et célébrations, bouton « Réviser » |
+## Palette (valeurs de la charte, page 2)
 
-Répartition visée : environ 70 % de blanc, 20 % de violet et d'encre, 8 % de dégradé, 2 % de lime.
-Fond des écrans : blanc avec la grille de 24 px (classe `revio-grid`), qui se fond pour ne pas gêner la lecture.
+| Couleur         | Jeton                                          | Valeur    | Usage                                                          |
+| --------------- | ---------------------------------------------- | --------- | -------------------------------------------------------------- |
+| Revio Purple    | `--revio-primary` (`--primary`, `--brand`)     | `#6950EE` | logo, boutons principaux, navigation (texte blanc : 5,27:1)    |
+| (survol)        | `--revio-primary-hover` (`--brand-text`)       | `#5840D8` | survol, et **texte / liens violets sur fond clair** (6,69:1)   |
+| Electric Lime   | `--revio-lime`                                 | `#D6FA72` | XP, récompenses, progression : **en fond**, jamais en texte    |
+| Cream White     | `--revio-landing`                              | `#F8F8F3` | fond de la landing page                                        |
+| Cloud White     | `--revio-cloud` (`--background`)               | `#F7F7FB` | fond de l'application                                          |
+| Midnight Black  | `--revio-text`, `--revio-midnight`             | `#181921` | titres et texte ; texte sur citron, rose, orange et vert       |
+| Pure White      | `--revio-surface` (`--card`)                   | `#FFFFFF` | cartes et surfaces                                             |
+| Soft Purple     | `--revio-primary-light` (`--secondary`)        | `#EEEBFF` | sélections, élément actif du menu, fonds légers                |
+| Muted Grey      | `--revio-text-secondary` (`--input`)           | `#858391` | décoratif seulement (3,72:1) ; bordure des champs de saisie    |
+| (texte lisible) | `--revio-text-readable` (`--muted-foreground`) | `#656371` | petit texte secondaire (5,87:1 sur blanc)                      |
+| Border Grey     | `--revio-border` (`--border`)                  | `#EAE9F0` | bordures et séparateurs (décoratifs)                           |
+| Success Green   | `--revio-success`                              | `#22C55E` | réussite, point « en direct »                                  |
+| Streak Orange   | `--revio-streak`                               | `#F59E0B` | séries et régularité                                           |
+| Social Pink     | `--revio-social`                               | `#ED5682` | likes, kudos, réactions                                        |
+| (erreur)        | `--revio-error`                                | `#EF4444` | signal d'erreur, toujours accompagné d'un texte ou d'une icône |
 
-## Jetons ajoutés pour tenir le contraste (écarts avec le brief)
+La note d'accessibilité de la charte est appliquée telle quelle : `#656371` pour le petit texte, `#5840D8` pour les liens
+violets sur fond clair, citron jamais en texte sur blanc, `#EF4444` seulement comme signal.
 
-Les valeurs d'origine ne sont pas modifiées ; trois jetons complémentaires les accompagnent.
+## Jetons ajoutés pour tenir le contraste
 
-| Jeton                                              | Valeur    | Pourquoi                                                                                                       |
-| -------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------- |
-| `--revio-magenta-solid` / `--revio-gradient-solid` | `#DC1C8C` | du texte blanc sur `#E11D8F` fait 4,40:1 (minimum 4,5) ; ce magenta fait 4,58:1                                |
-| `--revio-violet-on-ink`                            | `#B58CFF` | le violet `#7B2FF7` en texte sur encre fait 3,09:1 ; celui-ci fait 7,03:1                                      |
-| `--revio-border-strong`                            | `#857AA0` | la bordure d'un champ doit atteindre 3:1 (WCAG 1.4.11) ; `#E7DDFB` fait 1,30:1, réservé aux cartes (décoratif) |
+Les valeurs de la charte ne sont pas modifiées. Là où une couleur de la charte est une couleur de fond, un jeton de
+texte l'accompagne :
 
-Le lime sur blanc (1,28:1) ne doit jamais porter une information seul : il accompagne toujours le violet ou un texte encre.
+| Jeton                     | Clair     | Sombre    | Pourquoi                                                             |
+| ------------------------- | --------- | --------- | -------------------------------------------------------------------- |
+| `--revio-social-text`     | `#C2185B` | `#F47BA0` | `#ED5682` en texte sur blanc fait 3,36:1                             |
+| `--revio-streak-text`     | `#B45309` | `#F59E0B` | `#F59E0B` en texte sur blanc fait 2,15:1                             |
+| `--revio-success-text`    | `#15803D` | `#4ADE80` | `#22C55E` en texte sur blanc fait 2,28:1                             |
+| `--destructive`           | `#DC2626` | `#FCA5A5` | `#EF4444` en texte sur blanc fait 3,76:1                             |
+| `--revio-primary-on-dark` | —         | `#A99BFF` | `#6950EE` en texte sur `#20202C` fait 3,05:1 ; ce violet fait 6,76:1 |
 
-## Polices et formes
+Sur ces fonds colorés (citron, rose, orange, vert), le texte est toujours Midnight Black (`text-revio-midnight`, identique
+dans les deux thèmes) : jamais du blanc, qui échoue sur le rose (3,36:1) et l'orange (2,15:1).
 
-- **Space Grotesk** 500 à 700 (titres, chiffres) et **Inter** (texte), SIL OFL, auto-hébergées par `next/font` (aucun appel
-  externe à l'exécution). Chiffres tabulaires (`tabular-nums`) pour l'XP, les minuteurs et les classements.
-- Rayons : champs 8 px (`rounded-sm`), cartes 14 px (`rounded-lg`), panneaux 24 px (`rounded-xl`), pilules (`rounded-pill`).
-- Mouvement : micro-interactions 150 ms (`--dur-micro`), transitions 300 ms (`--dur-base`).
+## Typographie et formes (charte, page 3)
 
-## Mode sombre
+- **Inter seule**, police variable 100 à 900, SIL OFL, auto-hébergée par `next/font` (aucun appel externe à l'exécution).
+  `font-heading` reste le crochet des titres et des chiffres (même famille). Chiffres tabulaires (`tabular-nums`).
 
-Le brief n'en définit pas : il est dérivé des surfaces encre (fond `#1A1030`, cartes `#261A40`, bordures `#3A2D55`,
-primaire `#B58CFF` avec texte encre).
+| Élément            | Taille                  | Graisse | Dans le code                      |
+| ------------------ | ----------------------- | ------- | --------------------------------- |
+| Titre landing page | 42 px (mobile) à 88 px  | 900     | `.landing-display`, hero          |
+| Titre de page      | 32 px, 36 px dès 768 px | 800     | `PageHeader`                      |
+| Titre de section   | 24 px                   | 700     | `h2` des sections                 |
+| Titre de carte     | 16 à 18 px              | 600-700 | `CardTitle`, titres de composants |
+| Texte              | 14 à 16 px              | 400     | corps                             |
+| Bouton             | 14 px                   | 600     | `Button` (shadcn)                 |
+| Texte secondaire   | 12 à 13 px              | 400     | `text-xs text-muted-foreground`   |
+| Statistiques et XP | 24 px (mobile) à 28 px  | 800     | `StatCard`, carte de niveau       |
+
+- Rayons : champs 8 px (`rounded-sm`), boutons 12 px (`rounded-md`), cartes 16 à 18 px (`rounded-lg`, `rounded-xl`),
+  sections 24 px (`rounded-2xl`), pastilles (`rounded-pill`). Bordures 1 px.
+- Ombres légères : `shadow-sm` (`0 2px 8px rgb(24 25 33 / .04)`), `shadow-md` (`0 8px 24px rgb(24 25 33 / .07)`).
+- Mouvement : 150 ms (`--dur-micro`) à 250 ms (`--dur-base`) ; tout est coupé avec `prefers-reduced-motion`.
+- Icônes Lucide (contour). Dégradés limités : un seul, le fond du hero de la landing (crème vers Soft Purple).
+- Navigation : barre latérale blanche sur ordinateur, barre inférieure sur mobile (charte, page 3).
+
+## Mode sombre (charte, page 6)
+
+Fond `#14141E`, surfaces `#20202C`, bordures `#303041`, texte `#F4F2FB`, texte secondaire `#A09EB3`, Soft Purple `#332952`.
+Les boutons restent Revio Purple avec du texte blanc ; le violet **en texte** devient `#A99BFF` ; le point du logo devient
+citron, comme sur la maquette sombre de la charte. La landing suit le fond sombre (`--revio-landing` vaut `#14141E`).
 
 ## Contrastes mesurés (WCAG 2.x, calcul à partir des valeurs de `globals.css`)
 
-Texte : 4,5:1 minimum. Éléments non textuels (remplissages, bordures de champ, focus) : 3:1 minimum.
+Texte : 4,5:1 minimum. Éléments non textuels (bordure de champ, anneau de focus, barres) : 3:1. Audit axe-core (WCAG 2.2 AA)
+de 17 pages en clair et en sombre, à 375 px et à 1 440 px : **0 violation**.
 
-| Thème  | Usage                                            | Paire                                          | Ratio | Minimum | Résultat |
-| ------ | ------------------------------------------------ | ---------------------------------------------- | ----- | ------- | -------- |
-| clair  | texte                                            | `foreground` / `background`                    | 18,09 | 4,5     | ✅       |
-| clair  | texte sur carte                                  | `card-foreground` / `card`                     | 18,09 | 4,5     | ✅       |
-| clair  | texte sur bouton principal                       | `primary-foreground` / `primary`               | 5,85  | 4,5     | ✅       |
-| clair  | texte sur remplissage de marque                  | `brand-foreground` / `brand`                   | 5,85  | 4,5     | ✅       |
-| clair  | texte de marque sur la page                      | `brand-text` / `background`                    | 5,85  | 4,5     | ✅       |
-| clair  | texte de marque sur carte                        | `brand-text` / `card`                          | 5,85  | 4,5     | ✅       |
-| clair  | texte de marque sur zone secondaire              | `brand-text` / `muted`                         | 5,27  | 4,5     | ✅       |
-| clair  | texte de marque sur teinte douce                 | `brand-text` / `brand-soft`                    | 5,27  | 4,5     | ✅       |
-| clair  | texte sur teinte douce                           | `brand-soft-foreground` / `brand-soft`         | 9,50  | 4,5     | ✅       |
-| clair  | magenta-texte sur la page                        | `revio-magenta-text` / `background`            | 5,79  | 4,5     | ✅       |
-| clair  | magenta-texte sur carte                          | `revio-magenta-text` / `card`                  | 5,79  | 4,5     | ✅       |
-| clair  | magenta-texte sur face secondaire                | `revio-magenta-text` / `secondary`             | 5,22  | 4,5     | ✅       |
-| clair  | texte secondaire sur la page                     | `muted-foreground` / `background`              | 5,70  | 4,5     | ✅       |
-| clair  | texte secondaire sur carte                       | `muted-foreground` / `card`                    | 5,70  | 4,5     | ✅       |
-| clair  | texte secondaire sur zone secondaire             | `muted-foreground` / `muted`                   | 5,14  | 4,5     | ✅       |
-| clair  | texte secondaire (bouton)                        | `secondary-foreground` / `secondary`           | 16,32 | 4,5     | ✅       |
-| clair  | texte sur accent                                 | `accent-foreground` / `accent`                 | 16,32 | 4,5     | ✅       |
-| clair  | menu latéral                                     | `sidebar-foreground` / `sidebar`               | 16,32 | 4,5     | ✅       |
-| clair  | texte secondaire du menu                         | `muted-foreground` / `sidebar`                 | 5,14  | 4,5     | ✅       |
-| clair  | élément actif du menu                            | `sidebar-accent-foreground` / `sidebar-accent` | 14,06 | 4,5     | ✅       |
-| clair  | remplissage de marque contre la page (non-texte) | `brand` / `background`                         | 5,85  | 3       | ✅       |
-| clair  | remplissage de marque contre une carte           | `brand` / `card`                               | 5,85  | 3       | ✅       |
-| clair  | remplissage contre la piste d'une barre          | `brand` / `muted`                              | 5,27  | 3       | ✅       |
-| clair  | bordure de champ (non-texte)                     | `input` / `background`                         | 3,97  | 3       | ✅       |
-| clair  | anneau de focus (non-texte)                      | `ring` / `background`                          | 5,85  | 3       | ✅       |
-| sombre | texte                                            | `foreground` / `background`                    | 16,32 | 4,5     | ✅       |
-| sombre | texte sur carte                                  | `card-foreground` / `card`                     | 14,53 | 4,5     | ✅       |
-| sombre | texte sur bouton principal                       | `primary-foreground` / `primary`               | 7,03  | 4,5     | ✅       |
-| sombre | texte sur remplissage de marque                  | `brand-foreground` / `brand`                   | 5,41  | 4,5     | ✅       |
-| sombre | texte de marque sur la page                      | `brand-text` / `background`                    | 7,03  | 4,5     | ✅       |
-| sombre | texte de marque sur carte                        | `brand-text` / `card`                          | 6,26  | 4,5     | ✅       |
-| sombre | texte de marque sur zone secondaire              | `brand-text` / `muted`                         | 6,26  | 4,5     | ✅       |
-| sombre | texte de marque sur teinte douce                 | `brand-text` / `brand-soft`                    | 4,84  | 4,5     | ✅       |
-| sombre | texte sur teinte douce                           | `brand-soft-foreground` / `brand-soft`         | 9,57  | 4,5     | ✅       |
-| sombre | magenta-texte sur la page                        | `revio-magenta-text` / `background`            | 8,48  | 4,5     | ✅       |
-| sombre | magenta-texte sur carte                          | `revio-magenta-text` / `card`                  | 7,54  | 4,5     | ✅       |
-| sombre | magenta-texte sur face secondaire                | `revio-magenta-text` / `secondary`             | 5,83  | 4,5     | ✅       |
-| sombre | texte secondaire sur la page                     | `muted-foreground` / `background`              | 11,09 | 4,5     | ✅       |
-| sombre | texte secondaire sur carte                       | `muted-foreground` / `card`                    | 9,87  | 4,5     | ✅       |
-| sombre | texte secondaire sur zone secondaire             | `muted-foreground` / `muted`                   | 9,87  | 4,5     | ✅       |
-| sombre | texte secondaire (bouton)                        | `secondary-foreground` / `secondary`           | 11,23 | 4,5     | ✅       |
-| sombre | texte sur accent                                 | `accent-foreground` / `accent`                 | 11,23 | 4,5     | ✅       |
-| sombre | menu latéral                                     | `sidebar-foreground` / `sidebar`               | 14,53 | 4,5     | ✅       |
-| sombre | texte secondaire du menu                         | `muted-foreground` / `sidebar`                 | 9,87  | 4,5     | ✅       |
-| sombre | élément actif du menu                            | `sidebar-accent-foreground` / `sidebar-accent` | 11,23 | 4,5     | ✅       |
-| sombre | remplissage de marque contre la page (non-texte) | `brand` / `background`                         | 5,41  | 3       | ✅       |
-| sombre | remplissage de marque contre une carte           | `brand` / `card`                               | 4,81  | 3       | ✅       |
-| sombre | remplissage contre la piste d'une barre          | `brand` / `muted`                              | 4,81  | 3       | ✅       |
-| sombre | bordure de champ (non-texte)                     | `input` / `background`                         | 5,23  | 3       | ✅       |
-| sombre | anneau de focus (non-texte)                      | `ring` / `background`                          | 7,03  | 3       | ✅       |
-| clair  | magenta-texte sur blanc                          | `#C0157A` / `#FFFFFF`                          | 5,79  | 4,5     | ✅       |
-| clair  | blanc sur magenta plein                          | `#FFFFFF` / `#dc1c8c`                          | 4,58  | 4,5     | ✅       |
-| clair  | blanc sur début du dégradé                       | `#FFFFFF` / `#7B2FF7`                          | 5,85  | 4,5     | ✅       |
-| clair  | blanc sur milieu du dégradé                      | `#FFFFFF` / `#B024D6`                          | 5,16  | 4,5     | ✅       |
-| clair  | blanc sur fin du dégradé (texte)                 | `#FFFFFF` / `#dc1c8c`                          | 4,58  | 4,5     | ✅       |
-| clair  | encre sur lime (+XP)                             | `#1A1030` / `#c6f432`                          | 14,12 | 4,5     | ✅       |
-| clair  | blanc sur encre                                  | `#FFFFFF` / `#1A1030`                          | 18,09 | 4,5     | ✅       |
-| clair  | gris clair sur encre                             | `#cfc6e6` / `#1A1030`                          | 11,09 | 4,5     | ✅       |
-| clair  | gris clair sur surface encre                     | `#cfc6e6` / `#261A40`                          | 9,87  | 4,5     | ✅       |
-| clair  | violet clair (texte) sur encre                   | `#b58cff` / `#1A1030`                          | 7,03  | 4,5     | ✅       |
-| clair  | violet clair (texte) sur surface encre           | `#b58cff` / `#261A40`                          | 6,26  | 4,5     | ✅       |
-| clair  | magenta (flamme, icône) sur encre                | `#e11d8f` / `#1A1030`                          | 4,11  | 3       | ✅       |
+| Thème    | Paire                                          | Couleurs              | Ratio | Minimum | Résultat |
+| -------- | ---------------------------------------------- | --------------------- | ----- | ------- | -------- |
+| clair    | texte sur le fond de l'app                     | `#181921` / `#f7f7fb` | 16,38 | 4,5     | ✅       |
+| clair    | texte sur le fond de la landing                | `#181921` / `#f8f8f3` | 16,43 | 4,5     | ✅       |
+| clair    | texte sur carte                                | `#181921` / `#ffffff` | 17,5  | 4,5     | ✅       |
+| clair    | texte sur bouton principal (violet)            | `#ffffff` / `#6950ee` | 5,27  | 4,5     | ✅       |
+| clair    | violet texte / lien sur le fond                | `#5840d8` / `#f7f7fb` | 6,26  | 4,5     | ✅       |
+| clair    | violet texte / lien sur carte                  | `#5840d8` / `#ffffff` | 6,69  | 4,5     | ✅       |
+| clair    | violet texte sur la landing                    | `#5840d8` / `#f8f8f3` | 6,28  | 4,5     | ✅       |
+| clair    | texte sur Soft Purple (actif, badge)           | `#5840d8` / `#eeebff` | 5,72  | 4,5     | ✅       |
+| clair    | bouton secondaire                              | `#5840d8` / `#eeebff` | 5,72  | 4,5     | ✅       |
+| clair    | texte secondaire sur le fond                   | `#656371` / `#f7f7fb` | 5,49  | 4,5     | ✅       |
+| clair    | texte secondaire sur carte                     | `#656371` / `#ffffff` | 5,87  | 4,5     | ✅       |
+| clair    | texte secondaire sur zone neutre               | `#656371` / `#efeef4` | 5,09  | 4,5     | ✅       |
+| clair    | texte secondaire sur la landing                | `#656371` / `#f8f8f3` | 5,51  | 4,5     | ✅       |
+| clair    | texte secondaire sur Soft Purple (bas du hero) | `#656371` / `#eeebff` | 5,02  | 4,5     | ✅       |
+| clair    | midnight sur citron vert (+XP)                 | `#181921` / `#d6fa72` | 14,82 | 4,5     | ✅       |
+| clair    | midnight sur Social Pink (kudos)               | `#181921` / `#ed5682` | 5,21  | 4,5     | ✅       |
+| clair    | midnight sur Streak Orange (série)             | `#181921` / `#f59e0b` | 8,15  | 4,5     | ✅       |
+| clair    | midnight sur Success Green                     | `#181921` / `#22c55e` | 7,68  | 4,5     | ✅       |
+| clair    | rose en texte sur carte                        | `#c2185b` / `#ffffff` | 5,87  | 4,5     | ✅       |
+| clair    | orange en texte sur carte                      | `#b45309` / `#ffffff` | 5,02  | 4,5     | ✅       |
+| clair    | vert en texte sur carte                        | `#15803d` / `#ffffff` | 5,02  | 4,5     | ✅       |
+| clair    | erreur en texte sur carte                      | `#dc2626` / `#ffffff` | 4,83  | 4,5     | ✅       |
+| clair    | erreur en texte sur le fond                    | `#dc2626` / `#f7f7fb` | 4,52  | 4,5     | ✅       |
+| clair    | entrée active du menu                          | `#5840d8` / `#eeebff` | 5,72  | 4,5     | ✅       |
+| clair    | entrée du menu                                 | `#656371` / `#ffffff` | 5,87  | 4,5     | ✅       |
+| clair    | bordure de champ (non-texte)                   | `#858391` / `#ffffff` | 3,72  | 3,0     | ✅       |
+| clair    | anneau de focus (non-texte)                    | `#6950ee` / `#f7f7fb` | 4,93  | 3,0     | ✅       |
+| clair    | arc de l'anneau sur sa piste (non-texte)       | `#6950ee` / `#eeebff` | 4,51  | 3,0     | ✅       |
+| sombre   | texte sur le fond de l'app                     | `#f4f2fb` / `#14141e` | 16,49 | 4,5     | ✅       |
+| sombre   | texte sur le fond de la landing                | `#f4f2fb` / `#14141e` | 16,49 | 4,5     | ✅       |
+| sombre   | texte sur carte                                | `#f4f2fb` / `#20202c` | 14,52 | 4,5     | ✅       |
+| sombre   | texte sur bouton principal (violet)            | `#ffffff` / `#6950ee` | 5,27  | 4,5     | ✅       |
+| sombre   | violet texte / lien sur le fond                | `#a99bff` / `#14141e` | 7,68  | 4,5     | ✅       |
+| sombre   | violet texte / lien sur carte                  | `#a99bff` / `#20202c` | 6,76  | 4,5     | ✅       |
+| sombre   | violet texte sur la landing                    | `#a99bff` / `#14141e` | 7,68  | 4,5     | ✅       |
+| sombre   | texte sur Soft Purple (actif, badge)           | `#f4f2fb` / `#332952` | 11,99 | 4,5     | ✅       |
+| sombre   | bouton secondaire                              | `#f4f2fb` / `#332952` | 11,99 | 4,5     | ✅       |
+| sombre   | texte secondaire sur le fond                   | `#a09eb3` / `#14141e` | 7,0   | 4,5     | ✅       |
+| sombre   | texte secondaire sur carte                     | `#a09eb3` / `#20202c` | 6,16  | 4,5     | ✅       |
+| sombre   | texte secondaire sur zone neutre               | `#a09eb3` / `#2a2a38` | 5,41  | 4,5     | ✅       |
+| sombre   | texte secondaire sur la landing                | `#a09eb3` / `#14141e` | 7,0   | 4,5     | ✅       |
+| sombre   | texte secondaire sur Soft Purple (bas du hero) | `#a09eb3` / `#332952` | 5,09  | 4,5     | ✅       |
+| sombre   | midnight sur citron vert (+XP)                 | `#181921` / `#d6fa72` | 14,82 | 4,5     | ✅       |
+| sombre   | midnight sur Social Pink (kudos)               | `#181921` / `#ed5682` | 5,21  | 4,5     | ✅       |
+| sombre   | midnight sur Streak Orange (série)             | `#181921` / `#f59e0b` | 8,15  | 4,5     | ✅       |
+| sombre   | midnight sur Success Green                     | `#181921` / `#22c55e` | 7,68  | 4,5     | ✅       |
+| sombre   | rose en texte sur carte                        | `#f47ba0` / `#20202c` | 6,28  | 4,5     | ✅       |
+| sombre   | orange en texte sur carte                      | `#f59e0b` / `#20202c` | 7,5   | 4,5     | ✅       |
+| sombre   | vert en texte sur carte                        | `#4ade80` / `#20202c` | 9,24  | 4,5     | ✅       |
+| sombre   | erreur en texte sur carte                      | `#fca5a5` / `#20202c` | 8,48  | 4,5     | ✅       |
+| sombre   | erreur en texte sur le fond                    | `#fca5a5` / `#14141e` | 9,63  | 4,5     | ✅       |
+| sombre   | entrée active du menu                          | `#f4f2fb` / `#332952` | 11,99 | 4,5     | ✅       |
+| sombre   | entrée du menu                                 | `#a09eb3` / `#20202c` | 6,16  | 4,5     | ✅       |
+| sombre   | bordure de champ (non-texte)                   | `#76738d` / `#20202c` | 3,53  | 3,0     | ✅       |
+| sombre   | anneau de focus (non-texte)                    | `#a99bff` / `#14141e` | 7,68  | 3,0     | ✅       |
+| sombre   | arc de l'anneau sur sa piste (non-texte)       | `#a99bff` / `#332952` | 5,58  | 3,0     | ✅       |
+| les deux | blanc sur carte violette (niveau, épique)      | `#FFFFFF` / `#6950EE` | 5,27  | 4,5     | ✅       |
+| les deux | barre citron sur carte violette (non-texte)    | `#D6FA72` / `#6950EE` | 4,46  | 3,0     | ✅       |
+| les deux | blanc sur bouton destructif                    | `#FFFFFF` / `#DC2626` | 4,83  | 4,5     | ✅       |
 
 ## Composants (`src/components/revio/`)
 
@@ -121,22 +150,23 @@ Page de démonstration : **`/design-system`** (publique, non indexée, données 
 Règles communes : vrais `<button>` et `<a>`, noms accessibles, cibles de 44 px, jetons du thème (clair et sombre),
 icônes Lucide uniquement, `prefers-reduced-motion` respecté (fondu au lieu du mouvement, aucune célébration).
 
-| Composant                       | Rôle                                                                                         |
-| ------------------------------- | -------------------------------------------------------------------------------------------- |
-| `RevioRing`                     | anneau : `progress` (violet + gain lime) et `presence` (dégradé + point « en direct »)       |
-| `AvatarPresence`, `PresenceRow` | « En révision maintenant »                                                                   |
-| `XpBar`, `AnimatedNumber`       | niveau, barre avec gain lime, chiffres qui glissent                                          |
-| `RevioStreakCard`               | série sur fond encre, 7 jours (joker en violet, aujourd'hui en pointillés)                   |
-| `QuestList`                     | 3 quêtes ; confettis à la 3ᵉ, **une fois par jour** (`claimDaily`)                           |
-| `KudosButton`, `ReactionBar`    | encouragement (**un par jour et par ami**, **aucun compteur**) et 4 réactions                |
-| `SharedSheetCard`               | fiche partagée présentée comme un post                                                       |
-| `LiveActivityFeed`              | 3 entrées au plus, les anciennes pâlissent par la couleur (jamais par l'opacité : contraste) |
-| `LeagueTable`                   | ~30 élèves, réordonnancement animé, badge « ▲ N »                                            |
-| `BuddyBeam`                     | binôme et « série à deux »                                                                   |
-| `FlashcardStack`                | pile : tap pour retourner, glisser, **toujours deux boutons équivalents**                    |
-| `FocusTimer`                    | anneau en dégradé sur encre, libellé « Focus » / « Pause »                                   |
-| `RevioSubjectCard`, `BadgeCard` | matière (anneau, fiches, échéance) ; badge en trois raretés écrites                          |
-| `MobileDock`, `DesktopSidebar`  | navigation (dock sous 768 px, barre latérale au-dessus) ; `aria-current="page"`              |
+| Composant                       | Rôle                                                                                             |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `RevioRing`                     | anneau violet sur piste Soft Purple : `progress` (gain en citron) et `presence` (point vert)     |
+| `AvatarPresence`, `PresenceRow` | « En révision maintenant »                                                                       |
+| `XpBar`, `AnimatedNumber`       | niveau, barre avec gain lime, chiffres qui glissent                                              |
+| `RevioStreakCard`               | série sur carte blanche, flamme orange, 7 jours (joker violet, aujourd'hui en pointillés)        |
+| `QuestList`                     | 3 quêtes ; confettis à la 3ᵉ, **une fois par jour** (`claimDaily`)                               |
+| `KudosButton`, `ReactionBar`    | encouragement (**un par jour et par ami**, **aucun compteur**) et 4 réactions                    |
+| `SharedSheetCard`               | fiche partagée présentée comme un post                                                           |
+| `LiveActivityFeed`              | 3 entrées au plus, les anciennes pâlissent par la couleur (jamais par l'opacité : contraste)     |
+| `LeagueTable`                   | ~30 élèves, réordonnancement animé, badge « ▲ N »                                                |
+| `BuddyBeam`                     | binôme et « série à deux »                                                                       |
+| `FlashcardStack`                | pile : tap pour retourner, glisser, **toujours deux boutons équivalents**                        |
+| `FocusTimer`                    | carte blanche, anneau violet, bandeau citron « +XP », libellé « Focus » / « Pause »              |
+| `RevioSubjectCard`, `BadgeCard` | matière (anneau, fiches, échéance) ; badge en trois raretés écrites                              |
+| `MobileDock`, `DesktopSidebar`  | navigation (barre du bas sous 768 px, barre latérale blanche au-dessus) ; `aria-current`         |
+| `RevioLogo`, `StatCard`         | logo « revio. » (texte, point violet ou citron en sombre) ; chiffre + libellé du tableau de bord |
 
 Les noms `RevioStreakCard` et `RevioSubjectCard` évitent la collision avec les composants `StreakCard` (gamification)
 et `SubjectCard` (academic). La logique pure (géométrie des anneaux, classement, règles « une fois par jour ») est dans
@@ -144,9 +174,20 @@ et `SubjectCard` (academic). La logique pure (géométrie des anneaux, classemen
 
 ## Dans l'application
 
-- **Coque** (`src/components/layout/app-shell.tsx`, `main-nav.tsx`) : `DesktopSidebar` (encre) dès 768 px avec la vraie carte de profil (pseudo, niveau, barre d'XP lus en base), `MobileDock` en dessous avec le bouton « Réviser » au milieu (il mène à Focus et porte `aria-current` sur cette page). Mêmes routes et mêmes onglets qu'avant : Accueil, Agenda, Focus, Social, Profil. La grille « petits carreaux » est un calque fixe décoratif.
-- **Écrans réels restylés, données inchangées** : Profil (anneau de niveau, carte de série avec les 7 jours de la semaine : **pas de joker**, le produit n'en a pas), Social (amis en révision avec l'anneau de présence : un tour = 1 h ; le « Bravo » prend la forme du kudos en dégradé, sa logique serveur est inchangée), Focus (séance sur fond encre ; anneau autour du minuteur quand la durée est prévue).
-- **Aperçu du nouveau design** (`/apercu`, derrière la connexion, non indexé, non présent dans la navigation) : cinq écrans de démonstration pour les fonctions des maquettes qui n'existent pas dans le produit (fiches et cartes, quêtes, jokers, binôme, ligue, classe, groupes). Données d'exemple (`src/lib/mock/revio-demo.ts`), bandeau « Pas encore disponible », boutons sans effet désactivés.
+- **Coque** (`src/components/layout/app-shell.tsx`, `main-nav.tsx`, `nav-items.ts`) : `DesktopSidebar` blanche dès 768 px,
+  avec les entrées de la charte sur des routes qui existent déjà : Accueil, Mon agenda, Focus, Statistiques
+  (`/profil/statistiques`), Mes amis (`/social`), Classement (`/social/classement`), Mon profil. L'entrée active est sur
+  Soft Purple ; une sous-page appartient à l'entrée la plus précise (`activeNavHref`, testé). En dessous de 768 px :
+  en-tête avec le logo et `MobileDock` en barre inférieure (Accueil, Agenda, « Réviser » au milieu, Amis, Profil).
+  **Écart assumé** : la charte écrit « Ma ligue » ; la page existante est un classement hebdomadaire entre amis
+  (données d'exemple), d'où le libellé « Classement ». Les ligues (divisions, podium) n'existent pas dans le produit.
+- **Écrans réels restylés, données inchangées** : Profil (carte de niveau violette avec barre citron, carte de série
+  blanche à flamme orange, `StatCard`), Statistiques (`StatCard`), Social (« Bravo » en Social Pink, présence en violet
+  avec point vert), Focus (séance sur carte blanche, anneau violet, boutons de la charte).
+- **Landing** : fond crème, hero de la charte (« Moins de stress. Plus de progrès. »), boutons « Rejoindre la bêta »
+  (inscription) et « Explorer la démo » (`/demo`), bandeau « Planifie ✦ Révise ✦ Gagne de l'XP ✦ Recommence ».
+  Le titre vient de la charte : ce n'est pas un slogan validé pour une mise en ligne publique.
+- **Aperçu** (`/apercu`, derrière la connexion) : les mêmes écrans de démonstration, aux couleurs de la charte.
 
 ## Licences
 
@@ -156,5 +197,6 @@ En tête de chaque composant copié ou adapté : `// Source : <bibliothèque> �
 
 ## Maquettes
 
-`design/revio-adn/*.dc.html` : six écrans statiques (cinq mobiles et l'accueil web). Pour les afficher, il faut le dossier
-`_runtime/` du zip d'origine (non versionné) : `python3 -m http.server` dans le dossier, puis ouvrir un fichier.
+- `design/charte-beta-01.pdf` : la charte de référence (7 pages). Ses maquettes sont des reproductions statiques avec des
+  données fictives ; les règles d'XP, de ligues et de confidentialité qu'elles montrent ne sont pas des règles du produit.
+- `design/revio-adn/` : les maquettes de l'ancienne direction, gardées pour l'historique (elles ne font plus référence).
