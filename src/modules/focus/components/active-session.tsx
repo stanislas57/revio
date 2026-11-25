@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Pause, Play, Square, X } from "lucide-react";
+import { Maximize2, Pause, Play, Square, X } from "lucide-react";
 import { toast } from "sonner";
 import type { ActionResult } from "@/lib/contracts";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   pauseSession,
   resumeSession,
 } from "../server/actions";
+import { ImmersiveSession } from "./immersive-session";
 import { useNow } from "./use-now";
 
 const HEARTBEAT_MS = 60_000;
@@ -29,6 +30,8 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
   const [pending, startTransition] = useTransition();
   const [offset] = useState(() => clockOffsetMs(session.serverNow, Date.now()));
   const localNow = useNow();
+  const [immersive, setImmersive] = useState(false);
+  const closeImmersive = useCallback(() => setImmersive(false), []);
   const paused = session.status === "paused";
 
   // Keeps the session "online" for friends while this tab is visible.
@@ -50,6 +53,9 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
   const remaining = planned !== null && elapsed !== null ? planned - elapsed : null;
   const timeUp = remaining !== null && remaining <= 0;
 
+  const timeText =
+    elapsed === null ? "--:--" : formatDuration(planned !== null ? Math.max(0, remaining ?? 0) : elapsed);
+
   const run = (fn: () => Promise<ActionResult<unknown>>, then?: () => void) =>
     startTransition(async () => {
       const res = await fn();
@@ -59,86 +65,103 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
       else router.refresh();
     });
 
+  const finish = () =>
+    run(
+      () => finishSession(session.id),
+      () => router.push(`/focus/seance/${session.id}`),
+    );
+
   return (
-    <section
-      aria-label="Séance en cours"
-      className="flex flex-col items-center gap-6 rounded-xl border px-4 py-10 text-center"
-    >
-      <div className="space-y-1">
-        <p className="text-sm text-muted-foreground">{paused ? "En pause" : "Séance en cours"}</p>
-        <h2 className="text-xl font-semibold">{session.subject?.name ?? "Révision"}</h2>
-      </div>
-
-      <p
-        className="font-mono text-6xl font-bold tabular-nums sm:text-7xl"
-        role="timer"
-        aria-label={planned ? "Temps restant" : "Temps écoulé"}
+    <>
+      {immersive && (
+        <ImmersiveSession
+          time={timeText}
+          timerLabel={planned ? "Temps restant" : "Temps écoulé"}
+          paused={paused}
+          busy={pending}
+          onPause={() => run(() => pauseSession(session.id))}
+          onResume={() => run(() => resumeSession(session.id))}
+          onFinish={finish}
+          onClose={closeImmersive}
+        />
+      )}
+      <section
+        aria-label="Séance en cours"
+        aria-hidden={immersive || undefined}
+        inert={immersive}
+        className="flex flex-col items-center gap-6 rounded-xl border px-4 py-10 text-center"
       >
-        {elapsed === null
-          ? "--:--"
-          : formatDuration(planned !== null ? Math.max(0, remaining ?? 0) : elapsed)}
-      </p>
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">{paused ? "En pause" : "Séance en cours"}</p>
+          <h2 className="text-xl font-semibold">{session.subject?.name ?? "Révision"}</h2>
+        </div>
 
-      {planned !== null && elapsed !== null && (
-        <ProgressBar value={(elapsed / planned) * 100} label="Avancement de la séance" className="max-w-sm" />
-      )}
-      {timeUp && (
-        <p role="status" className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-          Temps écoulé, bravo ! Tu peux terminer la séance ou continuer.
-        </p>
-      )}
-      {planned !== null && elapsed !== null && !timeUp && (
-        <p className="text-sm text-muted-foreground">Écoulé : {formatDuration(elapsed)}</p>
-      )}
-
-      <div className="flex w-full max-w-sm flex-col gap-2 sm:flex-row">
-        {paused ? (
-          <Button
-            size="lg"
-            className="min-h-11 flex-1"
-            disabled={pending}
-            onClick={() => run(() => resumeSession(session.id))}
-          >
-            <Play aria-hidden /> Reprendre
-          </Button>
-        ) : (
-          <Button
-            size="lg"
-            variant="secondary"
-            className="min-h-11 flex-1"
-            disabled={pending}
-            onClick={() => run(() => pauseSession(session.id))}
-          >
-            <Pause aria-hidden /> Pause
-          </Button>
-        )}
-        <Button
-          size="lg"
-          className="min-h-11 flex-1"
-          disabled={pending}
-          onClick={() =>
-            run(
-              () => finishSession(session.id),
-              () => router.push(`/focus/seance/${session.id}`),
-            )
-          }
+        <p
+          className="font-mono text-6xl font-bold tabular-nums sm:text-7xl"
+          role="timer"
+          aria-label={planned ? "Temps restant" : "Temps écoulé"}
         >
-          <Square aria-hidden /> Terminer
+          {timeText}
+        </p>
+
+        {planned !== null && elapsed !== null && (
+          <ProgressBar
+            value={(elapsed / planned) * 100}
+            label="Avancement de la séance"
+            className="max-w-sm"
+          />
+        )}
+        {timeUp && (
+          <p role="status" className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            Temps écoulé, bravo ! Tu peux terminer la séance ou continuer.
+          </p>
+        )}
+        {planned !== null && elapsed !== null && !timeUp && (
+          <p className="text-sm text-muted-foreground">Écoulé : {formatDuration(elapsed)}</p>
+        )}
+
+        <div className="flex w-full max-w-sm flex-col gap-2 sm:flex-row">
+          {paused ? (
+            <Button
+              size="lg"
+              className="min-h-11 flex-1"
+              disabled={pending}
+              onClick={() => run(() => resumeSession(session.id))}
+            >
+              <Play aria-hidden /> Reprendre
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              variant="secondary"
+              className="min-h-11 flex-1"
+              disabled={pending}
+              onClick={() => run(() => pauseSession(session.id))}
+            >
+              <Pause aria-hidden /> Pause
+            </Button>
+          )}
+          <Button size="lg" className="min-h-11 flex-1" disabled={pending} onClick={finish}>
+            <Square aria-hidden /> Terminer
+          </Button>
+        </div>
+        <Button
+          className="min-h-11"
+          variant="ghost"
+          size="sm"
+          disabled={pending}
+          onClick={() => {
+            if (window.confirm("Abandonner cette séance ? Elle ne rapportera pas d'XP.")) {
+              run(() => cancelSession(session.id));
+            }
+          }}
+        >
+          <X aria-hidden /> Abandonner
         </Button>
-      </div>
-      <Button
-        className="min-h-11"
-        variant="ghost"
-        size="sm"
-        disabled={pending}
-        onClick={() => {
-          if (window.confirm("Abandonner cette séance ? Elle ne rapportera pas d'XP.")) {
-            run(() => cancelSession(session.id));
-          }
-        }}
-      >
-        <X aria-hidden /> Abandonner
-      </Button>
-    </section>
+        <Button className="min-h-11" variant="outline" size="sm" onClick={() => setImmersive(true)}>
+          <Maximize2 aria-hidden /> Plein écran
+        </Button>
+      </section>
+    </>
   );
 }

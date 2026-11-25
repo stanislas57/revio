@@ -11,6 +11,7 @@ import { LevelLadder } from "@/modules/gamification/components/level-ladder";
 import { StatTiles } from "@/modules/gamification/components/stat-tiles";
 import { StreakCard } from "@/modules/gamification/components/streak-card";
 import { getMyGamification } from "@/modules/gamification/server/queries";
+import { MyData } from "@/modules/profile/components/my-data";
 import { ProfileForm } from "@/modules/profile/components/profile-form";
 import { LanguageSelector } from "@/modules/profile/components/language-selector";
 import { SettingsForm } from "@/modules/profile/components/settings-form";
@@ -109,6 +110,8 @@ export default async function ProfilPage() {
             <SettingsForm settings={settings} locale={locale} />
           </CardContent>
         </Card>
+
+        <MyData />
       </div>
     </>
   );

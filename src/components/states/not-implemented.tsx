@@ -19,7 +19,7 @@ export function NotImplemented({ feature, owner }: { feature: string; owner?: "S
           <Badge variant="outline">Factice</Badge>
           {owner && <Badge variant="secondary">Responsable : {owner}</Badge>}
         </div>
-        <p className="text-muted-foreground">{feature}</p>
+        <p className="text-foreground/80">{feature}</p>
       </div>
     </div>
   );
