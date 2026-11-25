@@ -11,6 +11,7 @@ import { LevelLadder } from "@/modules/gamification/components/level-ladder";
 import { StatTiles } from "@/modules/gamification/components/stat-tiles";
 import { StreakCard } from "@/modules/gamification/components/streak-card";
 import { getMyGamification } from "@/modules/gamification/server/queries";
+import { RemindersMock } from "@/modules/profile/components/reminders-mock";
 import { MyData } from "@/modules/profile/components/my-data";
 import { ProfileForm } from "@/modules/profile/components/profile-form";
 import { LanguageSelector } from "@/modules/profile/components/language-selector";
@@ -111,6 +112,7 @@ export default async function ProfilPage() {
           </CardContent>
         </Card>
 
+        <RemindersMock />
         <MyData />
       </div>
     </>
