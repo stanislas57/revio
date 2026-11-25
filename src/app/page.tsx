@@ -7,6 +7,8 @@ import { Pillars } from "@/modules/landing/components/pillars";
 import { Preview } from "@/modules/landing/components/preview";
 import { SiteFooter } from "@/modules/landing/components/site-footer";
 import { SiteHeader } from "@/modules/landing/components/site-header";
+import { landingSerif } from "@/modules/landing/fonts";
+import "@/modules/landing/landing.css";
 
 export const metadata: Metadata = {
   description:
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
   return (
-    <div id="top">
+    <div id="top" className={`landing-root ${landingSerif.variable}`}>
       <SiteHeader />
       <main>
         <Hero />
