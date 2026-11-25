@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ const DURATIONS = [
 
 /** Preparation screen: subject (optional), duration (free or countdown) and sharing. */
 export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -44,6 +46,8 @@ export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
                 subjectId: subjectId || undefined,
               });
               setError(res.ok ? null : res.error.message);
+              // The server action does not revalidate the page: show the running session.
+              if (res.ok) router.refresh();
             });
           }}
         >
