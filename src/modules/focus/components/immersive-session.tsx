@@ -101,7 +101,7 @@ export function ImmersiveSession({
       <p
         role="timer"
         aria-label={timerLabel}
-        className="font-mono text-7xl font-bold tabular-nums sm:text-9xl"
+        className="font-heading text-7xl font-bold tabular-nums sm:text-9xl"
       >
         {time}
       </p>

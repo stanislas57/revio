@@ -34,7 +34,7 @@ export function Preview() {
     <section id="apercu" aria-labelledby="apercu-title" className="scroll-mt-16 py-16 sm:py-24">
       <Reveal className="mx-auto max-w-6xl px-4">
         <div className="mx-auto max-w-2xl space-y-3 text-center">
-          <h2 id="apercu-title" className="landing-serif text-4xl sm:text-5xl">
+          <h2 id="apercu-title" className="landing-display text-4xl sm:text-5xl">
             À quoi ça <em className="text-brand-text">ressemble</em>
           </h2>
           <p className="text-muted-foreground">
@@ -44,7 +44,7 @@ export function Preview() {
 
         <div className="mt-10 grid gap-4 lg:grid-cols-3">
           <Panel title="Fin de séance">
-            <p className="landing-serif text-6xl text-brand-text">
+            <p className="landing-display text-6xl text-brand-text">
               <XpCount value={DEMO_SESSION_XP} /> <span className="text-2xl">XP</span>
             </p>
             <ul className="space-y-1 text-sm text-muted-foreground">
@@ -77,7 +77,7 @@ export function Preview() {
                 Niveau {DEMO_LEVEL.current.number} · {DEMO_LEVEL.current.name}
               </p>
             </div>
-            <p className="landing-serif text-5xl">
+            <p className="landing-display text-5xl">
               {nf.format(DEMO_XP)} <span className="text-xl text-muted-foreground">XP</span>
             </p>
             <ProgressBar

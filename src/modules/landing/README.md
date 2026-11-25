@@ -19,9 +19,10 @@ les règles d'XP sont **lus dans le moteur** (`gamification/domain`) : la démo 
 
 ## Style
 
-`landing.css` (importé par la page seulement) : orbites, apparitions, mouvement réduit. Les couleurs viennent des jetons
-du projet (`--brand`…) ; seule valeur propre : le fond `#FAFAF8` en clair (en sombre, le fond du projet). La police
-serif (Instrument Serif) est chargée dans `fonts.ts`, pour la landing uniquement, sans toucher `layout.tsx`.
+`landing.css` (importé par la page seulement) : orbites, apparitions, mouvement réduit. Les couleurs, les polices
+(Space Grotesk pour les titres et les chiffres, Inter pour le texte) et la grille « petits carreaux » du hero viennent
+du design system Revio (`globals.css`, `docs/design-system.md`). Dans un titre, la partie accentuée est en couleur de
+marque, pas en italique (la police n'en a pas).
 
 ## Règles de contenu
 

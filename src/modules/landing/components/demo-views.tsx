@@ -45,7 +45,7 @@ export function XpView() {
         <p className="text-sm text-muted-foreground">
           Niveau {DEMO_LEVEL.current.number} · {DEMO_LEVEL.current.name}
         </p>
-        <p className="landing-serif text-6xl">
+        <p className="landing-display text-6xl">
           <CountUp value={DEMO_XP} /> <span className="text-3xl text-muted-foreground">XP</span>
         </p>
         <ProgressBar

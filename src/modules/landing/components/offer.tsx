@@ -35,7 +35,7 @@ export function Offer() {
     <section id="offre" aria-labelledby="offre-title" className="scroll-mt-16 border-t py-16 sm:py-24">
       <Reveal className="mx-auto max-w-4xl px-4">
         <div className="mx-auto max-w-2xl space-y-3 text-center">
-          <h2 id="offre-title" className="landing-serif text-4xl sm:text-5xl">
+          <h2 id="offre-title" className="landing-display text-4xl sm:text-5xl">
             Gratuit <em className="text-brand-text">pour commencer</em>
           </h2>
           <p className="text-muted-foreground">
