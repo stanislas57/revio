@@ -575,6 +575,97 @@ ok(
     (await as(E, `select * from user_settings where user_id='${D}'`)).rows.length === 0,
   );
 
+  // weekly leaderboard (S-19): XP only, friends only, opt-out enforced by the database
+  await db.exec(
+    `insert into xp_transactions (user_id, amount, reason, idempotency_key) values
+       ('${D}', 120, 'session_completed', 'lb:d1'),
+       ('${E}', 80, 'session_completed', 'lb:e1');
+     insert into xp_transactions (user_id, amount, reason, idempotency_key, created_at) values
+       ('${E}', 5000, 'session_completed', 'lb:e-old', now() - interval '30 days');`,
+  );
+  const board = (await as(D, `select * from weekly_leaderboard() order by rank`)).rows ?? [];
+  ok("board has me and my friend only", board.length === 2);
+  ok(
+    "board ranks by XP of the week (old XP ignored)",
+    board[0]?.user_id === D && board[0]?.weekly_xp === 120 && board[1]?.weekly_xp === 80,
+  );
+  ok("board flags me", board[0]?.is_me === true && board[1]?.is_me === false);
+  ok(
+    "board exposes no grade or subject column",
+    !Object.keys(board[0] ?? {}).some((k) => /grade|subject|average|note/.test(k)),
+  );
+  ok("anon cannot read the board", !!(await as(null, `select * from weekly_leaderboard()`)).error);
+  ok(
+    "a non-friend sees only themselves",
+    ((await as(C, `select * from weekly_leaderboard()`)).rows ?? []).length === 1,
+  );
+  await as(E, `insert into user_settings (show_in_leaderboard) values (false)`);
+  ok(
+    "a friend who left disappears from my board",
+    ((await as(D, `select * from weekly_leaderboard()`)).rows ?? []).every((r) => r.user_id !== E),
+  );
+  ok(
+    "someone who left sees no board",
+    ((await as(E, `select * from weekly_leaderboard()`)).rows ?? []).length === 0,
+  );
+  await as(E, `update user_settings set show_in_leaderboard = true`);
+  ok(
+    "rejoining brings them back",
+    ((await as(D, `select * from weekly_leaderboard()`)).rows ?? []).length === 2,
+  );
+  // study stats (S-20): own completed sessions only, one call
+  await db.exec(
+    `update study_sessions set started_at = now() - interval '45 minutes', paused_seconds = 0
+       where user_id='${D}' and status='in_progress'`,
+  );
+  const sid = (await as(D, `select id from study_sessions where status='in_progress'`)).rows?.[0]?.id;
+  ok("D finishes a 45 min session", !(await as(D, `select finish_study_session($1)`, [sid])).error);
+  const st = (await as(D, `select my_study_stats(30) as s`)).rows?.[0]?.s;
+  ok("stats count my completed session", st?.sessionsCount === 1 && st?.totalMinutes >= 44);
+  ok("stats daily series covers 30 days", st?.daily?.length === 30);
+  ok("stats today minutes match", st?.todayMinutes >= 44 && st?.weekMinutes >= 44);
+  ok(
+    "a friend's stats never include my shared session",
+    (await as(E, `select my_study_stats(30) as s`)).rows?.[0]?.s?.sessionsCount === 0,
+  );
+  ok("stats refuse anon", !!(await as(null, `select my_study_stats(30)`)).error);
+  ok("stats refuse absurd windows", !!(await as(D, `select my_study_stats(5000)`)).error);
+  // achievements (S-18): automatic, non-repeatable, owner-only, no client write
+  const ach = (await as(D, `select my_achievements() as a`)).rows?.[0]?.a ?? [];
+  const byId = Object.fromEntries(ach.map((a) => [a.id, a]));
+  ok("catalogue is returned in full", ach.length === 11);
+  ok(
+    "first session unlocked by finishing one",
+    !!byId.first_session?.unlockedAt && byId.first_session.progress === null,
+  );
+  ok("friend achievement unlocked by an accepted friendship", !!byId.first_friend?.unlockedAt);
+  ok(
+    "a locked achievement shows progress",
+    byId.friends_5?.progress?.current === 1 && byId.friends_5?.progress?.target === 5,
+  );
+  ok("streak achievement not unlocked after one day", !byId.streak_7?.unlockedAt);
+  const before = (await as(D, `select count(*)::int n from user_achievements`)).rows?.[0]?.n;
+  await as(D, `select my_achievements()`);
+  await as(D, `select my_achievements()`);
+  ok(
+    "awards are never duplicated",
+    (await as(D, `select count(*)::int n from user_achievements`)).rows?.[0]?.n === before,
+  );
+  ok(
+    "client cannot grant itself an achievement",
+    !!(await as(D, `insert into user_achievements (user_id, achievement_id) values ('${D}','streak_100')`))
+      .error,
+  );
+  ok(
+    "client cannot delete an award",
+    ((await as(D, `delete from user_achievements returning 1`)).rows ?? []).length === 0 ||
+      !!(await as(D, `delete from user_achievements`)).error,
+  );
+  ok(
+    "another user cannot read my awards",
+    (await as(E, `select * from user_achievements where user_id='${D}'`)).rows.length === 0,
+  );
+  ok("anon cannot read achievements", !!(await as(null, `select my_achievements()`)).error);
   // notifications (S-21): trigger-written, owner-only, deduplicated, preferences enforced
   const nb = async () => (await as(B, `select * from notifications where kind='post_reaction'`)).rows ?? [];
   ok("post owner is notified of a reaction", (await nb()).length === 1 && (await nb())[0].actor_id === A);

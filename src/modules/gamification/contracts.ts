@@ -33,7 +33,7 @@ export type XpReason = "study_duration" | "daily_goal" | "streak_milestone" | "p
 
 export type XpBreakdownItem = { reason: XpReason; xp: number; label: string };
 
-/** Draft (P1): not implemented server-side yet. */
+/** An achievement of the catalogue (S-18), from `my_achievements()`. Never tied to a grade. */
 export type Achievement = {
   id: string;
   name: string;
@@ -43,7 +43,7 @@ export type Achievement = {
   progress: { current: number; target: number } | null;
 };
 
-/** Draft (P1): not implemented server-side yet. */
+/** Weekly XP of a friend (S-19). XP only: never a grade. */
 export type LeaderboardEntry = {
   rank: number;
   user: PublicUser;
