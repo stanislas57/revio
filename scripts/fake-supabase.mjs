@@ -7,11 +7,13 @@
 //   - Auth (GoTrue): signup, password sign-in, refresh, get user, logout.
 //     Users are auto-confirmed. Tokens are HS256 JWTs signed with a random
 //     secret generated at start-up (restarting signs everyone out).
+//   - RPC: POST /rest/v1/rpc/<function> with named arguments (scalar, composite
+//     or void results; set-returning functions come back as an array).
 //   - PostgREST: select (columns, eq/neq/gt/gte/lt/lte/is/in filters, order,
 //     limit, offset), insert, upsert (on_conflict), update, delete, single().
 //     Every query runs as role `authenticated` with auth.uid() = token's sub,
 //     so RLS decides exactly as it would on Supabase.
-// Not supported: embedded resources, rpc, realtime, storage, e-mails.
+// Not supported: embedded resources, realtime, storage, e-mails.
 //
 // Usage: node scripts/fake-supabase.mjs [--port 54321] [--data .fake-supabase]
 //   --data persists the database in a folder (omit for a fresh in-memory DB).
@@ -333,6 +335,34 @@ async function handleRest(method, table, url, body, headers, claims) {
   return [method === "POST" ? 201 : 200, rows];
 }
 
+// --- RPC (database functions) -----------------------------------------------
+async function handleRpc(fn, body, claims) {
+  const args = Object.entries(body ?? {});
+  const params = args.map(([, v]) => v);
+  const list = args.map(([k], i) => `${ident(k)} => $${i + 1}`).join(", ");
+  const meta = await db.query(
+    `select p.proretset as set, t.typtype as kind, t.typname as type
+       from pg_proc p join pg_namespace n on n.oid = p.pronamespace join pg_type t on t.oid = p.prorettype
+      where n.nspname = 'public' and p.proname = $1 limit 1`,
+    [fn],
+  );
+  const info = meta.rows[0];
+  if (!info) throw new RestError(404, "PGRST202", `Could not find the function public.${fn}`);
+  const sql =
+    info.kind === "c" || info.set
+      ? `select * from public.${ident(fn)}(${list})`
+      : `select public.${ident(fn)}(${list}) as value`;
+  const result = await db.transaction(async (tx) => {
+    await tx.query(`select set_config('request.jwt.claim.sub', $1, true)`, [claims?.sub ?? ""]);
+    await tx.exec(`set local role ${claims ? "authenticated" : "anon"}`);
+    return tx.query(sql, params, { parsers });
+  });
+  if (info.set) return [200, result.rows];
+  if (info.type === "void") return [204, null];
+  if (info.kind === "c") return [200, result.rows[0] ?? null];
+  return [200, result.rows[0]?.value ?? null];
+}
+
 // --- HTTP -------------------------------------------------------------------
 async function readBody(req) {
   const chunks = [];
@@ -372,6 +402,11 @@ const server = createServer(async (req, res) => {
     const body = method === "GET" || method === "HEAD" ? {} : await readBody(req);
     if (url.pathname.startsWith("/auth/v1/")) {
       const [status, payload] = await handleAuth(method, url.pathname.slice(8), url, body, bearer);
+      return send(res, status, payload);
+    }
+    const rpc = url.pathname.match(/^\/rest\/v1\/rpc\/([a-z_][a-z0-9_]*)$/);
+    if (rpc && method === "POST") {
+      const [status, payload] = await handleRpc(rpc[1], body, verifyJwt(bearer));
       return send(res, status, payload);
     }
     const rest = url.pathname.match(/^\/rest\/v1\/([a-z_][a-z0-9_]*)$/);

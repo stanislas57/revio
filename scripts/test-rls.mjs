@@ -76,12 +76,27 @@ ok(
 );
 
 // sessions before friendship
-const sess = (await as(A, `insert into study_sessions (planned_minutes) values (25) returning id`)).rows?.[0]
-  ?.id;
+const sess = (await as(A, `select id from public.start_study_session('countdown', null, 25)`)).rows?.[0]?.id;
 ok("A starts session", !!sess);
 ok(
   "second running session rejected",
-  !!(await as(A, `insert into study_sessions (planned_minutes) values (25)`)).error,
+  !!(await as(A, `select public.start_study_session('countdown', null, 25)`)).error,
+);
+ok(
+  "client cannot insert a session directly",
+  !!(await as(A, `insert into study_sessions (planned_minutes, mode) values (25, 'countdown')`)).error,
+);
+ok(
+  "client cannot backdate started_at",
+  !!(await as(A, `update study_sessions set started_at = now() - interval '10 hours'`)).error,
+);
+ok(
+  "client cannot complete a session directly",
+  !!(await as(A, `update study_sessions set status = 'completed', ended_at = now()`)).error,
+);
+ok(
+  "timer modes require planned minutes",
+  !!(await as(B, `select public.start_study_session('countdown', null, null)`)).error,
 );
 ok("B cannot see A session (not friends)", (await as(B, `select * from study_sessions`)).rows.length === 0);
 
@@ -115,10 +130,56 @@ ok("C still cannot", (await as(C, `select * from study_sessions`)).rows.length =
 ok("B still cannot see A grades", (await as(B, `select * from grades`)).rows.length === 0);
 ok(
   "B cannot update A session",
-  (await as(B, `update study_sessions set status='abandoned' returning id`)).rows?.length === 0,
+  !!(await as(B, `update study_sessions set status='abandoned' returning id`)).error,
 );
-await as(A, `update study_sessions set visibility='private'`);
+ok("B cannot pause A session", !!(await as(B, `select public.pause_study_session($1)`, [sess])).error);
+ok("B cannot finish A session", !!(await as(B, `select public.finish_study_session($1)`, [sess])).error);
+ok("anon cannot start a session", !!(await as(null, `select public.start_study_session()`)).error);
+await as(A, `select public.set_study_session_visibility($1, 'private')`, [sess]);
 ok("private session hidden from friend", (await as(B, `select * from study_sessions`)).rows.length === 0);
+
+// session lifecycle (server timestamps only)
+const bs = (await as(B, `select id from public.start_study_session('free')`)).rows?.[0]?.id;
+ok("B starts a free session", !!bs);
+ok("B pauses", !(await as(B, `select public.pause_study_session($1)`, [bs])).error);
+ok("double pause rejected", !!(await as(B, `select public.pause_study_session($1)`, [bs])).error);
+ok("B resumes", !(await as(B, `select public.resume_study_session($1)`, [bs])).error);
+ok("resume when running rejected", !!(await as(B, `select public.resume_study_session($1)`, [bs])).error);
+ok("heartbeat ok", !(await as(B, `select public.heartbeat_study_session($1)`, [bs])).error);
+const f1 = (await as(B, `select status, ended_at from public.finish_study_session($1)`, [bs])).rows?.[0];
+const f2 = (await as(B, `select status, ended_at from public.finish_study_session($1)`, [bs])).rows?.[0];
+ok("finish completes the session", f1?.status === "completed" && !!f1?.ended_at);
+ok("finish is idempotent", String(f1?.ended_at) === String(f2?.ended_at));
+ok("cancel after finish rejected", !!(await as(B, `select public.cancel_study_session($1)`, [bs])).error);
+ok(
+  "duration is computed by the server and never negative",
+  (await as(B, `select public.study_session_seconds(s) as n from study_sessions s where id=$1`, [bs]))
+    .rows?.[0]?.n >= 0,
+);
+const bs2 = (await as(B, `select id from public.start_study_session('free')`)).rows?.[0]?.id;
+ok("new session after finishing", !!bs2);
+ok(
+  "cancel abandons",
+  (await as(B, `select status from public.cancel_study_session($1)`, [bs2])).rows?.[0]?.status ===
+    "abandoned",
+);
+ok("finish after cancel rejected", !!(await as(B, `select public.finish_study_session($1)`, [bs2])).error);
+const bs3 = (await as(B, `select id from public.start_study_session('free')`)).rows?.[0]?.id;
+await db.query(`update study_sessions set last_heartbeat_at = now() - interval '13 hours' where id=$1`, [
+  bs3,
+]);
+ok(
+  "stale session does not block a new start",
+  !(await as(B, `select public.start_study_session('free')`)).error,
+);
+ok(
+  "stale session was abandoned",
+  (await db.query(`select status from study_sessions where id=$1`, [bs3])).rows[0]?.status === "abandoned",
+);
+ok(
+  "cannot start on another user's subject",
+  !!(await as(C, `select public.start_study_session('free', $1)`, [subj])).error,
+);
 
 // XP
 ok(
