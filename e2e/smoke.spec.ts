@@ -22,3 +22,10 @@ for (const path of [
     await expect(page).toHaveURL(/\/connexion/);
   });
 }
+
+test("public demo shows sample screens without Supabase", async ({ page }) => {
+  await page.goto("/demo");
+  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page.getByText("Pas encore disponible")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Social" })).toBeVisible();
+});

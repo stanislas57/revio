@@ -68,11 +68,27 @@ Sur macOS 13, Playwright ne fournit plus Chromium : `PLAYWRIGHT_CHANNEL=chrome n
 
 ## Déployer sur Vercel
 
-1. Importer le dépôt GitHub dans Vercel (offre Hobby, gratuite).
-2. Ajouter `NEXT_PUBLIC_SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` dans _Environment Variables_.
-3. Ajouter l'URL Vercel dans les _Redirect URLs_ Supabase.
+Aucun `vercel.json` nécessaire : Vercel détecte Next.js et garde les réglages par défaut.
 
-Note : l'offre Hobby de Vercel est réservée à un usage non commercial. À revoir avant toute monétisation.
+1. Créer un compte Vercel **Hobby** (gratuit) avec « Continue with GitHub », puis importer
+   `stanislas57/revio` en limitant l'accès de l'app GitHub Vercel à ce seul dépôt.
+2. Chaque push sur `main` met à jour la production ; chaque autre branche et chaque pull request
+   reçoit une URL d'aperçu, publiée en commentaire sur la PR par le bot Vercel.
+3. Variables d'environnement (_Settings > Environment Variables_), à ajouter **seulement quand le projet
+   Supabase existe**, pour Production et Preview :
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (clé publishable uniquement, jamais la clé secrète)
+4. Dans Supabase (_Authentication > URL Configuration_) : `Site URL` = URL de production Vercel, et
+   ajouter aux _Redirect URLs_ `https://<prod>.vercel.app/auth/callback` ainsi que le motif des aperçus
+   (`https://*-<compte>.vercel.app/**`) pour que la confirmation d'e-mail marche aussi sur les aperçus.
+
+Sans Supabase, un aperçu affiche la page d'accueil, la connexion (message « non configuré ») et
+**`/demo`** : les écrans Focus, Social et Profil avec les données d'exemple des contrats (marqués
+« Factice », rien n'est enregistré). Les pages connectées restent fermées.
+
+Limites de l'offre Hobby : usage non commercial uniquement, un seul membre (les aperçus d'un dépôt privé
+sont protégés par « Vercel Authentication » et seul le propriétaire du compte peut les ouvrir). Passer à
+Pro est une dépense à décider entre fondateurs, pas avant une version publique ou payante.
 
 ## Documentation
 

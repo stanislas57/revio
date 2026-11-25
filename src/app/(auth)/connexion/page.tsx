@@ -20,7 +20,11 @@ export default async function ConnexionPage({ searchParams }: PageProps<"/connex
       ) : (
         <p role="alert" className="max-w-sm text-center text-sm text-muted-foreground">
           Supabase n&apos;est pas encore configuré sur cet environnement. Voir README, section « Configurer
-          Supabase ».
+          Supabase ». En attendant, la{" "}
+          <Link href="/demo" className="underline underline-offset-4">
+            démo avec des données d&apos;exemple
+          </Link>{" "}
+          montre les écrans.
         </p>
       )}
       {params.erreur === "lien" && (
