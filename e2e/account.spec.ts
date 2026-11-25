@@ -78,5 +78,6 @@ test("export contains only my data, then deleting the account removes it", async
   await page.getByLabel("Mot de passe").fill("test-password-1");
   await page.getByRole("button", { name: "Se connecter" }).click();
   await expect(page).toHaveURL(/\/connexion/);
-  await expect(page.getByRole("alert")).toBeVisible();
+  // Not getByRole("alert"): Next's route announcer has the same role once a client-side navigation happened.
+  await expect(page.locator('p[role="alert"]')).toBeVisible();
 });

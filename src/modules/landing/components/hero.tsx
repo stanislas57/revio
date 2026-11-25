@@ -19,7 +19,7 @@ export function Hero() {
           {/* TITRE PROVISOIRE : à valider avant toute mise en ligne (aucun slogan officiel). */}
           <h1
             id="hero-title"
-            className="landing-serif text-5xl leading-[1.05] text-balance sm:text-6xl lg:text-7xl"
+            className="landing-display text-5xl leading-[1.05] text-balance sm:text-6xl lg:text-7xl"
           >
             Révise mieux,
             <br />

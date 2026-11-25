@@ -4,7 +4,6 @@ import { ArrowLeft } from "lucide-react";
 import { Dialog } from "radix-ui";
 import { MockBadge } from "@/components/states/not-implemented";
 import { Button } from "@/components/ui/button";
-import { landingSerif } from "../fonts";
 import type { DemoCardId } from "../demo-data";
 import { DEMO_VIEWS } from "./demo-views";
 
@@ -18,7 +17,7 @@ export default function DemoDialog({ id, onClose }: { id: DemoCardId; onClose: (
     <Dialog.Root open onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
         <Dialog.Content
-          className={`demo-view landing-root ${landingSerif.variable} fixed inset-0 z-[100] overflow-y-auto outline-none`}
+          className={`demo-view landing-root fixed inset-0 z-[100] overflow-y-auto outline-none`}
           aria-describedby="demo-description"
         >
           <div className="mx-auto flex min-h-full max-w-4xl flex-col gap-6 px-4 py-6 sm:py-10">
@@ -32,7 +31,7 @@ export default function DemoDialog({ id, onClose }: { id: DemoCardId; onClose: (
               </Button>
             </div>
             <header className="space-y-2">
-              <Dialog.Title className="landing-serif text-4xl sm:text-5xl">{title}</Dialog.Title>
+              <Dialog.Title className="landing-display text-4xl sm:text-5xl">{title}</Dialog.Title>
               <Dialog.Description
                 id="demo-description"
                 className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground"

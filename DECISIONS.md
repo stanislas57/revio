@@ -116,6 +116,26 @@ privés ajoutés (S-15), appliqués par la base : `show_live_status` (RLS des s�
 `default_visibility` (utilisée par `start_study_session`). La valeur par défaut reste « amis » : la décision
 « privé par défaut » (point 6) reste ouverte. À valider par Charles (fichier partagé).
 
+### D-23 — Design system Revio (remplace les anciens jetons de marque)
+
+Décidé par Charles à partir des maquettes « Revio, ADN d'interface » (`design/revio-adn/`). Remplace la couleur
+de marque violet magenta (D-« design-tokens ») par la palette violet `#7B2FF7`, magenta, encre `#1A1030`, lilas,
+lime réservé aux gains d'XP et dégradé réservé à la présence des amis, aux kudos et au bouton « Réviser ».
+Polices : Space Grotesk (titres, chiffres) et Inter (texte), SIL OFL, auto-hébergées par `next/font`.
+
+- **Contrastes** : les valeurs du brief ont été mesurées ; trois paires étaient sous le seuil AA, des jetons
+  complémentaires sont ajoutés au lieu de modifier les valeurs d'origine (voir `docs/design-system.md`).
+- **Mode sombre** : le brief n'en définit pas ; il est dérivé des surfaces encre.
+- **Licences** : uniquement des sources gratuites autorisant l'usage commercial (shadcn/ui, Magic UI, Animate UI,
+  Motion Primitives, Motion, Lucide, canvas-confetti, uiverse.io, React Bits sans la version Pro). **Pas
+  d'Aceternity UI** (licence qui interdit de redistribuer le code) ni de code AGPLv3. Notices dans
+  `THIRD_PARTY_NOTICES.md`.
+- **Dépendances** (une par PR, D-20) : `motion` (PR 1), `canvas-confetti` (PR 2).
+- **Périmètre** : les écrans branchés gardent leurs routes et leurs données ; les fonctions du design qui
+  n'existent pas dans le produit (fiches, quêtes, jokers, binôme, ligue, classe, salles d'étude) sont des pages de
+  démonstration marquées `MockBadge`.
+- `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : **à confirmer par Stan** (fichier partagé).
+
 ## Ouvertes
 
 - Confirmation d'e-mail activée ou non pour la démo.

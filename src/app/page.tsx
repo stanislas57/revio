@@ -7,7 +7,6 @@ import { Pillars } from "@/modules/landing/components/pillars";
 import { Preview } from "@/modules/landing/components/preview";
 import { SiteFooter } from "@/modules/landing/components/site-footer";
 import { SiteHeader } from "@/modules/landing/components/site-header";
-import { landingSerif } from "@/modules/landing/fonts";
 import "@/modules/landing/landing.css";
 
 export const metadata: Metadata = {
@@ -17,10 +16,12 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
   return (
-    <div id="top" className={`landing-root ${landingSerif.variable}`}>
+    <div id="top" className={`landing-root`}>
       <SiteHeader />
       <main>
-        <Hero />
+        <div className="revio-grid">
+          <Hero />
+        </div>
         <Pillars />
         <Preview />
         <Offer />

@@ -31,7 +31,7 @@ export function Faq() {
   return (
     <section id="faq" aria-labelledby="faq-title" className="scroll-mt-16 border-t py-16 sm:py-24">
       <Reveal className="mx-auto max-w-3xl px-4">
-        <h2 id="faq-title" className="landing-serif text-center text-4xl sm:text-5xl">
+        <h2 id="faq-title" className="landing-display text-center text-4xl sm:text-5xl">
           Questions <em className="text-brand-text">fréquentes</em>
         </h2>
         <div className="mt-10 divide-y rounded-2xl border bg-card">

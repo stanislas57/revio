@@ -97,7 +97,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
         </div>
 
         <p
-          className="font-mono text-6xl font-bold tabular-nums sm:text-7xl"
+          className="font-heading text-6xl font-bold tabular-nums sm:text-7xl"
           role="timer"
           aria-label={planned ? "Temps restant" : "Temps écoulé"}
         >

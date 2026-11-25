@@ -1,23 +1,23 @@
 /*
  * Styles of the public landing page only (imported by src/app/page.tsx). Everything is scoped to
- * `.landing-root` or to a `landing-*` / `orbit-*` class, so no other page is affected. Colours come from
- * the project tokens (--brand…); the only own value is the warm off-white of the landing background.
+ * `.landing-root` or to a `landing-*` / `orbit-*` class, so no other page is affected. Colours, fonts and
+ * the grid background come from the Revio design system (globals.css).
  */
 
 .landing-root {
-  --landing-bg: #fafaf8;
-  background: var(--landing-bg);
+  background: var(--background);
   color: var(--foreground);
 }
-.dark .landing-root {
-  --landing-bg: var(--background);
-}
 
-/* Serif headings: Instrument Serif, with a system serif as fallback. */
-.landing-serif {
-  font-family: var(--font-landing-serif), Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  letter-spacing: -0.015em;
+/* Display headings: Space Grotesk (the design system's font for titles and figures). The accented part of a
+   title is set in the brand colour, not in italic (the font has no italic). */
+.landing-display {
+  font-family: var(--font-heading), system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.landing-display em {
+  font-style: normal;
 }
 
 /* ---- Soft appearance on scroll (the component only hides what is below the fold) ---- */

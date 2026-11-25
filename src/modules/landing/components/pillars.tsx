@@ -90,7 +90,7 @@ export function Pillars() {
     <section id="piliers" aria-labelledby="piliers-title" className="scroll-mt-16 border-t py-16 sm:py-24">
       <Reveal className="mx-auto max-w-6xl px-4">
         <div className="mx-auto max-w-2xl space-y-3 text-center">
-          <h2 id="piliers-title" className="landing-serif text-4xl sm:text-5xl">
+          <h2 id="piliers-title" className="landing-display text-4xl sm:text-5xl">
             Quatre idées, <em className="text-brand-text">une seule application</em>
           </h2>
           <p className="text-muted-foreground">
@@ -143,7 +143,7 @@ export function Pillars() {
             className="rounded-2xl border bg-card p-6 shadow-[0_18px_50px_-30px_rgb(20_20_20/0.3)] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:p-8"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="landing-serif text-3xl">{current.title}</h3>
+              <h3 className="landing-display text-3xl">{current.title}</h3>
               <Badge variant={current.status === "soon" ? "outline" : "secondary"}>
                 {STATUS_LABEL[current.status]}
               </Badge>
