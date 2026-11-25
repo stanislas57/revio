@@ -29,7 +29,8 @@ export function RevioStreakCard({
   days: number;
   weekDays: StreakDay[];
   record: number;
-  jokers: number;
+  /** Jokers left. Leave it out when the product has none: nothing is shown. */
+  jokers?: number;
   className?: string;
 }) {
   return (
@@ -43,7 +44,9 @@ export function RevioStreakCard({
             <AnimatedNumber value={days} /> jour{days > 1 ? "s" : ""}
           </p>
           <p className="text-xs text-revio-muted-on-ink">
-            Record {record} · {jokers} joker{jokers > 1 ? "s" : ""} restant{jokers > 1 ? "s" : ""}
+            Record {record} jour{record > 1 ? "s" : ""}
+            {jokers !== undefined &&
+              ` · ${jokers} joker${jokers > 1 ? "s" : ""} restant${jokers > 1 ? "s" : ""}`}
           </p>
         </div>
       </div>

@@ -142,6 +142,12 @@ Les noms `RevioStreakCard` et `RevioSubjectCard` évitent la collision avec les 
 et `SubjectCard` (academic). La logique pure (géométrie des anneaux, classement, règles « une fois par jour ») est dans
 `logic.ts`, testée dans `logic.test.ts`. Aucun composant n'appelle le serveur.
 
+## Dans l'application
+
+- **Coque** (`src/components/layout/app-shell.tsx`, `main-nav.tsx`) : `DesktopSidebar` (encre) dès 768 px avec la vraie carte de profil (pseudo, niveau, barre d'XP lus en base), `MobileDock` en dessous avec le bouton « Réviser » au milieu (il mène à Focus et porte `aria-current` sur cette page). Mêmes routes et mêmes onglets qu'avant : Accueil, Agenda, Focus, Social, Profil. La grille « petits carreaux » est un calque fixe décoratif.
+- **Écrans réels restylés, données inchangées** : Profil (anneau de niveau, carte de série avec les 7 jours de la semaine : **pas de joker**, le produit n'en a pas), Social (amis en révision avec l'anneau de présence : un tour = 1 h ; le « Bravo » prend la forme du kudos en dégradé, sa logique serveur est inchangée), Focus (séance sur fond encre ; anneau autour du minuteur quand la durée est prévue).
+- **Aperçu du nouveau design** (`/apercu`, derrière la connexion, non indexé, non présent dans la navigation) : cinq écrans de démonstration pour les fonctions des maquettes qui n'existent pas dans le produit (fiches et cartes, quêtes, jokers, binôme, ligue, classe, groupes). Données d'exemple (`src/lib/mock/revio-demo.ts`), bandeau « Pas encore disponible », boutons sans effet désactivés.
+
 ## Licences
 
 Uniquement des sources gratuites autorisant l'usage commercial, textes complets dans `THIRD_PARTY_NOTICES.md`.

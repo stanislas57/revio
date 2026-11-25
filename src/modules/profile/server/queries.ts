@@ -47,6 +47,20 @@ export async function lacksUsername(supabase: Client, userId: string): Promise<b
   return !data?.username;
 }
 
+/** What the app shell needs (menu profile card): username, display name and total XP. Two light queries. */
+export async function loadShellProfile(supabase: Client, userId: string) {
+  const [profile, stats] = await Promise.all([
+    supabase.from("profiles").select("username, display_name").eq("id", userId).maybeSingle(),
+    supabase.from("user_stats").select("total_xp").eq("user_id", userId).maybeSingle(),
+  ]);
+  if (profile.error) throw new Error("Impossible de charger ton profil.");
+  return {
+    username: profile.data?.username ?? null,
+    displayName: profile.data?.display_name ?? "",
+    totalXp: Math.max(0, Number(stats.data?.total_xp ?? 0)),
+  };
+}
+
 /** The caller's settings. */
 export async function getMySettings(): Promise<UserSettings> {
   const { supabase, user } = await requireUser();

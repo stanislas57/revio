@@ -5,6 +5,7 @@ describe("routes", () => {
   it("detects protected paths", () => {
     expect(isProtectedPath("/accueil")).toBe(true);
     expect(isProtectedPath("/focus/123")).toBe(true);
+    expect(isProtectedPath("/apercu/fiches")).toBe(true);
     expect(isProtectedPath("/connexion")).toBe(false);
     expect(isProtectedPath("/accueillir")).toBe(false);
   });

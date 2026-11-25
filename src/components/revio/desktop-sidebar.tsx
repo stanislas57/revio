@@ -1,6 +1,7 @@
 "use client";
 
 // Inspiration : shadcn/ui — Sidebar (MIT) · implémentation originale pour Revio
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,18 +14,27 @@ export function DesktopSidebar({
   activeHref,
   reviseHref,
   profile,
+  homeHref = "/",
+  reviseActive = false,
+  footer,
   className,
 }: {
   items: NavItem[];
   activeHref: string;
   reviseHref: string;
   profile: { name: string; subtitle: string; initials: string; level: number; xp: number; xpMax: number };
+  /** Where the logo leads (the app home). */
+  homeHref?: string;
+  /** The revise button leads to the current page: marks it `aria-current`. */
+  reviseActive?: boolean;
+  /** Below the profile card: account actions (sign out, theme). */
+  footer?: ReactNode;
   className?: string;
 }) {
   return (
     <aside className={cn("flex w-60 flex-col gap-5 rounded-xl bg-revio-ink p-4 text-white", className)}>
       <Link
-        href="/"
+        href={homeHref}
         className="flex min-h-11 items-center gap-3 rounded-md px-2 outline-none focus-visible:ring-[3px] focus-visible:ring-white/60"
       >
         <span
@@ -67,6 +77,7 @@ export function DesktopSidebar({
       </nav>
       <Link
         href={reviseHref}
+        aria-current={reviseActive ? "page" : undefined}
         className="bg-revio-gradient-solid flex min-h-12 items-center justify-center gap-2 rounded-pill px-4 font-semibold text-white outline-none focus-visible:ring-[3px] focus-visible:ring-white/60"
       >
         <Zap className="size-4" aria-hidden /> Réviser maintenant
@@ -86,6 +97,7 @@ export function DesktopSidebar({
         </div>
         <XpBar tone="ink" level={profile.level} xp={profile.xp} xpMax={profile.xpMax} />
       </div>
+      {footer}
     </aside>
   );
 }
