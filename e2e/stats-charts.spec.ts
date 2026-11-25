@@ -13,7 +13,14 @@ test("the statistics page shows its five graphics with a text alternative and a 
 
   // The figures are there at once; the charts below load when scrolled near.
   await expect(page.getByText("Aujourd'hui", { exact: true })).toBeVisible();
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  // The charts load when they come near the screen: scroll step by step, as a person does (a phone is taller).
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += 400) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 60));
+    }
+    window.scrollTo(0, document.body.scrollHeight);
+  });
   await expect(page.locator("figure [role=img]")).toHaveCount(5); // heatmap + 4 charts
   await expect(page.locator("figure").filter({ hasText: "Temps par jour" })).toBeVisible();
 
