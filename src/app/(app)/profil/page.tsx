@@ -1,40 +1,50 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/page-header";
-import { NotImplemented } from "@/components/states/not-implemented";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireUser } from "@/lib/auth";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LevelCard } from "@/modules/gamification/components/level-card";
+import { LevelLadder } from "@/modules/gamification/components/level-ladder";
+import { StatTiles } from "@/modules/gamification/components/stat-tiles";
+import { StreakCard } from "@/modules/gamification/components/streak-card";
+import { getMyGamification } from "@/modules/gamification/server/queries";
+import { ProfileForm } from "@/modules/profile/components/profile-form";
+import { getMyProfile } from "@/modules/profile/server/queries";
 
 export const metadata: Metadata = { title: "Profil" };
 
 export default async function ProfilPage() {
-  const { supabase, user } = await requireUser();
-  // Real data: RLS lets a signed-in user read profiles.
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("username, display_name")
-    .eq("id", user.id)
-    .maybeSingle();
+  const [profile, stats] = await Promise.all([getMyProfile(), getMyGamification()]);
 
   return (
     <>
-      <PageHeader title="Profil" />
-      <div className="space-y-4">
+      <PageHeader title="Profil" description="Ta progression et ton identité visible par tes amis." />
+      <div className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          <LevelCard level={stats.level} />
+          <StreakCard streak={stats.streak} days={stats.days} />
+        </div>
+        <StatTiles totalMinutes={stats.totalMinutes} sessions={stats.sessionsCount} />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Niveaux</CardTitle>
+            <CardDescription>Seuils provisoires, susceptibles d&apos;évoluer.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LevelLadder currentLevel={stats.level.current.number} />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Mon compte</CardTitle>
+            <CardDescription>
+              {profile.email}. Tes notes et matières ne sont jamais visibles par tes amis.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-1 text-sm">
-            <p>
-              <span className="text-muted-foreground">E-mail : </span>
-              {user.email}
-            </p>
-            <p>
-              <span className="text-muted-foreground">Pseudo : </span>
-              {profile?.username ?? "non défini"}
-            </p>
+          <CardContent>
+            <ProfileForm username={profile.username ?? ""} displayName={profile.displayName} />
           </CardContent>
         </Card>
-        <NotImplemented feature="Modification du profil (pseudo, nom affiché, avatar), niveau et trophées." />
       </div>
     </>
   );

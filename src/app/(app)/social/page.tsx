@@ -1,25 +1,107 @@
 import type { Metadata } from "next";
-import { Users } from "lucide-react";
+import Link from "next/link";
+import { UserRound, Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
-import { NotImplemented } from "@/components/states/not-implemented";
+import { Button } from "@/components/ui/button";
+import { getMyProfile } from "@/modules/profile/server/queries";
+import { AutoRefresh } from "@/modules/social/components/auto-refresh";
+import { FeedCard } from "@/modules/social/components/feed-card";
+import { FriendList } from "@/modules/social/components/friend-list";
+import { FriendRequests } from "@/modules/social/components/friend-requests";
+import { FriendSearch } from "@/modules/social/components/friend-search";
+import { FriendsStudying } from "@/modules/social/components/friends-studying";
+import { getFeed, getLiveFriends, listFriendRequests, listFriends } from "@/modules/social/server/queries";
 
 export const metadata: Metadata = { title: "Social" };
 
-export default function SocialPage() {
+export default async function SocialPage() {
+  const [profile, feed, live, friends, requests] = await Promise.all([
+    getMyProfile(),
+    getFeed(),
+    getLiveFriends(),
+    listFriends(),
+    listFriendRequests(),
+  ]);
+  const incoming = requests.filter((r) => r.direction === "incoming");
+  const outgoing = requests.filter((r) => r.direction === "outgoing");
+
   return (
     <>
+      <AutoRefresh seconds={30} />
       <PageHeader title="Social" description="Tes amis et le fil de leurs séances." />
-      <div className="space-y-4">
-        <NotImplemented
-          owner="Charles"
-          feature="Ajout d'amis, demandes d'amitié et fil automatique des séances terminées."
-        />
-        <EmptyState
-          icon={Users}
-          title="Pas encore d'amis"
-          description="Le fil ne montrera que les séances que tes amis choisissent de partager. Jamais leurs notes."
-        />
+      <div className="space-y-8">
+        {profile.needsUsername && (
+          <EmptyState
+            icon={UserRound}
+            title="Choisis ton pseudo"
+            description="Tes amis te trouvent grâce à ton pseudo. Il est nécessaire pour ajouter des amis."
+          >
+            <Button asChild>
+              <Link href="/profil">Choisir mon pseudo</Link>
+            </Button>
+          </EmptyState>
+        )}
+
+        <FriendsStudying friends={live} />
+
+        <section className="space-y-3" aria-labelledby="feed-title">
+          <h2 id="feed-title" className="text-lg font-semibold">
+            Fil d&apos;activité
+          </h2>
+          {feed.posts.length > 0 ? (
+            <div className="space-y-3">
+              {feed.posts.map((post) => (
+                <FeedCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              icon={Users}
+              title={friends.length === 0 ? "Pas encore d'amis" : "Aucune activité récente"}
+              description={
+                friends.length === 0
+                  ? "Ajoute des amis ci-dessous. Le fil ne montre que les séances qu'ils choisissent de partager. Jamais leurs notes."
+                  : "Termine une séance Focus : elle apparaîtra ici, ainsi que celles de tes amis."
+              }
+            />
+          )}
+        </section>
+
+        {incoming.length > 0 && (
+          <section className="space-y-3" aria-labelledby="received-title">
+            <h2 id="received-title" className="text-lg font-semibold">
+              Demandes reçues ({incoming.length})
+            </h2>
+            <FriendRequests requests={incoming} />
+          </section>
+        )}
+
+        <section className="space-y-3" aria-labelledby="friends-title">
+          <h2 id="friends-title" className="text-lg font-semibold">
+            Mes amis ({friends.length})
+          </h2>
+          {friends.length > 0 ? (
+            <FriendList friends={friends} />
+          ) : (
+            <p className="text-sm text-muted-foreground">Aucun ami pour l&apos;instant.</p>
+          )}
+        </section>
+
+        {!profile.needsUsername && (
+          <section className="space-y-3" aria-labelledby="add-title">
+            <h2 id="add-title" className="text-lg font-semibold">
+              Ajouter un ami
+            </h2>
+            <FriendSearch />
+            {outgoing.length > 0 && (
+              <div className="space-y-2 pt-2">
+                <h3 className="text-sm font-medium text-muted-foreground">Demandes envoyées</h3>
+                <FriendRequests requests={outgoing} />
+              </div>
+            )}
+          </section>
+        )}
       </div>
     </>
   );

@@ -102,3 +102,10 @@ S-00, S-01, S-03, S-05 (sécurité des durées et de l'XP).
 
 Hors démo (déjà marqués `NotImplemented`) : agenda, planning, trophées, classements, ligues, défis,
 notifications, paiements, connexion Google, temps réel Supabase.
+
+## Avancement apporté par la PR `charles/focus-social-v2`
+
+Statuts proposés (à confirmer en revue) : **S-05, S-06, S-08, S-09, S-10, S-11** et **C-01 à C-06, C-08** passent
+à « En review ». Non testés sur un vrai Supabase (S-03) ni via le faux serveur (S-07, pas de `rpc`).
+Restent : S-04 (onboarding du pseudo), S-07, S-12 (intégration), S-13, C-07 (landing), C-09, C-10 et suivants.
+Cette PR écrit des migrations et du serveur, ce que le backlog réservait à Stan : voir D-23.

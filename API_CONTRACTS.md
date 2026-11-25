@@ -194,6 +194,9 @@ export function elapsedSeconds(session: ActiveSession, nowMs: number): number;
 // = (pausedAt ?? now) - startedAt - pausedSeconds, jamais négatif
 ```
 
+Champs optionnels ajoutés (compatibles) : `ActiveSession.label?: string | null` et `StartSessionInput.label?: string`
+(libellé libre ≤ 60 caractères, décision D-22).
+
 ### Requêtes et actions
 
 | Nom                    | Type    | Entrée                                                                                                   | Sortie                        | Permissions         | Erreurs                                         |

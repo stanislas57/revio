@@ -24,6 +24,8 @@ export type ActiveSession = {
   pausedSeconds: number;
   plannedMinutes: number | null;
   visibility: SessionVisibility;
+  /** Free-text label chosen by the user (shown to friends when shared). Optional: absent in older fixtures. */
+  label?: string | null;
   /** Server clock when the data was read: offset = Date.parse(serverNow) - Date.now(). */
   serverNow: IsoDateTime;
 };
@@ -34,6 +36,8 @@ export type StartSessionInput = {
   /** 1 to 600. Required for countdown and pomodoro. */
   plannedMinutes?: number;
   visibility?: SessionVisibility;
+  /** Free-text label (≤ 60 characters), e.g. "Statistiques". */
+  label?: string;
 };
 
 /** Official end-of-session summary, computed by the server. */
