@@ -15,7 +15,7 @@ export function FriendList({ friends }: { friends: Friend[] }) {
             <p className="truncate text-sm font-medium">{userLabel(f.user)}</p>
             <p className="flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1">
-                <Sparkles className="size-3 text-violet-500" aria-hidden /> {f.level.name}
+                <Sparkles className="size-3 text-brand-text" aria-hidden /> {f.level.name}
               </span>
               <span className="inline-flex items-center gap-1">
                 <Flame className="size-3 text-orange-500" aria-hidden /> {f.streakDays} j

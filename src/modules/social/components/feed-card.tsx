@@ -54,7 +54,7 @@ export function FeedCard({
         <Badge variant="secondary">
           <Clock aria-hidden /> {formatMinutes(post.durationMinutes)}
         </Badge>
-        <Badge variant="secondary" className="text-violet-700 dark:text-violet-300">
+        <Badge variant="secondary" className="text-brand-text">
           <Sparkles aria-hidden /> +{post.earnedXp} XP
         </Badge>
         {post.streakDays > 0 && (

@@ -35,7 +35,7 @@ export function Preview() {
 
         <div className="mt-10 grid gap-4 lg:grid-cols-3">
           <Panel title="Fin de séance">
-            <p className="text-4xl font-bold text-violet-600 dark:text-violet-400">+95 XP</p>
+            <p className="text-4xl font-bold text-brand-text">+95 XP</p>
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li>45 min de révision : +45 XP</li>
               <li>Objectif du jour atteint : +50 XP</li>
@@ -58,7 +58,7 @@ export function Preview() {
 
           <Panel title="Niveau">
             <div className="flex items-center gap-2">
-              <Sparkles className="size-4 text-violet-500" aria-hidden />
+              <Sparkles className="size-4 text-brand-text" aria-hidden />
               <p className="font-semibold">
                 Niveau {level.current.number} · {level.current.name}
               </p>
@@ -75,7 +75,7 @@ export function Preview() {
               aria-valuenow={percent}
               className="h-2.5 w-full overflow-hidden rounded-full bg-muted"
             >
-              <div className="h-full rounded-full bg-violet-500" style={{ width: `${percent}%` }} />
+              <div className="h-full rounded-full bg-brand" style={{ width: `${percent}%` }} />
             </div>
             <p className="text-sm text-muted-foreground">
               Encore {nf.format(level.xpUntilNextLevel ?? 0)} XP pour atteindre {level.next?.name} ({percent}{" "}
@@ -87,7 +87,7 @@ export function Preview() {
             <div className="flex items-start gap-3">
               <span
                 aria-hidden
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-sm font-semibold text-white"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-semibold text-brand-foreground"
               >
                 LE
               </span>
