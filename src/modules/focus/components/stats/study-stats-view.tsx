@@ -1,11 +1,14 @@
-"use client";
-
 import { BarChart3 } from "lucide-react";
 import { EmptyState } from "@/components/states/empty-state";
 import type { StudyStats } from "../../contracts";
 import { formatMinutes } from "../../domain/format";
 import { isEmptyStats } from "../../domain/stats-view";
-import { DailyMinutesChart, DailyXpChart, SubjectMinutesChart, WeeklyMinutesChart } from "./charts";
+import {
+  LazyDailyMinutesChart,
+  LazyDailyXpChart,
+  LazySubjectMinutesChart,
+  LazyWeeklyMinutesChart,
+} from "./lazy-charts";
 import { RegularityHeatmap } from "./heatmap";
 
 function Tile({ label, value }: { label: string; value: string }) {
@@ -46,11 +49,11 @@ export function StudyStatsView({ stats }: { stats: StudyStats }) {
       <h2 className="sr-only">Graphiques</h2>
       <RegularityHeatmap daily={stats.daily} />
       <div className="grid gap-4 lg:grid-cols-2">
-        <DailyMinutesChart daily={stats.daily} />
-        <WeeklyMinutesChart daily={stats.daily} />
-        <DailyXpChart daily={stats.daily} />
+        <LazyDailyMinutesChart daily={stats.daily} />
+        <LazyWeeklyMinutesChart daily={stats.daily} />
+        <LazyDailyXpChart daily={stats.daily} />
         {stats.bySubject.length > 0 ? (
-          <SubjectMinutesChart bySubject={stats.bySubject} />
+          <LazySubjectMinutesChart bySubject={stats.bySubject} />
         ) : (
           <div className="flex items-center justify-center rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
             Aucune matière n&apos;est associée à tes séances pour l&apos;instant.
