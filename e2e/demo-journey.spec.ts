@@ -11,10 +11,10 @@ async function signUpWithUsername(page: Page, username: string) {
   await page.getByLabel("E-mail").fill(`demo-${Date.now()}-${rand()}@example.test`);
   await page.getByLabel("Mot de passe").fill("test-password-1");
   await page.getByRole("button", { name: "Créer mon compte" }).click();
-  await expect(page).toHaveURL(/\/accueil/);
-  await page.goto("/social");
+  // The username screen replaces the app until a username is chosen.
   await page.getByLabel("Pseudo").fill(username);
-  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await page.getByRole("button", { name: "Continuer" }).click();
+  await page.goto("/social");
   await expect(page.getByText("Ajouter un ami")).toBeVisible();
 }
 

@@ -35,6 +35,13 @@ export async function loadSettings(supabase: Client, userId: string): Promise<Us
   return parsed.success ? toUserSettings(parsed.data) : { ...DEFAULT_SETTINGS };
 }
 
+/** Whether the caller has not chosen a username yet (light query, used by the app layout). */
+export async function lacksUsername(supabase: Client, userId: string): Promise<boolean> {
+  const { data, error } = await supabase.from("profiles").select("username").eq("id", userId).maybeSingle();
+  if (error) throw new Error("Impossible de charger ton profil.");
+  return !data?.username;
+}
+
 /** The caller's settings. */
 export async function getMySettings(): Promise<UserSettings> {
   const { supabase, user } = await requireUser();

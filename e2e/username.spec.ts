@@ -23,16 +23,16 @@ test("Social requires a unique username", async ({ browser }) => {
   await expect(first.getByText("Choisis ton pseudo").first()).toBeVisible();
   await expect(first.getByText("Ajouter un ami")).toHaveCount(0);
   await first.getByLabel("Pseudo").fill(pseudo);
-  await first.getByRole("button", { name: "Enregistrer" }).click();
+  await first.getByRole("button", { name: "Continuer" }).click();
   await expect(first.getByText("Ajouter un ami")).toBeVisible();
 
   const second = await (await browser.newContext()).newPage();
   await signUp(second);
   await second.goto("/social");
   await second.getByLabel("Pseudo").fill(pseudo);
-  await second.getByRole("button", { name: "Enregistrer" }).click();
+  await second.getByRole("button", { name: "Continuer" }).click();
   await expect(second.getByText("Ce pseudo est déjà pris.")).toBeVisible();
   await second.getByLabel("Pseudo").fill("a!");
-  await second.getByRole("button", { name: "Enregistrer" }).click();
+  await second.getByRole("button", { name: "Continuer" }).click();
   await expect(second.getByText("Ajouter un ami")).toHaveCount(0);
 });
