@@ -1,25 +1,44 @@
 import "server-only";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { XP_RULES } from "@/modules/gamification/domain/xp";
 import type { MyProfile } from "../contracts";
+import { DEFAULT_SETTINGS, type UserSettings } from "../domain/settings";
 
 type Client = Awaited<ReturnType<typeof requireUser>>["supabase"];
 
-const settingsSchema = z.object({ timezone: z.string(), daily_goal_minutes: z.number() });
+const settingsRowSchema = z.object({
+  timezone: z.string(),
+  daily_goal_minutes: z.number(),
+  auto_post: z.boolean(),
+  share_subject_in_feed: z.boolean(),
+});
 
-/** Private settings (`user_settings`); defaults apply while the row does not exist. */
-export async function loadSettings(supabase: Client, userId: string) {
+export const SETTINGS_COLUMNS = "timezone, daily_goal_minutes, auto_post, share_subject_in_feed";
+
+export function toUserSettings(row: z.infer<typeof settingsRowSchema>): UserSettings {
+  return {
+    timezone: row.timezone,
+    dailyGoalMinutes: row.daily_goal_minutes,
+    autoPost: row.auto_post,
+    shareSubjectInFeed: row.share_subject_in_feed,
+  };
+}
+
+/** Private settings (`user_settings`, owner-only RLS); defaults apply while the row does not exist. */
+export async function loadSettings(supabase: Client, userId: string): Promise<UserSettings> {
   const { data } = await supabase
     .from("user_settings")
-    .select("timezone, daily_goal_minutes")
+    .select(SETTINGS_COLUMNS)
     .eq("user_id", userId)
     .maybeSingle();
-  const parsed = settingsSchema.safeParse(data);
-  return {
-    timezone: parsed.success ? parsed.data.timezone : "Europe/Paris",
-    dailyGoalMinutes: parsed.success ? parsed.data.daily_goal_minutes : XP_RULES.defaultDailyGoalMinutes,
-  };
+  const parsed = settingsRowSchema.safeParse(data);
+  return parsed.success ? toUserSettings(parsed.data) : { ...DEFAULT_SETTINGS };
+}
+
+/** The caller's settings. */
+export async function getMySettings(): Promise<UserSettings> {
+  const { supabase, user } = await requireUser();
+  return loadSettings(supabase, user.id);
 }
 
 /** The caller's profile. */
