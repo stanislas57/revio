@@ -72,3 +72,22 @@ export const leaderboardRowSchema = z.object({
   is_me: z.boolean(),
 });
 export type LeaderboardRow = z.infer<typeof leaderboardRowSchema>;
+export const notificationRowSchema = z.object({
+  id: z.string(),
+  kind: z.enum(["friend_request", "friend_accepted", "post_reaction"]),
+  actor_id: z.string(),
+  read_at: z.string().nullable(),
+  created_at: z.string(),
+});
+
+export const notificationPrefsRowSchema = z.object({
+  notify_friend_requests: z.boolean(),
+  notify_friend_accepted: z.boolean(),
+  notify_reactions: z.boolean(),
+});
+
+export const notificationPrefsInputSchema = z.object({
+  friendRequests: z.boolean(),
+  friendAccepted: z.boolean(),
+  reactions: z.boolean(),
+});
