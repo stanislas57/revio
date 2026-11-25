@@ -8,13 +8,16 @@ Ce fichier reproduit le texte complet des licences des composants, icônes et po
 
 À chaque nouvelle source, ajouter ici sa licence complète.
 
+**Composants inspirés, aucun code copié** : les composants de `src/components/revio/` sont des implémentations originales avec Motion ; leur en-tête cite la bibliothèque dont l'idée s'inspire (Magic UI, Motion Primitives, Animate UI, shadcn/ui, toutes MIT). Si du code est un jour copié, ajouter ici la licence complète de sa source.
+
 ## Sommaire
 
 1. shadcn/ui : MIT
 2. Motion (`motion`) : MIT
-3. Lucide (`lucide-react`) : ISC (avec une partie MIT pour les icônes dérivées de Feather)
-4. Space Grotesk : SIL Open Font License 1.1
-5. Inter : SIL Open Font License 1.1
+3. canvas-confetti : ISC
+4. Lucide (`lucide-react`) : ISC (avec une partie MIT pour les icônes dérivées de Feather)
+5. Space Grotesk : SIL Open Font License 1.1
+6. Inter : SIL Open Font License 1.1
 
 ---
 
@@ -76,6 +79,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
+
+---
+
+## canvas-confetti
+
+- **Licence** : ISC
+- **Usage dans Revio** : confettis des célébrations (une fois par événement), chargé à la demande par `src/components/revio/confetti.ts`.
+
+```text
+ISC License
+
+Copyright (c) 2020, Kiril Vatev
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ```
 
 ---
