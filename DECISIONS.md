@@ -107,6 +107,15 @@ Dedans : compte + pseudo, matières, notes, moyenne, simulateur simple, Focus (l
 rebours), XP, niveaux, streak, amis, fil des séances, réaction. Dehors (marqué `NotImplemented`) :
 agenda, planning, trophées, classements, ligues, défis, notifications, paiements, Google, temps réel.
 
+### D-22 — Suppression de compte et export sans clé secrète
+
+La suppression passe par la fonction SQL `delete_my_account()` (`security definer`, supprime la ligne
+`auth.users` de l'appelant, tout le reste part en cascade) : aucune clé `service_role` dans l'application.
+L'export est une route `GET /profil/export` en lecture seule, filtrée sur le compte connecté. Deux réglages
+privés ajoutés (S-15), appliqués par la base : `show_live_status` (RLS des séances en cours) et
+`default_visibility` (utilisée par `start_study_session`). La valeur par défaut reste « amis » : la décision
+« privé par défaut » (point 6) reste ouverte. À valider par Charles (fichier partagé).
+
 ## Ouvertes
 
 - Confirmation d'e-mail activée ou non pour la démo.

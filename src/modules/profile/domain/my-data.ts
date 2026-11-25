@@ -62,7 +62,8 @@ export const MY_DATA: readonly DataItem[] = [
   {
     id: "settings",
     label: "Tes réglages",
-    detail: "Fuseau horaire, objectif du jour, publication automatique, partage de la matière.",
+    detail:
+      "Fuseau horaire, objectif du jour, publication automatique, partage de la matière, statut « en révision », partage par défaut.",
     audience: "me",
   },
 ];

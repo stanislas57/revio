@@ -22,6 +22,10 @@ export type UserSettings = {
   autoPost: boolean;
   /** Copy the subject name into feed posts (D-16: off by default). */
   shareSubjectInFeed: boolean;
+  /** Friends see "en révision" while a shared session runs. Enforced by RLS. */
+  showLiveStatus: boolean;
+  /** New sessions are shared with friends unless the user unticks the box. */
+  shareSessionsByDefault: boolean;
 };
 
 export const DEFAULT_SETTINGS: UserSettings = {
@@ -29,6 +33,8 @@ export const DEFAULT_SETTINGS: UserSettings = {
   dailyGoalMinutes: 30,
   autoPost: true,
   shareSubjectInFeed: false,
+  showLiveStatus: true,
+  shareSessionsByDefault: true,
 };
 
 /** "Region/City" or "UTC": rejects numeric offsets, which the database does not know. */
@@ -79,6 +85,8 @@ export function settingsSchemaFor(locale: Locale) {
       .max(GOAL_MAX_MINUTES, { error: m.goalMax(GOAL_MAX_MINUTES) }),
     autoPost: z.boolean().default(DEFAULT_SETTINGS.autoPost),
     shareSubjectInFeed: z.boolean().default(DEFAULT_SETTINGS.shareSubjectInFeed),
+    showLiveStatus: z.boolean().default(DEFAULT_SETTINGS.showLiveStatus),
+    shareSessionsByDefault: z.boolean().default(DEFAULT_SETTINGS.shareSessionsByDefault),
   });
 }
 

@@ -20,6 +20,10 @@ export type SettingsMessages = {
   autoPostHelp: string;
   shareSubjectTitle: string;
   shareSubjectHelp: string;
+  shareByDefaultTitle: string;
+  shareByDefaultHelp: string;
+  liveStatusTitle: string;
+  liveStatusHelp: string;
   save: string;
   saving: string;
   saved: string;
@@ -55,6 +59,12 @@ const fr: SettingsMessages = {
   shareSubjectTitle: "Montrer le nom de ma matière",
   shareSubjectHelp:
     "Désactivé par défaut : tes amis ne voient jamais ta matière sans ton accord. Tes notes ne sont jamais partagées.",
+  shareByDefaultTitle: "Partager mes séances par défaut",
+  shareByDefaultHelp:
+    "À chaque nouvelle séance, la case « Partager avec mes amis » est cochée. Tu peux la décocher séance par séance.",
+  liveStatusTitle: "Montrer « en révision » à mes amis",
+  liveStatusHelp:
+    "Désactivé : tes amis ne voient pas que tu révises en ce moment. Ils voient seulement les séances terminées que tu as partagées.",
   save: "Enregistrer les réglages",
   saving: "Enregistrement…",
   saved: "Réglages enregistrés.",
@@ -101,6 +111,12 @@ const en: SettingsMessages = {
   shareSubjectTitle: "Show my subject name",
   shareSubjectHelp:
     "Off by default: your friends never see your subject without your consent. Your grades are never shared.",
+  shareByDefaultTitle: "Share my sessions by default",
+  shareByDefaultHelp:
+    'For each new session, the "Share with my friends" box is ticked. You can untick it session by session.',
+  liveStatusTitle: 'Show "studying now" to my friends',
+  liveStatusHelp:
+    "Off: your friends cannot see that you are studying right now. They only see the finished sessions you shared.",
   save: "Save settings",
   saving: "Saving…",
   saved: "Settings saved.",
@@ -147,6 +163,12 @@ const es: SettingsMessages = {
   shareSubjectTitle: "Mostrar el nombre de mi asignatura",
   shareSubjectHelp:
     "Desactivado por defecto: tus amigos nunca ven tu asignatura sin tu permiso. Tus notas nunca se comparten.",
+  shareByDefaultTitle: "Compartir mis sesiones por defecto",
+  shareByDefaultHelp:
+    "En cada sesión nueva, la casilla «Compartir con mis amigos» está marcada. Puedes desmarcarla sesión por sesión.",
+  liveStatusTitle: "Mostrar «estudiando ahora» a mis amigos",
+  liveStatusHelp:
+    "Desactivado: tus amigos no ven que estás estudiando ahora. Solo ven las sesiones terminadas que compartiste.",
   save: "Guardar ajustes",
   saving: "Guardando…",
   saved: "Ajustes guardados.",

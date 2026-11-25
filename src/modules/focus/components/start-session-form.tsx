@@ -19,7 +19,14 @@ const DURATIONS = [
 ];
 
 /** Preparation screen: subject (optional), duration (free or countdown) and sharing. */
-export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
+export function StartSessionForm({
+  subjects,
+  defaultShare = true,
+}: {
+  subjects: SubjectRef[];
+  /** Initial state of the sharing box (the user's default visibility). */
+  defaultShare?: boolean;
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -90,7 +97,12 @@ export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
           </fieldset>
 
           <label className="flex min-h-11 items-start gap-3 text-sm">
-            <input type="checkbox" name="share" defaultChecked className="mt-0.5 size-4 accent-primary" />
+            <input
+              type="checkbox"
+              name="share"
+              defaultChecked={defaultShare}
+              className="mt-0.5 size-4 accent-primary"
+            />
             <span>
               Partager avec mes amis
               <span className="block text-xs text-muted-foreground">

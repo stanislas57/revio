@@ -10,9 +10,7 @@ test("anonymous visitor cannot reach the data section", async ({ page }) => {
 test.describe("'Mes données' (connected)", () => {
   test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
 
-  test("explains what is kept and who sees it; export and deletion are marked as not available", async ({
-    page,
-  }) => {
+  test("explains what is kept and who sees it; export and deletion are available", async ({ page }) => {
     await newAccount(page, "priv");
     await page.goto("/profil");
     const section = page.locator("#mes-donnees");
@@ -34,12 +32,12 @@ test.describe("'Mes données' (connected)", () => {
     const friendsGroup = section.locator('section[aria-labelledby="data-friends"]');
     await expect(friendsGroup).not.toContainText(/notes|matières, /i);
 
-    // The two buttons are disabled and the section says they do not work yet.
-    await expect(section.getByRole("note")).toContainText("Pas encore disponible");
+    // Export and deletion are real now: enabled, easy to tap, and no "not available" note.
+    await expect(section.getByRole("note")).toHaveCount(0);
     for (const name of ["Exporter mes données", "Supprimer mon compte"]) {
-      const button = section.getByRole("button", { name });
-      await expect(button).toBeDisabled();
-      const box = await button.boundingBox();
+      const control = section.getByRole(name.startsWith("Exporter") ? "link" : "button", { name });
+      await expect(control).toBeEnabled();
+      const box = await control.boundingBox();
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
     }
   });

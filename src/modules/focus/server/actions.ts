@@ -55,7 +55,8 @@ export async function startSession(input: StartSessionInput): Promise<ActionResu
     p_mode: mode,
     p_subject_id: subjectId ?? null,
     p_planned_minutes: plannedMinutes ?? null,
-    p_visibility: visibility ?? "friends",
+    // null: the database applies the user's default visibility (Réglages).
+    p_visibility: visibility ?? null,
   });
   if (error) return fail(toActionError(error, MESSAGES));
   const subject = await loadSubject(supabase, subjectId ?? null);
