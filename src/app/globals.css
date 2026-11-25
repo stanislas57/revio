@@ -190,6 +190,7 @@
   --sidebar-accent-foreground: #f6f1ff;
   --sidebar-border: var(--revio-ink-3);
   --sidebar-ring: var(--revio-violet-on-ink);
+  --revio-magenta-text: #ff8cc8; /* pink for TEXT on the ink surfaces (the light value gives 2.78:1 there) */
   --brand: #a56eff;
   --brand-foreground: var(--revio-ink);
   --brand-text: var(--revio-violet-on-ink);
