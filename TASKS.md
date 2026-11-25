@@ -12,15 +12,15 @@ Source de vérité commune des deux fondateurs (et de leurs Claude Code). Mettre
 
 ## Déjà réalisé (compté dans la répartition)
 
-| ID   | Description                                                                                                                                                             | Resp. | Charge | Statut                                                            |
-| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | -----: | ----------------------------------------------------------------- |
-| D-01 | Squelette : Next.js 16, TS strict, Tailwind 4, shadcn/ui, navigation 5 onglets, thème clair/sombre, états vides/chargement/erreur, `NotImplemented`                     | S     |      3 | Terminé (main)                                                    |
-| D-02 | Auth e-mail + mot de passe (inscription, connexion, déconnexion POST, callback de confirmation, proxy, `requireUser()`, redirections sûres)                             | S     |      2 | Terminé (main), non testé sur un vrai Supabase                    |
-| D-03 | Schéma initial + RLS (profiles, subjects, grades, study_sessions, xp_transactions, friendships), tests RLS PGlite                                                       | S     |      2 | Terminé (main)                                                    |
-| D-04 | CI GitHub Actions (lint, types, format, tests, RLS, build, e2e)                                                                                                         | S     |      1 | Terminé (main)                                                    |
-| D-05 | Migration académique (UE, semestre, objectif, archivage, `kind`, coef 0, `academic_settings`, `exams`) + tests RLS                                                      | S     |      1 | En cours, branche locale `stan/academic`, non poussée             |
-| D-06 | Domaine académique pur : moyennes pondérées, groupes UE/semestre, simulateur (note requise, impossible/garanti), priorités explicables, tableau de bord, modèle BUT GEA | S     |      2 | En cours, `stan/academic` (en partie non commité), 46 tests verts |
-| D-07 | Faux serveur Supabase local (PGlite + vraies RLS, auth + PostgREST minimal, sans rpc)                                                                                   | S     |      1 | En cours, non commité                                             |
+| ID   | Description                                                                                                                                                             | Resp. | Charge | Statut                                                |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | -----: | ----------------------------------------------------- |
+| D-01 | Squelette : Next.js 16, TS strict, Tailwind 4, shadcn/ui, navigation 5 onglets, thème clair/sombre, états vides/chargement/erreur, `NotImplemented`                     | S     |      3 | Terminé (main)                                        |
+| D-02 | Auth e-mail + mot de passe (inscription, connexion, déconnexion POST, callback de confirmation, proxy, `requireUser()`, redirections sûres)                             | S     |      2 | Terminé (main), non testé sur un vrai Supabase        |
+| D-03 | Schéma initial + RLS (profiles, subjects, grades, study_sessions, xp_transactions, friendships), tests RLS PGlite                                                       | S     |      2 | Terminé (main)                                        |
+| D-04 | CI GitHub Actions (lint, types, format, tests, RLS, build, e2e)                                                                                                         | S     |      1 | Terminé (main)                                        |
+| D-05 | Migration académique (UE, semestre, objectif, archivage, `kind`, coef 0, `academic_settings`, `exams`) + tests RLS                                                      | S     |      1 | En cours, branche locale `stan/academic`, non poussée |
+| D-06 | Domaine académique pur : moyennes pondérées, groupes UE/semestre, simulateur (note requise, impossible/garanti), priorités explicables, tableau de bord, modèle BUT GEA | S     |      2 | Commité sur `stan/academic`, 46 tests verts           |
+| D-07 | Faux serveur Supabase local (PGlite + vraies RLS, auth + PostgREST minimal, sans rpc)                                                                                   | S     |      1 | En cours, non commité                                 |
 
 Total réalisé : **12 pts, tous côté Stan.**
 

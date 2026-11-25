@@ -1,8 +1,8 @@
 # Contrats de données Revio
 
 Ce document fixe les structures que les composants de Charles reçoivent et les fonctions serveur
-que Stan fournit. **Aucun de ces contrats n'est encore implémenté** (audit du 25/11/2026) : les
-types seront créés dans le code par la tâche S-01, à l'identique de ce document.
+que Stan fournit. Les **types et les fixtures existent** (branche `stan/contracts`, tâche S-01) ; **aucune fonction serveur
+n'est encore implémentée** : tout écran branché sur une fixture affiche `<MockBadge />`.
 
 ## Règles
 
@@ -16,7 +16,9 @@ types seront créés dans le code par la tâche S-01, à l'identique de ce docum
 2. **Emplacement des types** : `src/modules/<m>/contracts.ts` (Stan). Fixtures typées :
    `src/modules/<m>/fixtures.ts` (Stan, Charles peut en proposer). Les composants de Charles importent
    uniquement `contracts.ts` et `fixtures.ts`, jamais `server/` ni `domain/` (exception : helpers
-   d'affichage purs listés ci-dessous).
+   d'affichage purs listés ci-dessous). Un `contracts.ts` peut importer le `contracts.ts` d'un autre
+   module (types uniquement) : c'est la seule dépendance croisée autorisée.
+   Utilisateurs d'exemple partagés : `src/lib/fixtures.ts`.
 3. **Conventions** : propriétés en camelCase (comme `src/modules/academic/domain/types.ts`), identifiants
    UUID en `string`, dates-heures ISO 8601 UTC (`IsoDateTime`), jours calendaires `YYYY-MM-DD`
    (`IsoDate`, dans le fuseau de l'utilisateur), durées en minutes entières sauf mention « Seconds ».
@@ -91,7 +93,8 @@ export type LevelProgress = {
   progress: number; // 0..1 ; 1 au niveau 8
 };
 
-/** Fonction pure fournie par Stan (gamification/domain/levels.ts), utilisable côté client. */
+/** Fonction pure fournie par Stan (gamification/domain/levels.ts), utilisable côté client.
+ * Aussi : LEVELS, STREAK_MILESTONES, nextStreakMilestone(days). */
 export function levelProgress(totalXp: number): LevelProgress;
 ```
 
@@ -186,7 +189,7 @@ export type ActiveSession = {
   serverNow: IsoDateTime;
 };
 
-/** Pur, fourni par Stan (focus/domain/elapsed.ts). */
+/** Pur, fourni par Stan (focus/domain/elapsed.ts), avec clockOffsetMs() et formatDuration(). */
 export function elapsedSeconds(session: ActiveSession, nowMs: number): number;
 // = (pausedAt ?? now) - startedAt - pausedSeconds, jamais négatif
 ```
