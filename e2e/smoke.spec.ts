@@ -9,7 +9,14 @@ test("landing page links to login", async ({ page }) => {
   await expect(page).toHaveURL(/\/connexion/);
 });
 
-for (const path of ["/accueil", "/agenda", "/focus", "/social", "/profil"]) {
+for (const path of [
+  "/accueil",
+  "/agenda",
+  "/focus",
+  "/focus/seance/00000000-0000-0000-0000-000000000000",
+  "/social",
+  "/profil",
+]) {
   test(`anonymous visit to ${path} redirects to login`, async ({ page }) => {
     await page.goto(path);
     await expect(page).toHaveURL(/\/connexion/);

@@ -102,3 +102,15 @@ S-00, S-01, S-03, S-05 (sécurité des durées et de l'XP).
 
 Hors démo (déjà marqués `NotImplemented`) : agenda, planning, trophées, classements, ligues, défis,
 notifications, paiements, connexion Google, temps réel Supabase.
+
+## Avancement apporté par la PR `charles/focus-social-v2`
+
+Cette PR est construite **sur** `stan/focus-actions` (PR #6) et sur le moteur d'XP déjà fusionné (S-05, S-06) :
+elle ne contient aucune migration et ne touche pas au moteur.
+
+- UI : **C-01** (niveau, série), **C-02** (chronomètre), **C-03** (fin de séance), **C-04** (amis), **C-05** (fil),
+  **C-06** (amis en révision), **C-08** (bloc profil) passent à « En review ».
+- Serveur écrit par Charles (réservé à Stan dans ce backlog, à relire de près) : **S-09** (amis), **S-10**
+  (lecture du fil, réaction), **S-11** (amis en révision), lecture de `user_stats` pour le profil, `updateProfile`
+  et `getMyProfile` (S-04, hors écran d'onboarding).
+- Non testé contre un vrai Supabase (S-03) ni avec le faux serveur (S-07, pas de `rpc`) ; aucun test e2e connecté.

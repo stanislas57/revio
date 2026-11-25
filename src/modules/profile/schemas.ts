@@ -9,3 +9,20 @@ export const credentialsSchema = z.object({
 });
 
 export type Credentials = z.infer<typeof credentialsSchema>;
+
+/** Both fields are optional (partial update); at least one must be present. */
+export const profileUpdateSchema = z
+  .object({
+    username: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .regex(/^[a-z0-9_]{3,24}$/, { error: "Pseudo : 3 à 24 caractères, minuscules, chiffres ou _." })
+      .optional(),
+    displayName: z.string().trim().max(60, { error: "Nom affiché : 60 caractères maximum." }).optional(),
+  })
+  .refine((v) => v.username !== undefined || v.displayName !== undefined, { error: "Rien à modifier." })
+  .transform((v) => ({
+    ...(v.username !== undefined ? { username: v.username } : {}),
+    ...(v.displayName !== undefined ? { display_name: v.displayName } : {}),
+  }));

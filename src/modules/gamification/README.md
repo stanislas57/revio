@@ -12,4 +12,9 @@ crée la publication dans `posts`, en une transaction idempotente. Règles miroi
 `domain/xp.ts`, `domain/streak.ts`, `domain/levels.ts` (à garder synchronisées). Réglages privés :
 `user_settings` (fuseau, objectif du jour, publication auto, partage de la matière).
 
-État : moteur SQL et règles pures testés ; Server Actions et UI à faire.
+UI et lecture (PR `charles/focus-social-v2`) : `LevelCard`, `LevelLadder`, `StreakCard` (grille de 28 jours), `StatTiles`,
+`ProgressBar` ; `server/queries.ts` → `getMyGamification()` (lit `user_stats` et les séances terminées) ;
+`domain/streak-display.ts` (affichage : série encore active, grille de jours).
+
+État : moteur SQL et règles pures testés ; UI faite, non testée dans un navigateur. Pas encore : trophées, classements,
+défis, ligues. `ProgressBar` est local (le registre shadcn n'était pas joignable).

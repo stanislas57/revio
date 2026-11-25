@@ -13,4 +13,11 @@ Serveur (pour l'UI de Charles) : `server/queries.ts` → `getActiveSession()` ; 
 `startSession`, `pauseSession`, `resumeSession`, `cancelSession`, `heartbeatSession`, `finishSession`
 (renvoient `ActionResult<…>`, voir `contracts.ts`). Temps affiché : `domain/elapsed.ts`.
 
-État : moteur SQL, XP et actions serveur faits et testés ; UI (Charles) à faire.
+UI (PR `charles/focus-social-v2`) : formulaire de démarrage (matière facultative, libre ou compte à rebours, partage),
+chrono calculé depuis les horodatages serveur (`elapsedSeconds` + `clockOffsetMs`), pause / reprise / abandon / fin,
+heartbeat toutes les 60 s, récapitulatif de fin de séance (`/focus/seance/[id]`), séances récentes. Lectures ajoutées dans
+`server/queries.ts` : `getRecentSessions`, `getSessionResult`, `listMySubjects`.
+
+État : moteur SQL, XP et actions serveur faits et testés ; UI faite, **non testée** dans un navigateur ni sur un vrai
+Supabase. Pas de mode Pomodoro automatique. Le partage de la matière dans le fil est un réglage (`user_settings`) sans
+écran pour le moment.
