@@ -21,8 +21,17 @@ export async function signIn(_prev: AuthFormState, formData: FormData): Promise<
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
-  // Generic message: never reveal whether an account exists.
-  if (error) return { error: "E-mail ou mot de passe incorrect, ou e-mail non confirmé." };
+  if (error) {
+    // Wrong credentials (or unconfirmed e-mail): generic message, never reveal whether an account exists.
+    if (error.status === 400 && error.code !== "validation_failed") {
+      return { error: "E-mail ou mot de passe incorrect, ou e-mail non confirmé." };
+    }
+    // Anything else is a service/configuration problem: surface a non-sensitive code so it can be diagnosed.
+    console.error("signIn failed", { status: error.status, code: error.code });
+    return {
+      error: `Connexion indisponible pour le moment (code ${error.status ?? "réseau"}/${error.code ?? "inconnu"}).`,
+    };
+  }
 
   redirect(safeNextPath(formData.get("suite")?.toString()));
 }
