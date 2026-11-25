@@ -4,7 +4,9 @@ import { refresh } from "next/cache";
 import { fail, succeed, toActionError } from "@/lib/action-errors";
 import type { ActionResult } from "@/lib/contracts";
 import { requireUser } from "@/lib/auth";
-import { settingsSchema, type UpdateSettingsInput, type UserSettings } from "../domain/settings";
+import { settingsSchemaFor, type UpdateSettingsInput, type UserSettings } from "../domain/settings";
+import { SETTINGS_MESSAGES } from "../domain/settings-messages";
+import { getLocale } from "./locale";
 import { SETTINGS_COLUMNS, toUserSettings } from "./queries";
 import { z } from "zod";
 
@@ -21,12 +23,14 @@ const resultSchema = z.object({
  * only lets a user write their own row. No migration: `user_settings` already exists.
  */
 export async function updateSettings(input: UpdateSettingsInput): Promise<ActionResult<UserSettings>> {
-  const parsed = settingsSchema.safeParse(input);
+  const locale = await getLocale();
+  const m = SETTINGS_MESSAGES[locale].errors;
+  const parsed = settingsSchemaFor(locale).safeParse(input);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
     return fail({
       code: "validation",
-      message: issue?.message ?? "Réglages invalides.",
+      message: issue?.message ?? m.invalid,
       ...(issue ? { fields: { [String(issue.path[0] ?? "")]: issue.message } } : {}),
     });
   }
@@ -49,14 +53,14 @@ export async function updateSettings(input: UpdateSettingsInput): Promise<Action
   if (error) {
     return fail(
       toActionError(error, {
-        "22023": "Fuseau horaire inconnu.",
-        "23514": "Réglage hors des valeurs autorisées.",
+        "22023": m.timezoneUnknown,
+        "23514": m.outOfRange,
       }),
     );
   }
 
   const row = resultSchema.safeParse(data);
-  if (!row.success) return fail({ code: "internal", message: "Réponse inattendue du serveur." });
+  if (!row.success) return fail({ code: "internal", message: m.unexpected });
   refresh();
   return succeed(toUserSettings(row.data));
 }

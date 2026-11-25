@@ -5,11 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
+import { DEFAULT_LOCALE, type Locale } from "../domain/locale";
 import { GOAL_MAX_MINUTES, GOAL_MIN_MINUTES, timezoneChoices, type UserSettings } from "../domain/settings";
+import { SETTINGS_MESSAGES } from "../domain/settings-messages";
 import { updateSettings } from "../server/settings-actions";
 
 type Props = {
   settings: UserSettings;
+  /** Language of the screen; French by default. */
+  locale?: Locale;
   /** Replaceable in tests and demos; defaults to the real Server Action. */
   onSave?: typeof updateSettings;
 };
@@ -47,13 +51,15 @@ function Toggle({
   );
 }
 
-export function SettingsForm({ settings, onSave = updateSettings }: Props) {
+export function SettingsForm({ settings, locale = DEFAULT_LOCALE, onSave = updateSettings }: Props) {
+  const m = SETTINGS_MESSAGES[locale];
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, startTransition] = useTransition();
-  const zones = timezoneChoices(settings.timezone);
+  const zones = timezoneChoices(settings.timezone, locale);
 
   return (
     <form
+      lang={locale}
       className="space-y-6"
       noValidate
       onSubmit={(e) => {
@@ -70,14 +76,12 @@ export function SettingsForm({ settings, onSave = updateSettings }: Props) {
             autoPost: form.get("autoPost") === "on",
             shareSubjectInFeed: form.get("shareSubjectInFeed") === "on",
           });
-          setMessage(
-            res.ok ? { ok: true, text: "Réglages enregistrés." } : { ok: false, text: res.error.message },
-          );
+          setMessage(res.ok ? { ok: true, text: m.saved } : { ok: false, text: res.error.message });
         });
       }}
     >
       <div className="space-y-2">
-        <Label htmlFor="timezone">Fuseau horaire</Label>
+        <Label htmlFor="timezone">{m.timezone}</Label>
         <NativeSelect
           id="timezone"
           name="timezone"
@@ -90,13 +94,11 @@ export function SettingsForm({ settings, onSave = updateSettings }: Props) {
             </option>
           ))}
         </NativeSelect>
-        <p className="text-sm text-muted-foreground">
-          Tes jours (série, objectif du jour) commencent et finissent à minuit dans ce fuseau.
-        </p>
+        <p className="text-sm text-muted-foreground">{m.timezoneHelp}</p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="dailyGoalMinutes">Objectif du jour (minutes)</Label>
+        <Label htmlFor="dailyGoalMinutes">{m.goal}</Label>
         <Input
           id="dailyGoalMinutes"
           name="dailyGoalMinutes"
@@ -110,26 +112,25 @@ export function SettingsForm({ settings, onSave = updateSettings }: Props) {
           className="h-11 w-32"
         />
         <p id="goal-help" className="text-sm text-muted-foreground">
-          Entre {GOAL_MIN_MINUTES} et {GOAL_MAX_MINUTES} minutes. L&apos;atteindre rapporte un bonus d&apos;XP
-          une fois par jour.
+          {m.goalHelp(GOAL_MIN_MINUTES, GOAL_MAX_MINUTES)}
         </p>
       </div>
 
       <fieldset className="space-y-1">
-        <legend className="mb-1 text-sm font-medium">Partage avec tes amis</legend>
+        <legend className="mb-1 text-sm font-medium">{m.sharingLegend}</legend>
         <Toggle
           id="autoPost"
           name="autoPost"
           defaultChecked={settings.autoPost}
-          title="Publier mes séances dans le fil"
-          help="Quand une séance partagée se termine, elle apparaît dans le fil de tes amis."
+          title={m.autoPostTitle}
+          help={m.autoPostHelp}
         />
         <Toggle
           id="shareSubjectInFeed"
           name="shareSubjectInFeed"
           defaultChecked={settings.shareSubjectInFeed}
-          title="Montrer le nom de ma matière"
-          help="Désactivé par défaut : tes amis ne voient jamais ta matière sans ton accord. Tes notes ne sont jamais partagées."
+          title={m.shareSubjectTitle}
+          help={m.shareSubjectHelp}
         />
       </fieldset>
 
@@ -141,11 +142,9 @@ export function SettingsForm({ settings, onSave = updateSettings }: Props) {
         )}
       </div>
       <Button type="submit" size="lg" disabled={pending} className="min-h-11 w-full sm:w-auto">
-        {pending ? "Enregistrement…" : "Enregistrer les réglages"}
+        {pending ? m.saving : m.save}
       </Button>
-      <p className="text-xs text-muted-foreground">
-        Les réglages s&apos;appliquent à ta prochaine séance terminée.
-      </p>
+      <p className="text-xs text-muted-foreground">{m.appliesNext}</p>
     </form>
   );
 }

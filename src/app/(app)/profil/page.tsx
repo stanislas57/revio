@@ -8,18 +8,23 @@ import { StatTiles } from "@/modules/gamification/components/stat-tiles";
 import { StreakCard } from "@/modules/gamification/components/streak-card";
 import { getMyGamification } from "@/modules/gamification/server/queries";
 import { ProfileForm } from "@/modules/profile/components/profile-form";
+import { LanguageSelector } from "@/modules/profile/components/language-selector";
 import { SettingsForm } from "@/modules/profile/components/settings-form";
+import { SETTINGS_MESSAGES } from "@/modules/profile/domain/settings-messages";
+import { getLocale } from "@/modules/profile/server/locale";
 import { getMyProfile, getMySettings } from "@/modules/profile/server/queries";
 import { SectionLinks } from "@/modules/social/components/section-links";
 
 export const metadata: Metadata = { title: "Profil" };
 
 export default async function ProfilPage() {
-  const [profile, stats, settings] = await Promise.all([
+  const [profile, stats, settings, locale] = await Promise.all([
     getMyProfile(),
     getMyGamification(),
     getMySettings(),
+    getLocale(),
   ]);
+  const m = SETTINGS_MESSAGES[locale];
 
   return (
     <>
@@ -74,16 +79,14 @@ export default async function ProfilPage() {
           </CardContent>
         </Card>
 
-        <Card id="reglages" className="scroll-mt-20">
+        <Card id="reglages" lang={locale} className="scroll-mt-20">
           <CardHeader>
-            <CardTitle>Réglages</CardTitle>
-            <CardDescription>
-              Privés : seuls toi et le serveur y avez accès. Ta matière n&apos;est jamais partagée sans ton
-              accord.
-            </CardDescription>
+            <CardTitle>{m.title}</CardTitle>
+            <CardDescription>{m.description}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <SettingsForm settings={settings} />
+          <CardContent className="space-y-6">
+            <LanguageSelector locale={locale} />
+            <SettingsForm settings={settings} locale={locale} />
           </CardContent>
         </Card>
       </div>

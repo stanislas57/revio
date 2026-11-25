@@ -15,7 +15,10 @@ test("academic flow: subject, grade, exam, simulator, delete", async ({ page }) 
     .fill(`e2e-${Date.now()}-${Math.random().toString(36).slice(2)}@example.test`);
   await page.getByLabel("Mot de passe").fill("test-password-1");
   await page.getByRole("button", { name: "Créer mon compte" }).click();
-  await expect(page).toHaveURL(/\/accueil/);
+  // The username screen replaces the app until a username is chosen.
+  await page.getByLabel("Pseudo").fill(`acad_${Math.random().toString(36).slice(2, 10)}`);
+  await page.getByRole("button", { name: "Continuer" }).click();
+  await expect(page.getByText(/convention Revio/).first()).toBeVisible();
 
   // Convention Revio is always stated.
   await expect(page.getByText(/convention Revio/).first()).toBeVisible();

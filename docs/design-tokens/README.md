@@ -1,16 +1,16 @@
-# Couleur de marque : indigo / violet et blanc
+# Couleur de marque : violet magenta et blanc
 
 Jetons dans `src/app/globals.css`, en clair (`:root`) et en sombre (`.dark`). Ils sont disponibles comme classes
 Tailwind : `bg-brand`, `text-brand-foreground`, `text-brand-text`, `bg-brand-soft`, `text-brand-soft-foreground`,
 `border-brand`.
 
-| Jeton                   | Usage                                                 | Clair                        | Sombre                       |
-| ----------------------- | ----------------------------------------------------- | ---------------------------- | ---------------------------- |
-| `brand`                 | Aplats : barres de progression, avatars, pastilles    | `oklch(0.511 0.262 276.966)` | `oklch(0.58 0.24 277)`       |
-| `brand-foreground`      | Texte et icônes posés sur `brand` (blanc)             | `oklch(1 0 0)`               | `oklch(1 0 0)`               |
-| `brand-text`            | Texte et icônes de marque sur le fond de la page      | `oklch(0.457 0.24 277.023)`  | `oklch(0.785 0.115 274.713)` |
-| `brand-soft`            | Fond teinté (niveau actuel, avis de montée de niveau) | `oklch(0.962 0.018 272.314)` | `oklch(0.3 0.09 277)`        |
-| `brand-soft-foreground` | Texte sur `brand-soft`                                | `oklch(0.359 0.144 278.697)` | `oklch(0.9 0.05 275)`        |
+| Jeton                   | Usage                                                 | Clair                   | Sombre                |
+| ----------------------- | ----------------------------------------------------- | ----------------------- | --------------------- |
+| `brand`                 | Aplats : barres de progression, avatars, pastilles    | `oklch(0.5 0.24 325)`   | `oklch(0.6 0.25 325)` |
+| `brand-foreground`      | Texte et icônes posés sur `brand` (blanc)             | `oklch(1 0 0)`          | `oklch(1 0 0)`        |
+| `brand-text`            | Texte et icônes de marque sur le fond de la page      | `oklch(0.46 0.23 325)`  | `oklch(0.8 0.12 325)` |
+| `brand-soft`            | Fond teinté (niveau actuel, avis de montée de niveau) | `oklch(0.965 0.02 325)` | `oklch(0.3 0.1 325)`  |
+| `brand-soft-foreground` | Texte sur `brand-soft`                                | `oklch(0.37 0.15 325)`  | `oklch(0.9 0.05 325)` |
 
 `--primary` (boutons shadcn) n'est **pas** modifié : les composants de Stan restent neutres. Pour appliquer la marque aux
 boutons, il suffirait de pointer `--primary` et `--primary-foreground` sur `--brand` et `--brand-foreground`.
@@ -43,3 +43,7 @@ passe sous 4,5 ; plus foncé, la barre se confond avec sa piste (sous 3).
 Tous les `violet-*` et le dégradé `fuchsia` (8 fichiers : fin de séance, avatars, carte de niveau, échelle des niveaux,
 amis, fil, aperçus de la landing page). Les `pink-*` (bouton « Bravo », pilier social de la landing page) restent :
 ce sont des roses, pas des violets.
+
+## Mise à jour : violet magenta (teinte 325)
+
+La teinte passe de l'indigo (277) au violet magenta (325). Les boutons principaux, l'anneau de focus et l'élément actif du menu latéral (`--primary`, `--ring`, `--sidebar-primary`) utilisent désormais `brand` : avant, ils restaient noirs. Contrastes remesurés, tous au-dessus des seuils AA : texte blanc sur la marque 6,81 (clair) et 4,54 (sombre) ; aplat de marque contre la piste de barre 6,25 (clair) et 3,33 (sombre).
