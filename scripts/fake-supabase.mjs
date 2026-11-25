@@ -207,6 +207,10 @@ function buildWhere(url, params) {
     if (op in OPS) {
       params.push(value);
       clauses.push(`${column} ${OPS[op]} $${params.length}`);
+    } else if (op === "ilike" || op === "like") {
+      // PostgREST uses * as the URL wildcard; SQL % is also accepted as sent by the app.
+      params.push(value.replace(/\*/g, "%"));
+      clauses.push(`${column} ${op} $${params.length}`);
     } else if (op === "is") {
       const v = { null: "null", true: "true", false: "false" }[value];
       if (!v) throw new RestError(400, "PGRST100", `Unsupported is.${value}`);
