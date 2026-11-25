@@ -575,6 +575,45 @@ ok(
     (await as(E, `select * from user_settings where user_id='${D}'`)).rows.length === 0,
   );
 
+  // weekly leaderboard (S-19): XP only, friends only, opt-out enforced by the database
+  await db.exec(
+    `insert into xp_transactions (user_id, amount, reason, idempotency_key) values
+       ('${D}', 120, 'session_completed', 'lb:d1'),
+       ('${E}', 80, 'session_completed', 'lb:e1');
+     insert into xp_transactions (user_id, amount, reason, idempotency_key, created_at) values
+       ('${E}', 5000, 'session_completed', 'lb:e-old', now() - interval '30 days');`,
+  );
+  const board = (await as(D, `select * from weekly_leaderboard() order by rank`)).rows ?? [];
+  ok("board has me and my friend only", board.length === 2);
+  ok(
+    "board ranks by XP of the week (old XP ignored)",
+    board[0]?.user_id === D && board[0]?.weekly_xp === 120 && board[1]?.weekly_xp === 80,
+  );
+  ok("board flags me", board[0]?.is_me === true && board[1]?.is_me === false);
+  ok(
+    "board exposes no grade or subject column",
+    !Object.keys(board[0] ?? {}).some((k) => /grade|subject|average|note/.test(k)),
+  );
+  ok("anon cannot read the board", !!(await as(null, `select * from weekly_leaderboard()`)).error);
+  ok(
+    "a non-friend sees only themselves",
+    ((await as(C, `select * from weekly_leaderboard()`)).rows ?? []).length === 1,
+  );
+  await as(E, `insert into user_settings (show_in_leaderboard) values (false)`);
+  ok(
+    "a friend who left disappears from my board",
+    ((await as(D, `select * from weekly_leaderboard()`)).rows ?? []).every((r) => r.user_id !== E),
+  );
+  ok(
+    "someone who left sees no board",
+    ((await as(E, `select * from weekly_leaderboard()`)).rows ?? []).length === 0,
+  );
+  await as(E, `update user_settings set show_in_leaderboard = true`);
+  ok(
+    "rejoining brings them back",
+    ((await as(D, `select * from weekly_leaderboard()`)).rows ?? []).length === 2,
+  );
+
   // account deletion: everything of D goes, E stays
   await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);
   await as(D, `insert into exams (title, exam_on) values ('Partiel', '2026-12-10')`);
