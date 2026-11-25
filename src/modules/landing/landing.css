@@ -1,20 +1,27 @@
 /*
  * Styles of the public landing page only (imported by src/app/page.tsx). Everything is scoped to
- * `.landing-root` or to a `landing-*` / `orbit-*` class, so no other page is affected. Colours, fonts and
- * the grid background come from the Revio design system (globals.css).
+ * `.landing-root` or to a `landing-*` / `orbit-*` class, so no other page is affected. Colours and fonts
+ * come from the charter tokens (globals.css): the landing sits on Cream White, the hero fades to Soft Purple.
  */
 
 .landing-root {
-  background: var(--background);
+  background: var(--revio-landing);
   color: var(--foreground);
 }
+.landing-header {
+  background: color-mix(in oklab, var(--revio-landing) 85%, transparent);
+}
+/* The charter's hero: cream at the top, a soft purple wash towards the bottom. */
+.landing-hero-bg {
+  background: linear-gradient(180deg, var(--revio-landing) 0%, var(--revio-primary-light) 100%);
+}
 
-/* Display headings: Space Grotesk (the design system's font for titles and figures). The accented part of a
-   title is set in the brand colour, not in italic (the font has no italic). */
+/* Display headings of the charter: Inter 900, very tight. The accented part of a title is set in the brand
+   colour, not in italic. */
 .landing-display {
   font-family: var(--font-heading), system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 900;
+  letter-spacing: -0.05em;
 }
 .landing-display em {
   font-style: normal;

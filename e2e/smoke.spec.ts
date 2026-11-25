@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // routes are never reachable anonymously.
 test("landing page links to login", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1, name: /Révise mieux/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Moins de stress/ })).toBeVisible();
   await page
     .getByRole("link", { name: /se connecter/i })
     .first()

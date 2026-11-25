@@ -19,7 +19,7 @@ export default function LandingPage() {
     <div id="top" className={`landing-root`}>
       <SiteHeader />
       <main>
-        <div className="revio-grid">
+        <div className="landing-hero-bg">
           <Hero />
         </div>
         <Pillars />

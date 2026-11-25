@@ -33,8 +33,14 @@ test.describe("landing page", () => {
 
   test("account buttons lead to the login page", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: "Créer mon compte" }).first().click();
+    await page.getByRole("link", { name: "Rejoindre la bêta" }).first().click();
     await expect(page).toHaveURL(/\/connexion/);
+  });
+
+  test("Explorer la démo leads to the public demo", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("link", { name: "Explorer la démo" }).click();
+    await expect(page).toHaveURL(/\/demo$/);
   });
 
   test("FAQ answers open with the keyboard", async ({ page }) => {
@@ -263,11 +269,9 @@ test.describe("landing hero and demo views", () => {
     await expect(page.locator("#offre")).toContainText("Envisagé");
   });
 
-  test("Créer mon compte and Se connecter, in the hero and the header, lead to the login page", async ({
-    page,
-  }) => {
+  test("Rejoindre la bêta, Accès bêta and Se connecter lead to the login page", async ({ page }) => {
     await page.goto("/");
-    for (const name of ["Créer mon compte", "Se connecter", "Créer un compte"]) {
+    for (const name of ["Rejoindre la bêta", "Se connecter", "Accès bêta"]) {
       const links = page.getByRole("link", { name });
       expect(await links.count(), name).toBeGreaterThan(0);
       for (const href of await links.evaluateAll((els) => els.map((e) => e.getAttribute("href")))) {

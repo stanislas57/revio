@@ -12,7 +12,7 @@ export function CtaBand() {
           Crée un compte avec ton adresse e-mail. Aucun paiement n&apos;est demandé.
         </p>
         <Button asChild size="lg" className="w-full sm:w-auto">
-          <Link href="/connexion">Créer mon compte</Link>
+          <Link href="/connexion">Rejoindre la bêta</Link>
         </Button>
       </div>
     </section>
