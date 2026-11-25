@@ -14,6 +14,7 @@ import {
   statsRowSchema,
   uuidSchema,
 } from "../schemas";
+import { USERNAME_REQUIRED, hasUsername } from "./guards";
 import { toFriend, toPublicUser } from "./mappers";
 
 /** Search by username prefix (3 to 24 characters). Never returns the caller. */
@@ -22,6 +23,7 @@ export async function searchUsers(query: string): Promise<ActionResult<UserSearc
   if (!q.success)
     return fail({ code: "validation", message: q.error.issues[0]?.message ?? "Recherche invalide." });
   const { supabase, user } = await requireUser();
+  if (!(await hasUsername(supabase, user.id))) return fail({ code: "forbidden", message: USERNAME_REQUIRED });
 
   // "_" is a LIKE wildcard: escape it so the prefix is literal.
   const pattern = `${q.data.replace(/_/g, "\\_")}%`;
@@ -57,6 +59,7 @@ export async function sendFriendRequest(userId: string): Promise<ActionResult<Fr
   if (!id.success) return fail({ code: "validation", message: "Utilisateur invalide." });
   const { supabase, user } = await requireUser();
   if (id.data === user.id) return fail({ code: "forbidden", message: "Tu ne peux pas t'ajouter toi-même." });
+  if (!(await hasUsername(supabase, user.id))) return fail({ code: "forbidden", message: USERNAME_REQUIRED });
 
   const { data, error } = await supabase
     .from("friendships")
