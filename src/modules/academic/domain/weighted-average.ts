@@ -8,8 +8,10 @@
  * Convention:
  *  1. Each grade is normalised to a /20 scale: value / maxValue * 20.
  *  2. Subject average = Σ(normalised × gradeCoef) / Σ(gradeCoef).
- *  3. Overall average  = Σ(subjectAvg × subjectCoef) / Σ(subjectCoef),
- *     over subjects that have at least one grade.
+ *  3. Group average (UE, semester, overall) = Σ(subjectAvg × subjectCoef) / Σ(subjectCoef),
+ *     over subjects that have an average and a coefficient > 0.
+ *  4. A coefficient of 0 is allowed: the item is kept for information but
+ *     weighs nothing. If every weight is 0, there is no average (null).
  *  No rounding here: rounding is a display concern.
  */
 
@@ -41,34 +43,78 @@ function assertGrade({ value, maxValue = DEFAULT_SCALE, coefficient = 1 }: Grade
   if (maxValue <= 0) throw new InvalidGradeError("Le barème doit être strictement positif.");
   if (value < 0 || value > maxValue)
     throw new InvalidGradeError("La note doit être comprise entre 0 et le barème.");
-  if (coefficient <= 0) throw new InvalidGradeError("Le coefficient doit être strictement positif.");
+  if (coefficient < 0) throw new InvalidGradeError("Le coefficient ne peut pas être négatif.");
 }
 
-/** Returns the weighted average on /20, or null when there is no grade. */
+function assertSubjectCoefficient(coefficient: number): void {
+  if (!Number.isFinite(coefficient) || coefficient < 0) {
+    throw new InvalidGradeError("Le coefficient de matière doit être un nombre positif ou nul.");
+  }
+}
+
+/** Grade value converted to the /20 scale. */
+export function normalise(grade: GradeInput): number {
+  assertGrade(grade);
+  return (grade.value / (grade.maxValue ?? DEFAULT_SCALE)) * DEFAULT_SCALE;
+}
+
+/** Returns the weighted average on /20, or null when no grade carries weight. */
 export function weightedAverage(grades: readonly GradeInput[]): number | null {
   let weightedSum = 0;
   let totalWeight = 0;
   for (const grade of grades) {
-    assertGrade(grade);
-    const { value, maxValue = DEFAULT_SCALE, coefficient = 1 } = grade;
-    weightedSum += (value / maxValue) * DEFAULT_SCALE * coefficient;
+    const normalised = normalise(grade);
+    const coefficient = grade.coefficient ?? 1;
+    weightedSum += normalised * coefficient;
     totalWeight += coefficient;
   }
   return totalWeight === 0 ? null : weightedSum / totalWeight;
 }
 
-/** Overall average on /20 across subjects, or null when no subject has grades. */
+/** Weighted average of subject averages, or null when no subject counts. */
 export function overallAverage(subjects: readonly SubjectInput[]): number | null {
   let weightedSum = 0;
   let totalWeight = 0;
   for (const subject of subjects) {
-    if (!Number.isFinite(subject.coefficient) || subject.coefficient <= 0) {
-      throw new InvalidGradeError("Le coefficient de matière doit être strictement positif.");
-    }
+    assertSubjectCoefficient(subject.coefficient);
     const average = weightedAverage(subject.grades);
-    if (average === null) continue;
+    if (average === null || subject.coefficient === 0) continue;
     weightedSum += average * subject.coefficient;
     totalWeight += subject.coefficient;
   }
   return totalWeight === 0 ? null : weightedSum / totalWeight;
+}
+
+export type GroupAverage = {
+  /** Group label, or null for subjects without a group. */
+  key: string | null;
+  average: number | null;
+  subjectIds: string[];
+  /** Sum of coefficients of the subjects that have an average. */
+  countedCoefficient: number;
+};
+
+/**
+ * Averages per group (UE, semester...), in order of first appearance.
+ * Subjects without a group are gathered under key null.
+ */
+export function groupAverages<S extends SubjectInput>(
+  subjects: readonly S[],
+  groupOf: (subject: S) => string | null | undefined,
+): GroupAverage[] {
+  const groups = new Map<string | null, S[]>();
+  for (const subject of subjects) {
+    const key = groupOf(subject)?.trim() || null;
+    const list = groups.get(key) ?? [];
+    list.push(subject);
+    groups.set(key, list);
+  }
+  return [...groups.entries()].map(([key, list]) => ({
+    key,
+    average: overallAverage(list),
+    subjectIds: list.map((s) => s.id),
+    countedCoefficient: list
+      .filter((s) => s.coefficient > 0 && weightedAverage(s.grades) !== null)
+      .reduce((sum, s) => sum + s.coefficient, 0),
+  }));
 }

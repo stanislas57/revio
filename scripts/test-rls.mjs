@@ -7,20 +7,10 @@
 import { PGlite } from "@electric-sql/pglite";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { SUPABASE_SHIM_SQL } from "./pglite-supabase-shim.mjs";
 
 const db = new PGlite();
-const shim = `
-create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
-create schema auth;
-create table auth.users (id uuid primary key, email text, raw_user_meta_data jsonb default '{}');
-create function auth.uid() returns uuid language sql stable as $$
-  select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
-grant usage on schema public, auth to anon, authenticated, service_role;
-grant execute on function auth.uid() to anon, authenticated;
-alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
-alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
-`;
-await db.exec(shim);
+await db.exec(SUPABASE_SHIM_SQL);
 const dir = process.argv[2] ?? "supabase/migrations";
 for (const file of readdirSync(dir)
   .filter((f) => f.endsWith(".sql"))
@@ -157,9 +147,75 @@ ok("duplicate XP grant rejected (idempotent)", !!dup);
 ok("A reads own XP", (await as(A, `select * from xp_transactions`)).rows.length === 1);
 ok("B cannot read A XP", (await as(B, `select * from xp_transactions`)).rows.length === 0);
 
+// academic module: settings, exams, new subject/grade fields
+ok("A sets own target", !(await as(A, `insert into academic_settings (target_average) values (12)`)).error);
+ok("B cannot read A target", (await as(B, `select * from academic_settings`)).rows.length === 0);
+ok(
+  "B cannot write a target for A",
+  !!(await as(B, `insert into academic_settings (user_id, target_average) values ('${A}', 5)`)).error,
+);
+ok(
+  "target above 20 rejected",
+  !!(await as(B, `insert into academic_settings (target_average) values (21)`)).error,
+);
+ok(
+  "A creates subject with UE, semester, target, coef 0",
+  !(
+    await as(
+      A,
+      `insert into subjects (name, coefficient, teaching_unit, semester, target_average) values ('Option', 0, 'UE 1', 'S1', 11)`,
+    )
+  ).error,
+);
+ok(
+  "A creates grade with kind and coef 0",
+  !(
+    await as(A, `insert into grades (subject_id, value, coefficient, kind) values ($1, 12, 0, 'oral')`, [
+      subj,
+    ])
+  ).error,
+);
+ok(
+  "unknown grade kind rejected",
+  !!(await as(A, `insert into grades (subject_id, value, kind) values ($1, 12, 'magic')`, [subj])).error,
+);
+ok(
+  "B cannot update A subject",
+  (await as(B, `update subjects set name='hack' returning id`)).rows?.length === 0,
+);
+ok("B cannot delete A grades", (await as(B, `delete from grades returning id`)).rows?.length === 0);
+ok(
+  "A cannot move own grade to B",
+  !!(await as(A, `update grades set user_id='${B}' where subject_id=$1`, [subj])).error ||
+    (await as(B, `select * from grades`)).rows.length === 0,
+);
+ok(
+  "A creates exam on own subject",
+  !(
+    await as(A, `insert into exams (subject_id, title, exam_on) values ($1, 'Partiel', '2026-12-10')`, [subj])
+  ).error,
+);
+ok(
+  "B cannot attach exam to A subject",
+  !!(await as(B, `insert into exams (subject_id, title, exam_on) values ($1, 'x', '2026-12-10')`, [subj]))
+    .error,
+);
+ok("B cannot see A exams", (await as(B, `select * from exams`)).rows.length === 0);
+ok("anon cannot see exams", ((await as(null, `select * from exams`)).rows?.length ?? 0) === 0);
+await as(A, `delete from subjects where id=$1`, [subj]);
+ok(
+  "deleting a subject keeps the exam, detached",
+  (await as(A, `select subject_id from exams`)).rows?.[0]?.subject_id === null,
+);
+
 // delete cascade
 await db.exec(`delete from auth.users where id='${A}'`);
 ok("user deletion cascades", (await db.query(`select count(*)::int n from grades`)).rows[0].n === 0);
+ok(
+  "user deletion cascades to exams and settings",
+  (await db.query(`select (select count(*) from exams) + (select count(*) from academic_settings) as n`))
+    .rows[0].n == 0,
+);
 
 console.log(failures ? `\n${failures} FAILED` : "\nALL PASSED");
 process.exit(failures ? 1 : 0);
