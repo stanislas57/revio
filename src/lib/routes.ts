@@ -2,7 +2,7 @@ export const LOGIN_PATH = "/connexion";
 export const HOME_PATH = "/accueil";
 
 /** Routes that require a signed-in user. Keep in sync with src/app/(app). */
-export const PROTECTED_PREFIXES = ["/accueil", "/agenda", "/focus", "/social", "/profil"] as const;
+export const PROTECTED_PREFIXES = ["/accueil", "/agenda", "/focus", "/social", "/profil", "/apercu"] as const;
 
 export function isProtectedPath(pathname: string): boolean {
   return PROTECTED_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
