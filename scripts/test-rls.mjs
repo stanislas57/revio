@@ -384,6 +384,89 @@ ok(
   (await as(A, `select subject_id from exams`)).rows?.[0]?.subject_id === null,
 );
 
+// agenda: calendar_events (private, owner only)
+const AG = (await as(B, `insert into subjects (name, coefficient) values ('Droit', 2) returning id`))
+  .rows?.[0]?.id;
+const ev = (cols, vals, params) => as(B, `insert into calendar_events (${cols}) values (${vals})`, params);
+ok(
+  "B creates a timed event",
+  !(
+    await ev(
+      "title, starts_on, last_on, start_time, end_time",
+      "'Révision', '2026-12-01', '2026-12-01', '18:00', '19:00'",
+    )
+  ).error,
+);
+ok(
+  "B creates an all-day event",
+  !(await ev("title, starts_on, last_on, kind", "'Férié', '2026-12-25', '2026-12-25', 'other'")).error,
+);
+ok(
+  "B creates a weekly series",
+  !(await ev("title, starts_on, last_on, recurrence", "'Cours', '2026-12-01', '2027-01-26', 'weekly'")).error,
+);
+ok(
+  "end before start rejected",
+  !!(
+    await ev(
+      "title, starts_on, last_on, start_time, end_time",
+      "'x', '2026-12-01', '2026-12-01', '19:00', '18:00'",
+    )
+  ).error,
+);
+ok(
+  "only one of start/end time rejected",
+  !!(await ev("title, starts_on, last_on, start_time", "'x', '2026-12-01', '2026-12-01', '19:00'")).error,
+);
+ok(
+  "series ending before it starts rejected",
+  !!(await ev("title, starts_on, last_on, recurrence", "'x', '2026-12-10', '2026-12-01', 'daily'")).error,
+);
+ok(
+  "series longer than a year rejected",
+  !!(await ev("title, starts_on, last_on, recurrence", "'x', '2026-12-01', '2028-01-01', 'daily'")).error,
+);
+ok(
+  "non repeating event spanning several days rejected",
+  !!(await ev("title, starts_on, last_on", "'x', '2026-12-01', '2026-12-03'")).error,
+);
+ok(
+  "unknown kind rejected",
+  !!(await ev("title, starts_on, last_on, kind", "'x', '2026-12-01', '2026-12-01', 'magic'")).error,
+);
+ok(
+  "B attaches an event to own subject",
+  !(await ev("title, starts_on, last_on, subject_id", "'Droit', '2026-12-02', '2026-12-02', $1", [AG])).error,
+);
+ok(
+  "C cannot attach an event to B subject",
+  !!(
+    await as(
+      C,
+      `insert into calendar_events (title, starts_on, last_on, subject_id) values ('x', '2026-12-02', '2026-12-02', $1)`,
+      [AG],
+    )
+  ).error,
+);
+ok("C cannot see B events", (await as(C, `select * from calendar_events`)).rows.length === 0);
+ok("anon cannot see events", ((await as(null, `select * from calendar_events`)).rows?.length ?? 0) === 0);
+ok(
+  "C cannot update B events",
+  (await as(C, `update calendar_events set title='hack' returning id`)).rows?.length === 0,
+);
+ok("C cannot delete B events", (await as(C, `delete from calendar_events returning id`)).rows?.length === 0);
+ok(
+  "B cannot hand an event to C",
+  !!(await as(B, `update calendar_events set user_id='${C}'`)).error ||
+    (await as(C, `select * from calendar_events`)).rows.length === 0,
+);
+await as(B, `delete from subjects where id=$1`, [AG]);
+ok(
+  "deleting a subject keeps its events, detached",
+  (await as(B, `select count(*)::int n from calendar_events where title='Droit' and subject_id is null`))
+    .rows?.[0]?.n === 1,
+);
+
 // delete cascade
 await db.exec(`delete from auth.users where id='${A}'`);
 ok("user deletion cascades", (await db.query(`select count(*)::int n from grades`)).rows[0].n === 0);
@@ -391,6 +474,12 @@ ok(
   "user deletion cascades to exams and settings",
   (await db.query(`select (select count(*) from exams) + (select count(*) from academic_settings) as n`))
     .rows[0].n == 0,
+);
+
+await db.exec(`delete from auth.users where id='${B}'`);
+ok(
+  "user deletion cascades to calendar events",
+  (await db.query(`select count(*)::int n from calendar_events`)).rows[0].n === 0,
 );
 
 console.log(failures ? `\n${failures} FAILED` : "\nALL PASSED");
