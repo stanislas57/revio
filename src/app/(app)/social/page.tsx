@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Medal, UserRound, Users } from "lucide-react";
+import { Bell, Medal, UserRound, Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
 import { Button } from "@/components/ui/button";
@@ -14,17 +14,19 @@ import { InviteButton } from "@/modules/social/components/invite-button";
 import { SectionLinks } from "@/modules/social/components/section-links";
 import { FIXTURE_PROFILE_FRIEND } from "@/modules/social/fixtures-profiles";
 import { FriendsStudying } from "@/modules/social/components/friends-studying";
+import { countUnreadNotifications } from "@/modules/social/server/notifications";
 import { getFeed, getLiveFriends, listFriendRequests, listFriends } from "@/modules/social/server/queries";
 
 export const metadata: Metadata = { title: "Social" };
 
 export default async function SocialPage() {
-  const [profile, feed, live, friends, requests] = await Promise.all([
+  const [profile, feed, live, friends, requests, unread] = await Promise.all([
     getMyProfile(),
     getFeed(),
     getLiveFriends(),
     listFriends(),
     listFriendRequests(),
+    countUnreadNotifications(),
   ]);
   const incoming = requests.filter((r) => r.direction === "incoming");
   const outgoing = requests.filter((r) => r.direction === "outgoing");
@@ -37,6 +39,13 @@ export default async function SocialPage() {
         <SectionLinks
           label="Classement et profil d'un ami"
           links={[
+            {
+              href: "/social/notifications",
+              title: "Notifications",
+              description:
+                unread > 0 ? `${unread} non lue${unread > 1 ? "s" : ""}` : "Demandes d'ami et bravos.",
+              icon: Bell,
+            },
             {
               href: "/social/classement",
               title: "Classement",

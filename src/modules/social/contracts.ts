@@ -67,3 +67,20 @@ export type LiveFriend = {
   subjectName: string | null;
   serverNow: IsoDateTime;
 };
+
+/** Internal notification (S-21). Never carries a grade, a subject or a duration. */
+export type NotificationKind = "friend_request" | "friend_accepted" | "post_reaction";
+
+export type NotificationItem = {
+  id: string;
+  kind: NotificationKind;
+  actor: PublicUser;
+  createdAt: string;
+  read: boolean;
+};
+
+export type NotificationPrefs = {
+  friendRequests: boolean;
+  friendAccepted: boolean;
+  reactions: boolean;
+};

@@ -575,6 +575,62 @@ ok(
     (await as(E, `select * from user_settings where user_id='${D}'`)).rows.length === 0,
   );
 
+  // notifications (S-21): trigger-written, owner-only, deduplicated, preferences enforced
+  const nb = async () => (await as(B, `select * from notifications where kind='post_reaction'`)).rows ?? [];
+  ok("post owner is notified of a reaction", (await nb()).length === 1 && (await nb())[0].actor_id === A);
+  ok(
+    "the reactor is not notified of their own reaction",
+    (await as(A, `select * from notifications where kind='post_reaction'`)).rows.length === 0,
+  );
+  await as(A, `delete from post_reactions where post_id=$1`, [post1]);
+  await as(A, `insert into post_reactions (post_id) values ($1)`, [post1]);
+  ok("un-react then re-react does not notify twice", (await nb()).length === 1);
+  ok(
+    "client cannot create a notification",
+    !!(
+      await as(
+        A,
+        `insert into notifications (user_id, kind, actor_id, dedupe_key) values ('${B}','post_reaction','${A}','x')`,
+      )
+    ).error,
+  );
+  ok(
+    "another user cannot read my notifications",
+    (await as(C, `select * from notifications`)).rows.length === 0,
+  );
+  ok(
+    "owner can mark read",
+    !(await as(B, `update notifications set read_at = now() where kind='post_reaction'`)).error &&
+      (await nb())[0].read_at !== null,
+  );
+  ok(
+    "owner cannot edit anything but read_at",
+    !!(await as(B, `update notifications set kind='friend_request'`)).error,
+  );
+  await as(
+    B,
+    `insert into user_settings (notify_reactions) values (false) on conflict (user_id) do update set notify_reactions=false`,
+  );
+  await as(B, `delete from notifications where kind='post_reaction'`);
+  await as(A, `delete from post_reactions where post_id=$1`, [post1]);
+  await as(A, `insert into post_reactions (post_id) values ($1)`, [post1]);
+  ok("a switched-off kind is never inserted", (await nb()).length === 0);
+  await as(B, `update user_settings set notify_reactions=true`);
+  await as(C, `insert into friendships (requester_id, addressee_id) values ('${C}','${A}')`);
+  const reqN = async () =>
+    (await as(A, `select * from notifications where kind='friend_request' and actor_id='${C}'`)).rows ?? [];
+  ok("addressee is notified of a friend request", (await reqN()).length === 1);
+  await as(A, `delete from friendships where requester_id='${C}'`);
+  ok("declining removes the request notification", (await reqN()).length === 0);
+  await as(C, `insert into friendships (requester_id, addressee_id) values ('${C}','${A}')`);
+  await as(A, `update friendships set status='accepted', responded_at=now() where requester_id='${C}'`);
+  ok(
+    "requester is notified of the acceptance",
+    (await as(C, `select * from notifications where kind='friend_accepted' and actor_id='${A}'`)).rows
+      .length === 1,
+  );
+  ok("the answered request notification is gone", (await reqN()).length === 0);
+
   // account deletion: everything of D goes, E stays
   await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);
   await as(D, `insert into exams (title, exam_on) values ('Partiel', '2026-12-10')`);
