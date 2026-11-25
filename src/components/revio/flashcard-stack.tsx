@@ -112,7 +112,7 @@ export function FlashcardStack({
                     opacity: reduced ? (back === flipped ? 1 : 0) : 1,
                   }}
                 >
-                  <span className="text-xs font-semibold text-revio-magenta-text">
+                  <span className="text-xs font-semibold text-brand-text">
                     {top.subject} · {back ? "Réponse" : "Question"}
                   </span>
                   <span className="font-heading text-xl font-bold">{text}</span>
@@ -129,14 +129,14 @@ export function FlashcardStack({
         <button
           type="button"
           onClick={() => decide("review")}
-          className="inline-flex min-h-11 items-center gap-2 rounded-pill border bg-card px-5 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex min-h-11 items-center gap-2 rounded-md border bg-card px-5 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <RotateCcw className="size-4" aria-hidden /> À revoir
         </button>
         <button
           type="button"
           onClick={() => decide("know")}
-          className="inline-flex min-h-11 items-center gap-2 rounded-pill bg-revio-violet px-5 text-sm font-semibold text-white outline-none hover:bg-revio-violet-hover focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="inline-flex min-h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground outline-none hover:bg-revio-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           Je sais <Check className="size-4" aria-hidden />
         </button>

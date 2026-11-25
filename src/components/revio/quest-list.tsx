@@ -101,7 +101,7 @@ export function QuestList({
                 </div>
               )}
               <p className="text-xs font-semibold">
-                <span className="rounded-pill bg-revio-xp px-2 py-0.5 text-revio-ink">+{q.xp} XP</span>
+                <span className="rounded-pill bg-revio-lime px-2 py-0.5 text-revio-midnight">+{q.xp} XP</span>
                 {finished && <span className="ml-2 text-muted-foreground">fait</span>}
               </p>
             </li>

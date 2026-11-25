@@ -19,7 +19,7 @@ export type SharedSheet = {
   href: string;
 };
 
-/** A shared sheet shown as a post: author, +XP badge (lime under ink text), preview on the grid, "Réviser". */
+/** A shared sheet shown as a post: author, +XP badge (lime under midnight text), preview, "Réviser". */
 export function SharedSheetCard({ sheet, className }: { sheet: SharedSheet; className?: string }) {
   return (
     <article
@@ -29,7 +29,7 @@ export function SharedSheetCard({ sheet, className }: { sheet: SharedSheet; clas
       <header className="flex items-center gap-3">
         <span
           aria-hidden
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-revio-violet text-sm font-bold text-white"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-revio-primary text-sm font-bold text-white"
         >
           {sheet.initials}
         </span>
@@ -37,11 +37,11 @@ export function SharedSheetCard({ sheet, className }: { sheet: SharedSheet; clas
           <span className="block font-semibold">{sheet.author}</span>
           <span className="block text-xs text-muted-foreground">a partagé une fiche · {sheet.sharedAgo}</span>
         </p>
-        <span className="rounded-pill bg-revio-xp px-2.5 py-1 text-xs font-bold text-revio-ink">
+        <span className="rounded-pill bg-revio-lime px-2.5 py-1 text-xs font-bold text-revio-midnight">
           +{sheet.xp} XP
         </span>
       </header>
-      <div className="revio-grid rounded-md border px-4 py-5">
+      <div className="rounded-md bg-muted px-4 py-5">
         <h3 className="font-heading text-xl font-bold">{sheet.title}</h3>
         <p className="mt-1 text-xs text-muted-foreground">{sheet.meta}</p>
       </div>
@@ -49,7 +49,7 @@ export function SharedSheetCard({ sheet, className }: { sheet: SharedSheet; clas
         <p className="text-sm text-muted-foreground">
           Révisée par {sheet.reviewedBy} ami{sheet.reviewedBy > 1 ? "s" : ""}
         </p>
-        <Button asChild className="min-h-11 rounded-pill px-5">
+        <Button asChild className="min-h-11 px-5">
           <Link href={sheet.href}>
             Réviser<span className="sr-only"> : {sheet.title}</span>
           </Link>

@@ -16,7 +16,7 @@ const STATE_TEXT: Record<StreakDayState, string> = {
 };
 
 /**
- * The streak on an ink card: magenta flame, the number that slides, and the seven days of the week.
+ * The streak on a white card: Streak Orange flame, the number that slides, and the seven days of the week.
  * A day saved by a joker is violet, today is dashed. Each state also has its own mark and a text for screen readers.
  */
 export function RevioStreakCard({
@@ -34,16 +34,19 @@ export function RevioStreakCard({
   className?: string;
 }) {
   return (
-    <section aria-label="Série" className={cn("rounded-xl bg-revio-ink p-5 text-white", className)}>
+    <section
+      aria-label="Série"
+      className={cn("rounded-xl border bg-card p-5 text-card-foreground shadow-sm", className)}
+    >
       <div className="flex items-center gap-3">
-        <span aria-hidden className="flex size-12 items-center justify-center rounded-lg bg-revio-magenta">
-          <Flame className="size-6 text-white" />
+        <span aria-hidden className="flex size-12 items-center justify-center rounded-lg bg-revio-streak">
+          <Flame className="size-6 text-revio-midnight" />
         </span>
         <div>
-          <p className="font-heading text-2xl font-bold">
+          <p className="font-heading text-2xl font-extrabold">
             <AnimatedNumber value={days} /> jour{days > 1 ? "s" : ""}
           </p>
-          <p className="text-xs text-revio-muted-on-ink">
+          <p className="text-xs text-muted-foreground">
             Record {record} jour{record > 1 ? "s" : ""}
             {jokers !== undefined &&
               ` · ${jokers} joker${jokers > 1 ? "s" : ""} restant${jokers > 1 ? "s" : ""}`}
@@ -61,20 +64,20 @@ export function RevioStreakCard({
               aria-hidden
               className={cn(
                 "flex size-6 items-center justify-center rounded-full",
-                d.state === "done" && "bg-revio-magenta",
-                d.state === "joker" && "bg-revio-violet-on-ink",
-                d.state === "today" && "border-2 border-dashed border-revio-magenta",
-                d.state === "empty" && "bg-revio-ink-3",
+                d.state === "done" && "bg-revio-streak",
+                d.state === "joker" && "bg-revio-primary",
+                d.state === "today" && "border-2 border-dashed border-revio-streak-text",
+                d.state === "empty" && "bg-muted",
               )}
             >
-              {d.state === "done" && <Check className="size-3.5 text-white" />}
-              {d.state === "joker" && <ShieldCheck className="size-3.5 text-revio-ink" />}
+              {d.state === "done" && <Check className="size-3.5 text-revio-midnight" />}
+              {d.state === "joker" && <ShieldCheck className="size-3.5 text-white" />}
             </span>
             <span
               aria-hidden
               className={cn(
                 "text-xs",
-                d.state === "today" ? "font-bold text-white" : "text-revio-muted-on-ink",
+                d.state === "today" ? "font-bold text-foreground" : "text-muted-foreground",
               )}
             >
               {d.label}

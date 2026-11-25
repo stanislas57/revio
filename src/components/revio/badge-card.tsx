@@ -10,7 +10,7 @@ const RARITY_LABEL: Record<Rarity, string> = { common: "Commun", rare: "Rare", e
 
 /**
  * A badge in three rarities, always written as a word (never colour alone):
- * common has no effect; rare has a glowing violet border; epic is an ink card, slightly tilted, with a shine that
+ * common has no effect; rare has a glowing violet border; epic is a Revio Purple card, slightly tilted, with a shine that
  * follows the pointer. With reduced motion the effects are static.
  */
 export function BadgeCard({
@@ -30,7 +30,9 @@ export function BadgeCard({
   const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 24 });
   const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-8, 8]), { stiffness: 300, damping: 24 });
   const epic = rarity === "epic";
-  const live = epic && !reduced && unlocked;
+  /** A locked epic badge looks like any locked badge (dashed, soft purple): the purple card is the reward. */
+  const epicLook = epic && unlocked;
+  const live = epicLook && !reduced;
 
   return (
     <motion.article
@@ -39,12 +41,16 @@ export function BadgeCard({
         "relative flex min-h-32 flex-col items-center justify-center gap-2 rounded-lg border p-4 text-center",
         rarity === "common" && "bg-card",
         rarity === "rare" &&
-          "border-revio-violet bg-card shadow-[0_0_0_3px_color-mix(in_oklab,var(--revio-violet)_25%,transparent),0_10px_28px_-12px_var(--revio-violet)]",
-        epic && "border-revio-ink-3 bg-revio-ink text-white",
+          "border-revio-primary bg-card shadow-[0_0_0_3px_color-mix(in_oklab,var(--revio-primary)_22%,transparent),0_10px_28px_-12px_var(--revio-primary)]",
+        epicLook && "border-revio-primary bg-revio-primary text-white",
         !unlocked && "border-dashed bg-secondary",
       )}
       style={
-        live ? { rotateX, rotateY, rotate: -2, transformPerspective: 600 } : epic ? { rotate: -2 } : undefined
+        live
+          ? { rotateX, rotateY, rotate: -2, transformPerspective: 600 }
+          : epicLook
+            ? { rotate: -2 }
+            : undefined
       }
       onPointerMove={(e) => {
         if (!live) return;
@@ -57,7 +63,7 @@ export function BadgeCard({
         py.set(0);
       }}
     >
-      {epic && unlocked && (
+      {epicLook && (
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-br from-white/15 via-transparent to-white/5"
@@ -67,16 +73,16 @@ export function BadgeCard({
         aria-hidden
         className={cn(
           "flex size-12 items-center justify-center rounded-full",
-          epic ? "bg-revio-ink-3 text-white" : "bg-secondary text-brand-text",
+          epicLook ? "bg-white/20 text-white" : "bg-secondary text-brand-text",
         )}
       >
         {unlocked ? <Icon className="size-6" /> : <Lock className="size-6" />}
       </span>
-      <span className="font-heading text-sm font-semibold">{name}</span>
+      <span className="font-heading text-sm font-bold">{name}</span>
       <span
         className={cn(
           "text-xs font-semibold",
-          epic ? "text-revio-muted-on-ink" : rarity === "rare" ? "text-brand-text" : "text-muted-foreground",
+          epicLook ? "text-white" : rarity === "rare" ? "text-brand-text" : "text-muted-foreground",
         )}
       >
         {RARITY_LABEL[rarity]}

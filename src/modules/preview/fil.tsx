@@ -72,7 +72,7 @@ export function PreviewFil() {
                 <p className="text-sm">
                   <span className="font-semibold">2 amis</span> révisent la SVT en direct
                 </p>
-                <Button disabled className="min-h-11 rounded-pill px-5">
+                <Button disabled className="min-h-11 px-5">
                   Rejoindre
                 </Button>
               </div>

@@ -4,7 +4,7 @@
 import { cn } from "@/lib/utils";
 import { RevioRing } from "./revio-ring";
 
-const TINTS = ["bg-revio-lilac", "bg-revio-border"];
+const TINTS = ["bg-brand-soft text-brand-soft-foreground", "bg-muted text-foreground"];
 const tintOf = (name: string) => TINTS[[...name].reduce((s, c) => s + c.charCodeAt(0), 0) % TINTS.length]!;
 
 export type PresenceFriend = {
@@ -34,7 +34,7 @@ export function AvatarPresence({
       <RevioRing variant="presence" value={friend.value} size={compact ? 60 : 52} stroke={4} live>
         <span
           className={cn(
-            "flex size-full items-center justify-center rounded-full text-sm font-bold text-revio-ink",
+            "flex size-full items-center justify-center rounded-full text-sm font-bold",
             tintOf(friend.name),
           )}
         >
@@ -62,7 +62,7 @@ export function PresenceRow({ friends, total }: { friends: PresenceFriend[]; tot
         <h2 id="presence-title" className="text-sm font-semibold">
           En révision maintenant
         </h2>
-        <span className="text-xs font-semibold text-revio-magenta-text">
+        <span className="text-xs font-semibold text-revio-success-text">
           {count} ami{count > 1 ? "s" : ""}
         </span>
       </div>
