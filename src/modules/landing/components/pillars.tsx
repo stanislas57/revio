@@ -129,7 +129,7 @@ export function Pillars() {
                 <Icon className="size-5 shrink-0 text-brand-text" aria-hidden />
                 <span className="min-w-0 flex-1">
                   <span className="block font-medium">{title}</span>
-                  <span className="block text-xs opacity-80">{STATUS_LABEL[status]}</span>
+                  <span className="block text-xs">{STATUS_LABEL[status]}</span>
                 </span>
               </button>
             ))}

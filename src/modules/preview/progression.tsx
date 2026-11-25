@@ -36,11 +36,11 @@ export function PreviewProgression() {
               <XpBar level={12} xp={DEMO_ME.xp} xpMax={DEMO_ME.xpMax} gain={40} />
             </div>
           </section>
-          <section aria-labelledby="week-title" className="rounded-xl bg-revio-ink p-5 text-white">
+          <section aria-labelledby="week-title" className="rounded-xl bg-revio-primary p-5 text-white">
             <h2 id="week-title" className="font-heading text-xl font-bold">
               Ta semaine est prête
             </h2>
-            <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-revio-muted-on-ink">
+            <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white">
               <span className="inline-flex items-center gap-1.5">
                 <Clock className="size-4" aria-hidden /> 6 h 40 révisées
               </span>

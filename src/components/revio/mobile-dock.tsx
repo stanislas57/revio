@@ -9,8 +9,9 @@ import { cn } from "@/lib/utils";
 export type NavItem = { href: string; label: string; Icon: LucideIcon; badge?: number };
 
 /**
- * Floating dock on ink: four tabs and, in the middle, the raised gradient "Réviser" button. The active tab is a
- * pill that slides. Shown under 768 px (the caller decides where it sits: `fixed` in the app shell).
+ * Bottom bar of the charter (mobile): four tabs and, in the middle, the raised violet "Réviser" button. The
+ * active tab is a soft-purple pill that slides. Shown under 768 px (the caller decides where it sits: `fixed`
+ * at the bottom in the app shell).
  */
 export function MobileDock({
   items,
@@ -35,18 +36,26 @@ export function MobileDock({
         <Link
           href={item.href}
           aria-current={active ? "page" : undefined}
-          className="relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-pill px-2 text-xs outline-none focus-visible:ring-[3px] focus-visible:ring-white/60"
+          className="relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-md px-2 text-xs outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           {active && (
             <motion.span
               layoutId="dock-pill"
               aria-hidden
-              className="absolute inset-0 rounded-pill bg-revio-ink-3"
+              className="absolute inset-0 rounded-md bg-brand-soft"
               transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 24 }}
             />
           )}
-          <item.Icon className="relative size-5" aria-hidden />
-          <span className={cn("relative", active ? "font-semibold text-white" : "text-revio-muted-on-ink")}>
+          <item.Icon
+            className={cn("relative size-5", active ? "text-brand-soft-foreground" : "text-muted-foreground")}
+            aria-hidden
+          />
+          <span
+            className={cn(
+              "relative",
+              active ? "font-semibold text-brand-soft-foreground" : "text-muted-foreground",
+            )}
+          >
             {item.label}
           </span>
         </Link>
@@ -56,7 +65,10 @@ export function MobileDock({
   return (
     <nav
       aria-label="Navigation principale"
-      className={cn("rounded-pill bg-revio-ink px-2 py-1.5 text-white shadow-xl", className)}
+      className={cn(
+        "border-t bg-card px-2 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] text-card-foreground shadow-md",
+        className,
+      )}
     >
       <LayoutGroup>
         <ul className="flex items-center">
@@ -66,7 +78,7 @@ export function MobileDock({
             <Link
               href={reviseHref}
               aria-current={reviseActive ? "page" : undefined}
-              className="bg-revio-gradient-solid -mt-7 flex size-14 flex-col items-center justify-center rounded-full border-4 border-background text-white shadow-lg outline-none focus-visible:ring-[3px] focus-visible:ring-ring/60"
+              className="-mt-7 flex size-14 flex-col items-center justify-center rounded-full border-4 border-card bg-primary text-primary-foreground shadow-md transition-colors duration-150 outline-none hover:bg-revio-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/60 motion-reduce:transition-none"
             >
               <Zap className="size-5" aria-hidden />
               <span className="text-[0.65rem] font-bold">Réviser</span>

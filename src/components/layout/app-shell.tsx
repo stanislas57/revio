@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RevioLogo } from "@/components/revio/logo";
 import { cn } from "@/lib/utils";
 import { ShellDock, ShellSidebar, type ShellProfile } from "./main-nav";
 import { ThemeToggle } from "./theme-toggle";
 
-function SignOutButton({ compact = false, onInk = false }: { compact?: boolean; onInk?: boolean }) {
+function SignOutButton({ compact = false }: { compact?: boolean }) {
   return (
     <form action="/auth/deconnexion" method="post">
       <Button
@@ -13,11 +14,7 @@ function SignOutButton({ compact = false, onInk = false }: { compact?: boolean; 
         variant="ghost"
         size={compact ? "icon" : "sm"}
         aria-label="Se déconnecter"
-        className={cn(
-          "min-h-11",
-          compact && "size-11",
-          onInk && "text-white hover:bg-revio-ink-3 hover:text-white",
-        )}
+        className={cn("min-h-11", compact && "size-11")}
       >
         <LogOut className="size-4" aria-hidden />
         {!compact && "Se déconnecter"}
@@ -27,8 +24,8 @@ function SignOutButton({ compact = false, onInk = false }: { compact?: boolean; 
 }
 
 /**
- * Responsive shell of the Revio design: the ink sidebar from 768 px, a header and the floating dock below.
- * The page sits on the "petits carreaux" grid, a fixed decorative layer that fades out.
+ * Responsive shell of the charter: the white sidebar from 768 px; below, a header with the logo and the bottom
+ * bar. The page sits on Cloud White (`bg-background`).
  */
 export function AppShell({
   email,
@@ -41,18 +38,17 @@ export function AppShell({
 }) {
   return (
     <div className="flex min-h-dvh">
-      <div aria-hidden className="revio-grid pointer-events-none fixed inset-0 -z-10" />
-      <div className="sticky top-0 hidden h-dvh shrink-0 p-4 pr-0 md:block">
+      <div className="sticky top-0 hidden h-dvh shrink-0 md:block">
         <ShellSidebar
           profile={profile}
           footer={
-            <div className="space-y-1 border-t border-revio-ink-3 pt-3">
-              <p className="truncate px-2 text-xs text-revio-muted-on-ink" title={email}>
+            <div className="space-y-1 border-t pt-3">
+              <p className="truncate px-2 text-xs text-muted-foreground" title={email}>
                 {email}
               </p>
               <div className="flex items-center justify-between">
-                <SignOutButton onInk />
-                <ThemeToggle className="text-white hover:bg-revio-ink-3 hover:text-white" />
+                <SignOutButton />
+                <ThemeToggle />
               </div>
             </div>
           }
@@ -60,19 +56,22 @@ export function AppShell({
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center justify-between px-4 md:hidden">
-          <Link href="/accueil" className="font-heading text-xl font-bold tracking-tight">
-            Revio
+        <header className="flex h-14 items-center justify-between border-b bg-card px-4 md:hidden">
+          <Link
+            href="/accueil"
+            className="-mx-1 flex min-h-11 items-center rounded-md px-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          >
+            <RevioLogo className="text-2xl" />
           </Link>
           <div className="flex items-center gap-1">
             <ThemeToggle />
             <SignOutButton compact />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-32 md:px-8 md:pb-8">{children}</main>
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-28 md:px-8 md:py-8">{children}</main>
       </div>
 
-      <div className="fixed inset-x-3 bottom-3 z-40 pb-[env(safe-area-inset-bottom)] md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 md:hidden">
         <ShellDock />
       </div>
     </div>

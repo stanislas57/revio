@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { DesktopSidebar } from "@/components/revio/desktop-sidebar";
 import { MobileDock, type NavItem as RevioNavItem } from "@/components/revio/mobile-dock";
-import { NAV_ITEMS } from "./nav-items";
+import { activeNavHref, NAV_ITEMS } from "./nav-items";
 
 export type ShellProfile = {
   name: string;
@@ -16,45 +16,38 @@ export type ShellProfile = {
 };
 
 const FOCUS = "/focus";
-const matches = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-const toRevio = (
-  items: readonly { href: string; label: string; icon: RevioNavItem["Icon"] }[],
-): RevioNavItem[] => items.map(({ href, label, icon }) => ({ href, label, Icon: icon }));
+const SIDEBAR_ITEMS: RevioNavItem[] = NAV_ITEMS.map(({ href, label, icon }) => ({ href, label, Icon: icon }));
+const MOBILE_ITEMS = NAV_ITEMS.flatMap(({ href, mobileLabel, icon }) =>
+  mobileLabel ? [{ href, label: mobileLabel, Icon: icon }] : [],
+) as [RevioNavItem, RevioNavItem, RevioNavItem, RevioNavItem];
 
-function useActiveHref() {
-  const pathname = usePathname();
-  return {
-    activeHref: NAV_ITEMS.find((i) => matches(pathname, i.href))?.href ?? "",
-    onFocus: matches(pathname, FOCUS),
-  };
-}
-
-/** Desktop (md+): the ink sidebar with the "Réviser maintenant" button and the profile card. */
+/** Desktop (md+): the white sidebar with the "Réviser maintenant" button and the profile card. */
 export function ShellSidebar({ profile, footer }: { profile: ShellProfile; footer: ReactNode }) {
-  const { activeHref, onFocus } = useActiveHref();
+  const pathname = usePathname();
   return (
     <DesktopSidebar
       className="h-full"
-      items={toRevio(NAV_ITEMS)}
-      activeHref={activeHref}
+      items={SIDEBAR_ITEMS}
+      activeHref={activeNavHref(pathname, SIDEBAR_ITEMS)}
       homeHref="/accueil"
       reviseHref={FOCUS}
-      reviseActive={onFocus}
+      reviseActive={activeNavHref(pathname, [{ href: FOCUS }]) === FOCUS}
       profile={profile}
       footer={footer}
     />
   );
 }
 
-/** Mobile (< md): the floating ink dock, four tabs and the raised "Réviser" button (Focus) in the middle. */
+/** Mobile (< md): the bottom bar, four tabs and the raised "Réviser" button (Focus) in the middle. */
 export function ShellDock() {
-  const { activeHref, onFocus } = useActiveHref();
-  const tabs = toRevio(NAV_ITEMS.filter((i) => i.href !== FOCUS)) as [
-    RevioNavItem,
-    RevioNavItem,
-    RevioNavItem,
-    RevioNavItem,
-  ];
-  return <MobileDock items={tabs} activeHref={activeHref} reviseHref={FOCUS} reviseActive={onFocus} />;
+  const pathname = usePathname();
+  return (
+    <MobileDock
+      items={MOBILE_ITEMS}
+      activeHref={activeNavHref(pathname, MOBILE_ITEMS)}
+      reviseHref={FOCUS}
+      reviseActive={activeNavHref(pathname, [{ href: FOCUS }]) === FOCUS}
+    />
+  );
 }

@@ -19,6 +19,8 @@ export const EXPORT_TABLES = [
   { key: "studySessions", table: "study_sessions", column: "user_id" },
   { key: "xpTransactions", table: "xp_transactions", column: "user_id" },
   { key: "stats", table: "user_stats", column: "user_id" },
+  { key: "achievements", table: "user_achievements", column: "user_id" },
+  { key: "notifications", table: "notifications", column: "user_id" },
   { key: "posts", table: "posts", column: "user_id" },
   { key: "reactions", table: "post_reactions", column: "user_id" },
 ] as const;
@@ -38,7 +40,7 @@ export type ExportDocument = {
 };
 
 export const EXPORT_NOTES = [
-  "Ce fichier contient les données que Revio garde sur toi : ton profil, tes réglages, tes matières, notes, examens, scénarios du simulateur, événements d'agenda, séances, XP, statistiques, publications, réactions et amitiés.",
+  "Ce fichier contient les données que Revio garde sur toi : ton profil, tes réglages, tes matières, notes, examens, scénarios du simulateur, trophées, notifications, événements d'agenda, séances, XP, statistiques, publications, réactions et amitiés.",
   "Les amitiés ne contiennent que les identifiants des deux comptes. Les données des autres utilisateurs ne sont pas incluses.",
   "Les moyennes affichées dans l'application sont calculées (convention Revio) et ne sont pas stockées : elles ne figurent pas ici.",
 ];

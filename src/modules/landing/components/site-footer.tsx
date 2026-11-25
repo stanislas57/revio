@@ -1,9 +1,11 @@
+import { RevioLogo } from "@/components/revio/logo";
+
 export function SiteFooter() {
   return (
     <footer className="border-t py-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <p>
-          <span className="font-semibold text-foreground">Revio</span> · Version de démonstration, en cours de
+          <RevioLogo className="text-lg text-foreground" /> · Version de démonstration, en cours de
           construction.
         </p>
         <a

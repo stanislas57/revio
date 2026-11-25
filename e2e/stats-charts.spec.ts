@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { newAccount } from "./support/new-account";
 
+const FAKE_URL = process.env.E2E_FAKE_SUPABASE_URL ?? "http://127.0.0.1:54399";
+
 // The charts load when they come near the screen (see lazy-charts.tsx). Connected scenario:
 // `npm run test:e2e:connected`.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
@@ -8,8 +10,23 @@ test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
 test("the statistics page shows its five graphics with a text alternative and a data table", async ({
   page,
 }) => {
-  await newAccount(page, "stat");
+  const username = await newAccount(page, "stat");
+  // One real 12-minute session: the fake server (started with --test-clock) moves its start into the past.
+  await page.goto("/focus");
+  await page.getByRole("button", { name: "Démarrer" }).click();
+  await expect(page.getByRole("timer")).toBeVisible();
+  const shift = await fetch(`${FAKE_URL}/__test/advance-clock`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ minutes: 12, username }),
+  });
+  expect(shift.ok, "the fake server must be started with --test-clock").toBe(true);
+  await page.reload();
+  await page.getByRole("button", { name: "Terminer" }).click();
+  await expect(page).toHaveURL(/\/focus\/seance\//);
+
   await page.goto("/profil/statistiques");
+  await expect(page.getByText("Séances", { exact: true })).toBeVisible();
 
   // The figures are there at once; the charts below load when scrolled near.
   await expect(page.getByText("Aujourd'hui", { exact: true })).toBeVisible();
@@ -32,7 +49,10 @@ test("the statistics page shows its five graphics with a text alternative and a 
   const rows = await page
     .locator("figure table")
     .evaluateAll((tables) => tables.map((t) => t.querySelectorAll("tbody tr").length));
-  expect(rows.sort((a, b) => a - b)).toEqual([4, 5, 30, 30, 30]); // subjects, weeks, then 30 days three times
+  const sorted = rows.sort((a, b) => a - b);
+  expect(sorted.slice(2)).toEqual([30, 30, 30]); // 30 days, three charts
+  expect(sorted[0]).toBe(1); // one subject bucket ("Sans matière")
+  expect([5, 6]).toContain(sorted[1]); // 30 days span 5 or 6 Monday-to-Sunday weeks
 
   // The graphics are really drawn (not empty boxes).
   await expect(page.locator("figure .recharts-surface").first()).toBeVisible();

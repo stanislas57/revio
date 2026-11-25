@@ -62,7 +62,7 @@ export function LeagueTable({
               {up > 0 && (
                 <span
                   aria-hidden
-                  className="inline-flex items-center rounded-pill bg-revio-xp px-2 py-0.5 text-xs font-bold text-revio-ink"
+                  className="inline-flex items-center rounded-pill bg-revio-lime px-2 py-0.5 text-xs font-bold text-revio-midnight"
                 >
                   <ChevronUp className="size-3" />
                   {up}

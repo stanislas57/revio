@@ -5,38 +5,42 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * REVIO DESIGN SYSTEM (replaces the former brand tokens). Source: the "Revio ADN d'interface" mock-ups and the
- * integration prompt. Colour values are the ones of the brief; where the brief fails WCAG AA (measured, see
- * docs/design-system.md) an extra token is added instead of changing the original: --revio-magenta-solid,
- * --revio-violet-on-ink, --revio-border-strong. The dark theme is derived from the ink surfaces (the brief
- * does not define one).
+ * REVIO DESIGN SYSTEM, "charte graphique bêta 01" (replaces the "Revio ADN" palette, see DECISIONS.md D-24).
+ * Values are the ones of the charter (page 6, "Variables CSS"). Where a charter colour fails WCAG AA for the
+ * use it is put to (measured, see docs/design-system.md), a separate token is added rather than changing the
+ * charter value: --revio-social-text, --revio-streak-text, --revio-success-text, --destructive (text red),
+ * --revio-primary-on-dark. The charter's own accessibility note is applied: #656371 for small text,
+ * #5840D8 for violet links on a light background, lime never used as text on white.
  */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* One family (Inter) everywhere; `font-heading` stays as the hook for titles and figures. */
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-text: var(--brand-text);
   --color-brand-soft: var(--brand-soft);
   --color-brand-soft-foreground: var(--brand-soft-foreground);
-  --color-revio-violet: var(--revio-violet);
-  --color-revio-violet-hover: var(--revio-violet-hover);
-  --color-revio-magenta: var(--revio-magenta);
-  --color-revio-magenta-solid: var(--revio-magenta-solid);
-  --color-revio-magenta-text: var(--revio-magenta-text);
-  --color-revio-xp: var(--revio-xp);
-  --color-revio-ink: var(--revio-ink);
-  --color-revio-ink-2: var(--revio-ink-2);
-  --color-revio-ink-3: var(--revio-ink-3);
-  --color-revio-lilac: var(--revio-lilac);
+  --color-revio-primary: var(--revio-primary);
+  --color-revio-primary-hover: var(--revio-primary-hover);
+  --color-revio-primary-light: var(--revio-primary-light);
+  --color-revio-lime: var(--revio-lime);
+  --color-revio-landing: var(--revio-landing);
+  --color-revio-text: var(--revio-text);
+  --color-revio-midnight: var(--revio-midnight);
+  --color-revio-text-readable: var(--revio-text-readable);
+  --color-revio-text-secondary: var(--revio-text-secondary);
   --color-revio-border: var(--revio-border);
-  --color-revio-grid: var(--revio-grid);
-  --color-revio-muted: var(--revio-muted);
-  --color-revio-muted-on-ink: var(--revio-muted-on-ink);
-  --color-revio-violet-on-ink: var(--revio-violet-on-ink);
+  --color-revio-success: var(--revio-success);
+  --color-revio-success-text: var(--revio-success-text);
+  --color-revio-streak: var(--revio-streak);
+  --color-revio-streak-text: var(--revio-streak-text);
+  --color-revio-social: var(--revio-social);
+  --color-revio-social-text: var(--revio-social-text);
+  --color-revio-error: var(--revio-error);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -67,172 +71,151 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  /* Shapes: 8 px fields, 14 px cards, 24 px panels, pills. */
+  /* Shapes (charter page 3): fields 8 px, buttons 12 px, cards 16-18 px, sections 24 px, pills. */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 14px;
-  --radius-xl: 24px;
+  --radius-lg: 16px;
+  --radius-xl: 18px;
   --radius-2xl: 24px;
   --radius-3xl: 28px;
   --radius-4xl: 32px;
   --radius-pill: 999px;
+  /* Light shadows (charter page 6). */
+  --shadow-sm: 0 2px 8px rgb(24 25 33 / 0.04);
+  --shadow-md: 0 8px 24px rgb(24 25 33 / 0.07);
 }
 
 :root {
-  /* ---- Revio palette (values of the brief) ---- */
-  --revio-violet: #7b2ff7; /* actions, links, primary (5.85:1 on white) */
-  --revio-violet-hover: #5b1bc4;
-  --revio-magenta: #e11d8f; /* live presence, kudos, streak: FILL only, no text on it */
-  --revio-magenta-text: #c0157a; /* magenta for text on white (5.79:1) */
-  --revio-xp: #c6f432; /* lime: XP gains only, always under ink text, never as text */
-  --revio-ink: #1a1030; /* text, dark surfaces (dock, focus, streak card) */
-  --revio-ink-2: #261a40; /* surface on ink */
-  --revio-ink-3: #3a2d55; /* borders / active state on ink */
-  --revio-white: #ffffff;
-  --revio-lilac: #f6f1ff; /* secondary areas */
-  --revio-border: #e7ddfb;
-  --revio-grid: #f1eafd; /* lines of the "petits carreaux" grid */
-  --revio-muted: #6b6280; /* secondary text */
-  --revio-muted-on-ink: #cfc6e6;
-  --revio-gradient: linear-gradient(90deg, #7b2ff7 0%, #b024d6 50%, #e11d8f 100%);
-  /* ---- Additions, to meet WCAG AA where the brief does not (measured) ---- */
-  --revio-magenta-solid: #dc1c8c; /* magenta fill carrying WHITE text: 4.58:1 (the brief's #E11D8F gives 4.40) */
-  --revio-gradient-solid: linear-gradient(
-    90deg,
-    #7b2ff7 0%,
-    #b024d6 50%,
-    #dc1c8c 100%
-  ); /* gradient with white text */
-  --revio-violet-on-ink: #b58cff; /* violet TEXT on ink: 7.03:1 (the brief's violet gives 3.09) */
-  --revio-border-strong: #857aa0; /* border of a form field: 3.97:1 on white (WCAG 1.4.11) */
-  /* ---- Shapes and motion (the radii of the theme are in @theme above) ---- */
-  --revio-radius-field: 8px;
-  --revio-radius-card: 14px;
-  --revio-radius-panel: 24px;
-  --revio-radius-pill: 999px;
+  /* ---- Charter palette (values of the charter) ---- */
+  --revio-primary: #6950ee; /* Revio Purple: logo, main buttons, navigation (white text: 5.27:1) */
+  --revio-primary-hover: #5840d8; /* hover, and violet TEXT/links on a light background (6.69:1 on white) */
+  --revio-primary-light: #eeebff; /* Soft Purple: selections, light backgrounds */
+  --revio-lime: #d6fa72; /* Electric Lime: XP, rewards, progress. Fill only, never text on white */
+  --revio-landing: #f8f8f3; /* Cream White: landing page background */
+  --revio-cloud: #f7f7fb; /* Cloud White: app background */
+  --revio-surface: #ffffff; /* Pure White: cards and surfaces */
+  --revio-text: #181921; /* Midnight Black: titles and main text */
+  --revio-midnight: #181921; /* the same, in BOTH themes: text on lime, pink, orange and green fills */
+  --revio-text-secondary: #858391; /* Muted Grey: DECORATIVE only (3.72:1), also the form-field border */
+  --revio-text-readable: #656371; /* small secondary text (5.87:1 on white) */
+  --revio-border: #eae9f0; /* Border Grey: borders and separators */
+  --revio-success: #22c55e; /* fill / icon, with midnight text */
+  --revio-streak: #f59e0b; /* Streak Orange: fill / icon, with midnight text */
+  --revio-social: #ed5682; /* Social Pink: likes and reactions, fill with midnight text */
+  --revio-error: #ef4444; /* error SIGNAL (border, icon), always with a text */
+  /* ---- Additions, for WCAG AA text where the charter colour is a fill colour (measured) ---- */
+  --revio-success-text: #15803d; /* 5.02:1 on white */
+  --revio-streak-text: #b45309; /* 5.02:1 on white */
+  --revio-social-text: #c2185b; /* 5.87:1 on white */
+  --revio-primary-on-dark: #a99bff; /* violet TEXT on the dark surfaces: 6.76:1 on #20202C */
+  /* ---- Motion (charter: 150-300 ms) ---- */
   --dur-micro: 150ms;
-  --dur-base: 300ms;
+  --dur-base: 250ms;
 
-  /* ---- shadcn variables, mapped on the palette ---- */
-  --radius: 14px;
-  --background: var(--revio-white);
-  --foreground: var(--revio-ink);
-  --card: var(--revio-white);
-  --card-foreground: var(--revio-ink);
-  --popover: var(--revio-white);
-  --popover-foreground: var(--revio-ink);
-  --primary: var(--revio-violet);
-  --primary-foreground: var(--revio-white);
-  --secondary: var(--revio-lilac);
-  --secondary-foreground: var(--revio-ink);
-  --muted: var(--revio-lilac);
-  --muted-foreground: var(--revio-muted);
-  --accent: var(--revio-lilac);
-  --accent-foreground: var(--revio-ink);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-solid: oklch(
-    0.577 0.245 27.325
-  ); /* red FILL carrying white text: 4.75:1 (same in both themes) */
+  /* ---- shadcn variables, mapped on the charter ---- */
+  --radius: 16px;
+  --background: var(--revio-cloud);
+  --foreground: var(--revio-text);
+  --card: var(--revio-surface);
+  --card-foreground: var(--revio-text);
+  --popover: var(--revio-surface);
+  --popover-foreground: var(--revio-text);
+  --primary: var(--revio-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--revio-primary-light);
+  --secondary-foreground: var(--revio-primary-hover);
+  --muted: #efeef4;
+  --muted-foreground: var(--revio-text-readable);
+  --accent: var(--revio-primary-light);
+  --accent-foreground: var(--revio-text);
+  --destructive: #dc2626; /* error TEXT on light surfaces: 4.83:1 (the charter's #EF4444 gives 3.76) */
+  --destructive-solid: #dc2626; /* red FILL carrying white text: 4.83:1 */
   --border: var(--revio-border);
-  --input: var(--revio-border-strong);
-  --ring: var(--revio-violet);
-  --chart-1: var(--revio-violet);
-  --chart-2: #b024d6;
-  --chart-3: var(--revio-magenta-text);
-  --chart-4: var(--revio-ink-3);
-  --chart-5: #9b8ab8;
-  /* Light sidebar for now: it becomes ink with the new navigation (the existing items use muted text). */
-  --sidebar: var(--revio-lilac);
-  --sidebar-foreground: var(--revio-ink);
-  --sidebar-primary: var(--revio-violet);
-  --sidebar-primary-foreground: var(--revio-white);
-  --sidebar-accent: #ebddff;
-  --sidebar-accent-foreground: var(--revio-ink);
+  --input: var(--revio-text-secondary); /* form-field border: 3.72:1 on white (WCAG 1.4.11) */
+  --ring: var(--revio-primary);
+  --chart-1: var(--revio-primary);
+  --chart-2: #9d8cf6;
+  --chart-3: var(--revio-social-text);
+  --chart-4: var(--revio-streak-text);
+  --chart-5: var(--revio-success-text);
+  /* Sidebar (charter: white, active item on soft purple). */
+  --sidebar: var(--revio-surface);
+  --sidebar-foreground: var(--revio-text);
+  --sidebar-primary: var(--revio-primary);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--revio-primary-light);
+  --sidebar-accent-foreground: var(--revio-primary-hover);
   --sidebar-border: var(--revio-border);
-  --sidebar-ring: var(--revio-violet);
+  --sidebar-ring: var(--revio-primary);
   /* The tokens the app components already use (names kept, values changed). */
-  --brand: var(--revio-violet);
-  --brand-foreground: var(--revio-white);
-  --brand-text: var(--revio-violet);
-  --brand-soft: var(--revio-lilac);
-  --brand-soft-foreground: #4a1fa0;
+  --brand: var(--revio-primary);
+  --brand-foreground: #ffffff;
+  --brand-text: var(--revio-primary-hover);
+  --brand-soft: var(--revio-primary-light);
+  --brand-soft-foreground: var(--revio-primary-hover);
 }
 
+/* Dark theme: the charter's values (page 6), plus a lighter violet and lighter signals for TEXT. */
 .dark {
-  --background: var(--revio-ink);
-  --foreground: #f6f1ff;
-  --card: var(--revio-ink-2);
-  --card-foreground: #f6f1ff;
-  --popover: var(--revio-ink-2);
-  --popover-foreground: #f6f1ff;
-  --primary: var(--revio-violet-on-ink);
-  --primary-foreground: var(--revio-ink);
-  --secondary: var(--revio-ink-3);
-  --secondary-foreground: #f6f1ff;
-  --muted: var(--revio-ink-2);
-  --muted-foreground: var(--revio-muted-on-ink);
-  --accent: var(--revio-ink-3);
-  --accent-foreground: #f6f1ff;
-  --destructive: oklch(0.8 0.14 22); /* light red: text on the ink surfaces (the former value gave 3.56:1) */
-  --border: var(--revio-ink-3);
-  --input: #8f84ad;
-  --ring: var(--revio-violet-on-ink);
-  --chart-1: var(--revio-violet-on-ink);
-  --chart-2: #d99bff;
-  --chart-3: #ff8cc8;
-  --chart-4: #cfc6e6;
-  --chart-5: #9b8ab8;
-  --sidebar: var(--revio-ink-2);
-  --sidebar-foreground: #f6f1ff;
-  --sidebar-primary: var(--revio-violet-on-ink);
-  --sidebar-primary-foreground: var(--revio-ink);
-  --sidebar-accent: var(--revio-ink-3);
-  --sidebar-accent-foreground: #f6f1ff;
-  --sidebar-border: var(--revio-ink-3);
-  --sidebar-ring: var(--revio-violet-on-ink);
-  --revio-magenta-text: #ff8cc8; /* pink for TEXT on the ink surfaces (the light value gives 2.78:1 there) */
-  --brand: #a56eff;
-  --brand-foreground: var(--revio-ink);
-  --brand-text: var(--revio-violet-on-ink);
-  --brand-soft: var(--revio-ink-3);
-  --brand-soft-foreground: #e7ddfb;
-}
-
-/* The "petits carreaux" background of the screens: 24 px grid that fades out so it never hinders reading. */
-.revio-grid {
-  background-color: var(--background);
-  background-image:
-    linear-gradient(180deg, transparent 0%, var(--background) 70%),
-    linear-gradient(var(--revio-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--revio-grid) 1px, transparent 1px);
-  background-size:
-    100% 100%,
-    24px 24px,
-    24px 24px;
-}
-.dark .revio-grid {
-  background-image:
-    linear-gradient(180deg, transparent 0%, var(--background) 70%),
-    linear-gradient(var(--revio-ink-2) 1px, transparent 1px),
-    linear-gradient(90deg, var(--revio-ink-2) 1px, transparent 1px);
-}
-
-/* The gradient: only for friends' presence, kudos and celebrations, and the central "Réviser" button. */
-.bg-revio-gradient {
-  background-image: var(--revio-gradient);
-}
-.bg-revio-gradient-solid {
-  background-image: var(--revio-gradient-solid);
+  --revio-landing: #14141e; /* the landing follows the dark background */
+  --revio-primary-light: #332952;
+  --revio-border: #303041;
+  --revio-text: #f4f2fb;
+  --revio-text-readable: #a09eb3;
+  --revio-text-secondary: #a09eb3;
+  --revio-success-text: #4ade80;
+  --revio-streak-text: #f59e0b;
+  --revio-social-text: #f47ba0;
+  --background: #14141e;
+  --foreground: #f4f2fb;
+  --card: #20202c;
+  --card-foreground: #f4f2fb;
+  --popover: #20202c;
+  --popover-foreground: #f4f2fb;
+  --primary: var(--revio-primary); /* the fill stays Revio Purple: white text 5.27:1 */
+  --primary-foreground: #ffffff;
+  --secondary: #332952;
+  --secondary-foreground: #f4f2fb;
+  --muted: #2a2a38;
+  --muted-foreground: #a09eb3;
+  --accent: #332952;
+  --accent-foreground: #f4f2fb;
+  --destructive: #fca5a5; /* light red: text on the dark surfaces (8.48:1 on #20202C, 5.94:1 on an outline button) */
+  --border: #303041;
+  --input: #76738d; /* form-field border: 3.53:1 on #20202C */
+  --ring: var(--revio-primary-on-dark);
+  --chart-1: var(--revio-primary-on-dark);
+  --chart-2: #6950ee;
+  --chart-3: #f47ba0;
+  --chart-4: #f59e0b;
+  --chart-5: #4ade80;
+  --sidebar: #20202c;
+  --sidebar-foreground: #f4f2fb;
+  --sidebar-primary: var(--revio-primary);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #332952;
+  --sidebar-accent-foreground: #f4f2fb;
+  --sidebar-border: #303041;
+  --sidebar-ring: var(--revio-primary-on-dark);
+  --brand: var(--revio-primary);
+  --brand-foreground: #ffffff;
+  --brand-text: var(--revio-primary-on-dark);
+  --brand-soft: #332952;
+  --brand-soft-foreground: #f4f2fb;
 }
 
 @layer base {
-  /* Titles and figures: Space Grotesk. */
+  /* Titles and figures: Inter, heavy and tight (charter page 3: page 800, section 700, card 600). */
   h1,
   h2,
   h3,
   h4,
   [data-slot="card-title"] {
     font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+  }
+  h1 {
+    font-weight: 800;
   }
 
   * {

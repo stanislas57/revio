@@ -11,6 +11,7 @@ import { FocusTimer } from "@/components/revio/focus-timer";
 import { KudosButton } from "@/components/revio/kudos-button";
 import { LeagueTable } from "@/components/revio/league-table";
 import { LiveActivityFeed, type LiveItem } from "@/components/revio/live-activity-feed";
+import { RevioLogo } from "@/components/revio/logo";
 import {
   addXp,
   canSendKudos,
@@ -28,8 +29,10 @@ import { ReactionBar, type ReactionId } from "@/components/revio/reaction-bar";
 import { RevioRing } from "@/components/revio/revio-ring";
 import { SharedSheetCard } from "@/components/revio/shared-sheet-card";
 import { RevioStreakCard } from "@/components/revio/streak-card";
+import { StatCard } from "@/components/revio/stat-card";
 import { RevioSubjectCard } from "@/components/revio/subject-card";
 import { XpBar } from "@/components/revio/xp-bar";
+import { Button } from "@/components/ui/button";
 import {
   DEMO_BADGES,
   DEMO_CARDS,
@@ -71,6 +74,20 @@ function Showcase({
   );
 }
 
+/** The palette of the charter (bêta 01, page 2), read from the CSS tokens so the swatch follows the theme. */
+const PALETTE = [
+  { name: "Revio Purple", token: "--revio-primary", hex: "#6950EE", use: "Logo, boutons, navigation" },
+  { name: "Electric Lime", token: "--revio-lime", hex: "#D6FA72", use: "XP, récompenses, progression" },
+  { name: "Cream White", token: "--revio-landing", hex: "#F8F8F3", use: "Fond de la landing page" },
+  { name: "Cloud White", token: "--revio-cloud", hex: "#F7F7FB", use: "Fond de l'application" },
+  { name: "Midnight Black", token: "--revio-midnight", hex: "#181921", use: "Titres et texte" },
+  { name: "Soft Purple", token: "--revio-primary-light", hex: "#EEEBFF", use: "Sélections, fonds légers" },
+  { name: "Border Grey", token: "--revio-border", hex: "#EAE9F0", use: "Bordures et séparateurs" },
+  { name: "Success Green", token: "--revio-success", hex: "#22C55E", use: "Réussite et validation" },
+  { name: "Streak Orange", token: "--revio-streak", hex: "#F59E0B", use: "Séries et régularité" },
+  { name: "Social Pink", token: "--revio-social", hex: "#ED5682", use: "Likes et réactions" },
+] as const;
+
 const Row = ({ children }: { children: ReactNode }) => (
   <div className="flex flex-wrap items-center gap-6">{children}</div>
 );
@@ -110,16 +127,68 @@ export function DesignSystemDemo() {
   return (
     <div className="space-y-10">
       <Showcase
+        id="charte"
+        title="Charte bêta 01"
+        note="Couleurs, typographie Inter et boutons de la charte. Les teintes affichées suivent le thème clair ou sombre."
+      >
+        <div className="space-y-8">
+          <RevioLogo className="text-5xl" />
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {PALETTE.map((c) => (
+              <li key={c.name} className="overflow-hidden rounded-lg border">
+                <span aria-hidden className="block h-12" style={{ background: `var(${c.token})` }} />
+                <span className="block space-y-0.5 p-2.5 text-xs">
+                  <span className="block font-semibold">{c.name}</span>
+                  <code className="block text-muted-foreground">{c.hex}</code>
+                  <span className="block text-muted-foreground">{c.use}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <div className="space-y-2 rounded-2xl border bg-revio-landing p-5">
+            <p className="text-xs font-bold tracking-widest text-brand-text uppercase">Inter · 900</p>
+            <p className="text-4xl leading-none font-black tracking-[-0.05em] sm:text-5xl">
+              Moins de stress.
+              <br />
+              <span className="text-brand-text">Plus de progrès.</span>
+            </p>
+            <p className="pt-2 text-lg font-semibold">Ton prochain objectif</p>
+            <p className="text-sm text-muted-foreground">
+              Chaque session de révision te rapproche de ton prochain niveau.
+            </p>
+            <p className="text-3xl font-extrabold tracking-[-0.02em] text-brand-text">2 450 XP · Niveau 8</p>
+          </div>
+          <Row>
+            <Button className="min-h-11">Commencer une session</Button>
+            <Button className="min-h-11 bg-revio-lime text-revio-midnight hover:bg-revio-lime/85">
+              Récupérer ma récompense
+            </Button>
+            <Button variant="secondary" className="min-h-11">
+              Voir mes statistiques
+            </Button>
+            <Button variant="outline" className="min-h-11">
+              Annuler
+            </Button>
+          </Row>
+          <dl className="grid gap-3 sm:grid-cols-3">
+            <StatCard label="Streak actuel" value="12 jours" />
+            <StatCard label="XP cumulés" value="2 450" />
+            <StatCard label="Ligue argent" value="3e" />
+          </dl>
+        </div>
+      </Showcase>
+
+      <Showcase
         id="anneau"
         title="RevioRing"
-        note="Le signe central : progression (violet et lime pour le gain récent) et présence (dégradé, point « en direct »)."
+        note="Progression (violet, lime pour le gain récent) et présence (violet, point vert « en direct »)."
       >
         <Row>
           <RevioRing variant="progress" label="Progression du chapitre" value={0.64} gainValue={0.1} />
           <RevioRing variant="progress" label="Progression à 100 %" value={1} size={90} stroke={8} />
           <RevioRing variant="progress" label="Progression à 0 %" value={0} size={90} stroke={8} />
           <RevioRing variant="presence" value={0.7} size={64} stroke={4} live>
-            <span className="flex size-full items-center justify-center rounded-full bg-revio-lilac text-sm font-bold text-revio-ink">
+            <span className="flex size-full items-center justify-center rounded-full bg-brand-soft text-sm font-bold text-brand-soft-foreground">
               LB
             </span>
           </RevioRing>
@@ -147,14 +216,14 @@ export function DesignSystemDemo() {
             <XpBar level={DEMO_ME.level} xp={DEMO_ME.xp} xpMax={DEMO_ME.xpMax} gain={gain} />
             <button
               type="button"
-              className="min-h-11 rounded-pill border px-4 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="min-h-11 rounded-md border bg-card px-4 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
               onClick={() => setGain((g) => (g === 0 ? 40 : 0))}
             >
               {gain === 0 ? "Afficher un gain de +40 XP" : "Retirer le gain"}
             </button>
           </div>
-          <div className="rounded-lg bg-revio-ink p-4">
-            <XpBar tone="ink" level={DEMO_ME.level} xp={DEMO_ME.xp} xpMax={DEMO_ME.xpMax} />
+          <div className="rounded-lg bg-revio-primary p-4 text-white">
+            <XpBar tone="primary" level={DEMO_ME.level} xp={DEMO_ME.xp} xpMax={DEMO_ME.xpMax} />
           </div>
         </div>
       </Showcase>
@@ -204,7 +273,7 @@ export function DesignSystemDemo() {
           <button
             type="button"
             onClick={addLive}
-            className="min-h-11 rounded-pill border px-4 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="min-h-11 rounded-md border bg-card px-4 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             Ajouter une activité
           </button>
@@ -221,7 +290,7 @@ export function DesignSystemDemo() {
           <button
             type="button"
             onClick={gainXp}
-            className="min-h-11 rounded-pill border px-4 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="min-h-11 rounded-md border bg-card px-4 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             Gagner 120 XP
           </button>
@@ -274,7 +343,7 @@ export function DesignSystemDemo() {
       <Showcase
         id="badges"
         title="BadgeCard"
-        note="Commun : aucun effet ; rare : bordure violette lumineuse ; épique : fond encre, carte inclinée avec reflet."
+        note="Commun : aucun effet ; rare : bordure violette lumineuse ; épique : carte violette inclinée avec reflet."
       >
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {DEMO_BADGES.map((b) => (
