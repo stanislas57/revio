@@ -1,8 +1,9 @@
 import type { PublicUser } from "@/lib/contracts";
 import { levelProgress } from "@/modules/gamification/domain/levels";
 import { effectiveStreakDays } from "@/modules/gamification/domain/streak-display";
+import type { LeaderboardEntry } from "@/modules/gamification/contracts";
 import type { Friend } from "../contracts";
-import type { ProfileRow } from "../schemas";
+import type { LeaderboardRow, ProfileRow } from "../schemas";
 
 export function toPublicUser(p: ProfileRow): PublicUser {
   return { id: p.id, username: p.username, displayName: p.display_name, avatarUrl: p.avatar_url };
@@ -28,5 +29,19 @@ export function toFriend(args: {
       ? effectiveStreakDays(args.stats.current_streak, args.stats.last_validated_on, args.today)
       : 0,
     studyingNow: args.studyingNow,
+  };
+}
+
+export function toLeaderboardEntry(row: LeaderboardRow): LeaderboardEntry {
+  return {
+    rank: row.rank,
+    user: {
+      id: row.user_id,
+      username: row.username,
+      displayName: row.display_name,
+      avatarUrl: row.avatar_url,
+    },
+    weeklyXp: row.weekly_xp,
+    isMe: row.is_me,
   };
 }
