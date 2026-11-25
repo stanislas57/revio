@@ -61,3 +61,23 @@ export type ExamInput = z.input<typeof examSchema>;
 
 export const targetSchema = average.nullable();
 export const idSchema = z.uuid({ error: "Identifiant invalide." });
+
+export const hypothesisSchema = z.object({
+  subjectId: z.uuid({ error: "Matière invalide." }),
+  value: z.number({ error: "Nombre attendu." }).min(0, { error: "Note ≥ 0." }),
+  maxValue: z.number({ error: "Nombre attendu." }).positive({ error: "Barème > 0." }).max(1000),
+  coefficient: z.number({ error: "Nombre attendu." }).min(0, { error: "Coefficient ≥ 0." }).max(1000),
+});
+
+export const scenarioSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, { error: "Donne un nom au scénario." })
+    .max(60, { error: "60 caractères maximum." }),
+  hypotheses: z
+    .array(hypothesisSchema)
+    .min(1, { error: "Ajoute au moins une note hypothétique." })
+    .max(20, { error: "20 notes hypothétiques au maximum." }),
+});
+export type ScenarioInput = z.input<typeof scenarioSchema>;

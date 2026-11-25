@@ -721,6 +721,39 @@ ok(
       .length === 1,
   );
   ok("the answered request notification is gone", (await reqN()).length === 0);
+  // simulator scenarios (S-22): strictly private, bounded
+  const hyp = `'[{"subjectId":"00000000-0000-4000-8000-000000000001","value":15,"maxValue":20,"coefficient":1}]'::jsonb`;
+  ok(
+    "owner saves a scenario",
+    !(await as(D, `insert into simulation_scenarios (name, hypotheses) values ('Plan A', ${hyp})`)).error,
+  );
+  ok(
+    "a friend cannot read my scenarios",
+    (await as(E, `select * from simulation_scenarios`)).rows.length === 0,
+  );
+  ok(
+    "cannot save a scenario for somebody else",
+    !!(
+      await as(E, `insert into simulation_scenarios (user_id, name, hypotheses) values ('${D}', 'x', ${hyp})`)
+    ).error,
+  );
+  ok(
+    "empty hypotheses rejected",
+    !!(await as(D, `insert into simulation_scenarios (name, hypotheses) values ('x', '[]'::jsonb)`)).error,
+  );
+  ok(
+    "blank name rejected",
+    !!(await as(D, `insert into simulation_scenarios (name, hypotheses) values ('   ', ${hyp})`)).error,
+  );
+  for (let i = 0; i < 19; i++)
+    await as(D, `insert into simulation_scenarios (name, hypotheses) values ('S${i}', ${hyp})`);
+  ok(
+    "21st scenario refused",
+    !!(await as(D, `insert into simulation_scenarios (name, hypotheses) values ('one too many', ${hyp})`))
+      .error,
+  );
+  ok("anon cannot read scenarios", !!(await as(null, `select * from simulation_scenarios`)).error);
+  ok("owner deletes a scenario", !(await as(D, `delete from simulation_scenarios where name='S0'`)).error);
 
   // account deletion: everything of D goes, E stays
   await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);
