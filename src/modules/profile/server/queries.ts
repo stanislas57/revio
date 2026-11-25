@@ -11,9 +11,12 @@ const settingsRowSchema = z.object({
   daily_goal_minutes: z.number(),
   auto_post: z.boolean(),
   share_subject_in_feed: z.boolean(),
+  show_live_status: z.boolean(),
+  default_visibility: z.enum(["private", "friends"]),
 });
 
-export const SETTINGS_COLUMNS = "timezone, daily_goal_minutes, auto_post, share_subject_in_feed";
+export const SETTINGS_COLUMNS =
+  "timezone, daily_goal_minutes, auto_post, share_subject_in_feed, show_live_status, default_visibility";
 
 export function toUserSettings(row: z.infer<typeof settingsRowSchema>): UserSettings {
   return {
@@ -21,6 +24,8 @@ export function toUserSettings(row: z.infer<typeof settingsRowSchema>): UserSett
     dailyGoalMinutes: row.daily_goal_minutes,
     autoPost: row.auto_post,
     shareSubjectInFeed: row.share_subject_in_feed,
+    showLiveStatus: row.show_live_status,
+    shareSessionsByDefault: row.default_visibility === "friends",
   };
 }
 

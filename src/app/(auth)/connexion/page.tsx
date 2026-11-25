@@ -27,6 +27,11 @@ export default async function ConnexionPage({ searchParams }: PageProps<"/connex
           montre les écrans.
         </p>
       )}
+      {params.compte === "supprime" && (
+        <p role="status" className="max-w-sm text-center text-sm">
+          Ton compte et toutes tes données ont été supprimés.
+        </p>
+      )}
       {params.erreur === "lien" && (
         <p role="alert" className="text-sm text-destructive">
           Lien de confirmation invalide ou expiré.

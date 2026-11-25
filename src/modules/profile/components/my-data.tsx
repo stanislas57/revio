@@ -1,10 +1,8 @@
-import { Download, Trash2 } from "lucide-react";
-import { NotImplemented } from "@/components/states/not-implemented";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AccountActions } from "./account-actions";
 import { AUDIENCE_TITLES, groupByAudience, MY_DATA, NOT_COLLECTED } from "../domain/my-data";
 
-/** "Mes données": what is kept, who sees it, and (not working yet) export and deletion. */
+/** "Mes données": what is kept, who sees it, and the export / account deletion actions. */
 export function MyData() {
   return (
     <Card id="mes-donnees" className="scroll-mt-20">
@@ -35,20 +33,7 @@ export function MyData() {
           <h3 id="data-actions" className="text-sm font-semibold">
             Récupérer ou supprimer mes données
           </h3>
-          <NotImplemented
-            owner="Stan"
-            feature="L'export de tes données et la suppression du compte ne sont pas encore disponibles : les boutons ci-dessous sont désactivés."
-          />
-          <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" disabled className="min-h-11">
-              <Download className="size-4" aria-hidden />
-              Exporter mes données
-            </Button>
-            <Button type="button" variant="outline" disabled className="min-h-11 text-destructive">
-              <Trash2 className="size-4" aria-hidden />
-              Supprimer mon compte
-            </Button>
-          </div>
+          <AccountActions />
         </section>
       </CardContent>
     </Card>

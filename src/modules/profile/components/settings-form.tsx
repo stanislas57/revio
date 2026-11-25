@@ -75,6 +75,8 @@ export function SettingsForm({ settings, locale = DEFAULT_LOCALE, onSave = updat
             dailyGoalMinutes: goalText === "" ? Number.NaN : Number(goalText),
             autoPost: form.get("autoPost") === "on",
             shareSubjectInFeed: form.get("shareSubjectInFeed") === "on",
+            showLiveStatus: form.get("showLiveStatus") === "on",
+            shareSessionsByDefault: form.get("shareSessionsByDefault") === "on",
           });
           setMessage(res.ok ? { ok: true, text: m.saved } : { ok: false, text: res.error.message });
         });
@@ -131,6 +133,20 @@ export function SettingsForm({ settings, locale = DEFAULT_LOCALE, onSave = updat
           defaultChecked={settings.shareSubjectInFeed}
           title={m.shareSubjectTitle}
           help={m.shareSubjectHelp}
+        />
+        <Toggle
+          id="shareSessionsByDefault"
+          name="shareSessionsByDefault"
+          defaultChecked={settings.shareSessionsByDefault}
+          title={m.shareByDefaultTitle}
+          help={m.shareByDefaultHelp}
+        />
+        <Toggle
+          id="showLiveStatus"
+          name="showLiveStatus"
+          defaultChecked={settings.showLiveStatus}
+          title={m.liveStatusTitle}
+          help={m.liveStatusHelp}
         />
       </fieldset>
 

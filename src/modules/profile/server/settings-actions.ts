@@ -15,6 +15,8 @@ const resultSchema = z.object({
   daily_goal_minutes: z.number(),
   auto_post: z.boolean(),
   share_subject_in_feed: z.boolean(),
+  show_live_status: z.boolean(),
+  default_visibility: z.enum(["private", "friends"]),
 });
 
 /**
@@ -45,6 +47,8 @@ export async function updateSettings(input: UpdateSettingsInput): Promise<Action
         daily_goal_minutes: parsed.data.dailyGoalMinutes,
         auto_post: parsed.data.autoPost,
         share_subject_in_feed: parsed.data.shareSubjectInFeed,
+        show_live_status: parsed.data.showLiveStatus,
+        default_visibility: parsed.data.shareSessionsByDefault ? "friends" : "private",
       },
       { onConflict: "user_id" },
     )

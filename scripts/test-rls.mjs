@@ -523,6 +523,90 @@ ok(
     ?.length === 0,
 );
 
+// privacy settings (S-15) and account deletion (S-14)
+{
+  const D = "00000000-0000-0000-0000-00000000000d";
+  const E = "00000000-0000-0000-0000-00000000000e";
+  await db.exec(
+    `insert into auth.users (id, email, raw_user_meta_data) values ('${D}','d@x.fr','{}'),('${E}','e@x.fr','{}');`,
+  );
+  await db.exec(
+    `insert into friendships (requester_id, addressee_id, status) values ('${D}','${E}','accepted') on conflict do nothing;`,
+  );
+  ok(
+    "default visibility is friends",
+    (await as(D, `select default_visibility from user_settings`)).rows.length === 0,
+  );
+  const live = (await as(D, `select id from start_study_session('free')`)).rows?.[0];
+  ok(
+    "new session follows the default (friends)",
+    (await as(D, `select visibility from study_sessions`)).rows?.[0]?.visibility === "friends",
+  );
+  ok(
+    "friend sees the running session",
+    (await as(E, `select id from study_sessions where user_id='${D}'`)).rows.length === 1,
+  );
+  await as(D, `insert into user_settings (show_live_status) values (false)`);
+  ok(
+    "friend no longer sees the running session once live status is off",
+    (await as(E, `select id from study_sessions where user_id='${D}'`)).rows.length === 0,
+  );
+  ok("owner still sees it", (await as(D, `select id from study_sessions`)).rows.length === 1);
+  await as(D, `select cancel_study_session($1)`, [live?.id]);
+  await as(D, `update user_settings set default_visibility='private', show_live_status=true`);
+  await as(D, `select start_study_session('free')`);
+  ok(
+    "new session follows the private default",
+    (await as(D, `select visibility from study_sessions where status='in_progress'`)).rows?.[0]
+      ?.visibility === "private",
+  );
+  ok(
+    "explicit visibility wins over the default",
+    !(await as(D, `select cancel_study_session(id) from study_sessions where status='in_progress'`)).error &&
+      (await as(D, `select visibility from start_study_session('free', null, null, 'friends')`)).rows?.[0]
+        ?.visibility === "friends",
+  );
+  ok(
+    "unknown default visibility rejected",
+    !!(await as(D, `update user_settings set default_visibility='public'`)).error,
+  );
+  ok(
+    "another user cannot read the live flag row",
+    (await as(E, `select * from user_settings where user_id='${D}'`)).rows.length === 0,
+  );
+
+  // account deletion: everything of D goes, E stays
+  await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);
+  await as(D, `insert into exams (title, exam_on) values ('Partiel', '2026-12-10')`);
+  await as(
+    D,
+    `insert into calendar_events (title, starts_on, last_on) values ('x', '2026-12-10', '2026-12-10')`,
+  );
+  ok("anon cannot delete an account", !!(await as(null, `select delete_my_account()`)).error);
+  ok("D deletes own account", !(await as(D, `select delete_my_account()`)).error);
+  const tables = (
+    await db.query(
+      `select table_name from information_schema.columns where table_schema='public' and column_name='user_id' group by 1`,
+    )
+  ).rows.map((r) => r.table_name);
+  let leftover = 0;
+  for (const t of tables)
+    leftover += (await db.query(`select count(*)::int n from public.${t} where user_id='${D}'`)).rows[0].n;
+  leftover += (
+    await db.query(
+      `select count(*)::int n from public.friendships where requester_id='${D}' or addressee_id='${D}'`,
+    )
+  ).rows[0].n;
+  leftover += (await db.query(`select count(*)::int n from public.profiles where id='${D}'`)).rows[0].n;
+  leftover += (await db.query(`select count(*)::int n from auth.users where id='${D}'`)).rows[0].n;
+  ok(`no row of the deleted user remains (${tables.length} tables checked)`, leftover === 0);
+  ok(
+    "the friend account is untouched",
+    (await db.query(`select count(*)::int n from auth.users where id='${E}'`)).rows[0].n === 1,
+  );
+  await db.exec(`delete from auth.users where id='${E}'`);
+}
+
 // delete cascade
 await db.exec(`delete from auth.users where id='${A}'`);
 ok("user deletion cascades", (await db.query(`select count(*)::int n from grades`)).rows[0].n === 0);
