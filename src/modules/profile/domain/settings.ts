@@ -7,6 +7,8 @@
  */
 
 import { z } from "zod";
+import { DEFAULT_LOCALE, type Locale } from "./locale";
+import { SETTINGS_MESSAGES } from "./settings-messages";
 
 export const GOAL_MIN_MINUTES = 10;
 export const GOAL_MAX_MINUTES = 600;
@@ -51,30 +53,37 @@ export function normalizeTimeZone(value: string): string | null {
 }
 
 /**
- * Input of the update action. The server validates everything again; the database
- * also checks the time zone against pg_timezone_names (trigger) and the goal range.
+ * Input of the update action, with its error messages in the given language. The server validates
+ * everything again; the database also checks the time zone against pg_timezone_names (trigger)
+ * and the goal range.
  */
-export const settingsSchema = z.object({
-  timezone: z
-    .string()
-    .trim()
-    .max(64, { error: "Fuseau horaire invalide." })
-    .transform((value, ctx) => {
-      const zone = normalizeTimeZone(value);
-      if (!zone) {
-        ctx.addIssue({ code: "custom", message: "Fuseau horaire inconnu." });
-        return z.NEVER;
-      }
-      return zone;
-    }),
-  dailyGoalMinutes: z
-    .number({ error: "L'objectif doit être un nombre." })
-    .int({ error: "L'objectif doit être un nombre entier de minutes." })
-    .min(GOAL_MIN_MINUTES, { error: `L'objectif doit être d'au moins ${GOAL_MIN_MINUTES} minutes.` })
-    .max(GOAL_MAX_MINUTES, { error: `L'objectif ne peut pas dépasser ${GOAL_MAX_MINUTES} minutes.` }),
-  autoPost: z.boolean().default(DEFAULT_SETTINGS.autoPost),
-  shareSubjectInFeed: z.boolean().default(DEFAULT_SETTINGS.shareSubjectInFeed),
-});
+export function settingsSchemaFor(locale: Locale) {
+  const m = SETTINGS_MESSAGES[locale].errors;
+  return z.object({
+    timezone: z
+      .string()
+      .trim()
+      .max(64, { error: m.timezoneInvalid })
+      .transform((value, ctx) => {
+        const zone = normalizeTimeZone(value);
+        if (!zone) {
+          ctx.addIssue({ code: "custom", message: m.timezoneUnknown });
+          return z.NEVER;
+        }
+        return zone;
+      }),
+    dailyGoalMinutes: z
+      .number({ error: m.goalNumber })
+      .int({ error: m.goalInteger })
+      .min(GOAL_MIN_MINUTES, { error: m.goalMin(GOAL_MIN_MINUTES) })
+      .max(GOAL_MAX_MINUTES, { error: m.goalMax(GOAL_MAX_MINUTES) }),
+    autoPost: z.boolean().default(DEFAULT_SETTINGS.autoPost),
+    shareSubjectInFeed: z.boolean().default(DEFAULT_SETTINGS.shareSubjectInFeed),
+  });
+}
+
+/** The schema in the default language (French). */
+export const settingsSchema = settingsSchemaFor(DEFAULT_LOCALE);
 
 export type UpdateSettingsInput = z.input<typeof settingsSchema>;
 
@@ -94,8 +103,13 @@ export const TIMEZONE_OPTIONS: readonly { value: string; label: string }[] = [
   { value: "UTC", label: "Temps universel (UTC)" },
 ];
 
-/** The options, plus the user's current zone when it is not one of them. */
-export function timezoneChoices(current: string): { value: string; label: string }[] {
-  const known = TIMEZONE_OPTIONS.some((o) => o.value === current);
-  return known ? [...TIMEZONE_OPTIONS] : [{ value: current, label: current }, ...TIMEZONE_OPTIONS];
+/** The options in the given language, plus the user's current zone when it is not one of them. */
+export function timezoneChoices(
+  current: string,
+  locale: Locale = DEFAULT_LOCALE,
+): { value: string; label: string }[] {
+  const labels = SETTINGS_MESSAGES[locale].zones;
+  const options = TIMEZONE_OPTIONS.map((o) => ({ value: o.value, label: labels[o.value] ?? o.label }));
+  const known = options.some((o) => o.value === current);
+  return known ? options : [{ value: current, label: current }, ...options];
 }
