@@ -21,7 +21,7 @@ export function SessionSummary({ result }: { result: SessionResult }) {
   return (
     <div className="mx-auto max-w-lg space-y-6">
       <div className={cn("space-y-2 text-center", appear)}>
-        <PartyPopper className="mx-auto size-10 text-violet-500" aria-hidden />
+        <PartyPopper className="mx-auto size-10 text-brand-text" aria-hidden />
         <h1 className="text-2xl font-bold tracking-tight">Séance terminée</h1>
         <p className="text-muted-foreground">{result.subjectName ?? "Révision"}</p>
       </div>
@@ -36,7 +36,7 @@ export function SessionSummary({ result }: { result: SessionResult }) {
           </>
         ) : (
           <>
-            <p className="text-5xl font-bold text-violet-600 dark:text-violet-400">
+            <p className="text-5xl font-bold text-brand-text">
               +<CountUp value={result.earnedXp} /> XP
             </p>
             <ul className="mt-4 space-y-1 text-sm text-muted-foreground">
@@ -77,7 +77,7 @@ export function SessionSummary({ result }: { result: SessionResult }) {
         {result.leveledUp && (
           <p
             role="status"
-            className="flex items-center gap-2 rounded-md bg-violet-500/10 px-3 py-2 text-sm font-medium text-violet-700 dark:text-violet-300"
+            className="flex items-center gap-2 rounded-md bg-brand-soft px-3 py-2 text-sm font-medium text-brand-soft-foreground"
           >
             <Sparkles className="size-4" aria-hidden /> Nouveau niveau : {level.current.name} !
           </p>
@@ -92,7 +92,7 @@ export function SessionSummary({ result }: { result: SessionResult }) {
               : "Niveau max"}
           </span>
         </div>
-        <ProgressBar value={percent} label="Progression du niveau" barClassName="bg-violet-500" />
+        <ProgressBar value={percent} label="Progression du niveau" barClassName="bg-brand" />
         <p className="text-xs text-muted-foreground">
           Objectif du jour :{" "}
           {result.dailyGoalCompleted ? "atteint" : `${streak.todayMinutes} / ${streak.dailyGoalMinutes} min`}

@@ -15,12 +15,12 @@ export function LevelLadder({ currentLevel }: { currentLevel: number }) {
             key={l.number}
             className={cn(
               "flex items-center gap-3 rounded-lg border px-3 py-2 text-sm",
-              l.number === currentLevel && "border-violet-500/60 bg-violet-500/10",
+              l.number === currentLevel && "border-brand/60 bg-brand-soft",
               !unlocked && "text-muted-foreground",
             )}
           >
             {unlocked ? (
-              <Check className="size-4 text-violet-500" aria-label="Débloqué" />
+              <Check className="size-4 text-brand-text" aria-label="Débloqué" />
             ) : (
               <Lock className="size-4" aria-label="À débloquer" />
             )}

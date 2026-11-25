@@ -15,7 +15,7 @@ export function UserAvatar({
     <span className={cn("relative inline-flex size-10 shrink-0", className)}>
       <span
         aria-hidden
-        className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-sm font-semibold text-white"
+        className="flex size-full items-center justify-center rounded-full bg-brand text-sm font-semibold text-brand-foreground"
       >
         {initials(user)}
       </span>

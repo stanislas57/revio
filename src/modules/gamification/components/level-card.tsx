@@ -12,7 +12,7 @@ export function LevelCard({ level }: { level: LevelProgress }) {
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="size-4 text-violet-500" aria-hidden />
+          <Sparkles className="size-4 text-brand-text" aria-hidden />
           Niveau {level.current.number} · {level.current.name}
         </CardTitle>
       </CardHeader>
@@ -23,7 +23,7 @@ export function LevelCard({ level }: { level: LevelProgress }) {
         <ProgressBar
           value={percent}
           label={level.next ? `Progression vers ${level.next.name}` : "Niveau maximum"}
-          barClassName="bg-violet-500"
+          barClassName="bg-brand"
         />
         <p className="text-sm text-muted-foreground">
           {level.next && level.xpUntilNextLevel !== null
