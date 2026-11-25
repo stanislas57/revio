@@ -54,7 +54,9 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
     startTransition(async () => {
       const res = await fn();
       if (!res.ok) toast.error(res.error.message);
-      else then?.();
+      else if (then) then();
+      // The server actions do not revalidate the page: re-read the session state.
+      else router.refresh();
     });
 
   return (
