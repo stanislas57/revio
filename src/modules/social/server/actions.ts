@@ -197,10 +197,7 @@ export async function toggleReaction(postId: string): Promise<ActionResult<React
   if (error && error.code !== "23505")
     return fail(toActionError(error, { "42501": "Tu ne peux pas réagir à cette publication." }));
 
-  const { count } = await supabase
-    .from("post_reactions")
-    .select("post_id", { count: "exact", head: true })
-    .eq("post_id", id.data);
+  const { data: remaining } = await supabase.from("post_reactions").select("user_id").eq("post_id", id.data);
   refresh();
-  return succeed({ reactionsCount: count ?? 0, hasReacted: !had || !!error });
+  return succeed({ reactionsCount: remaining?.length ?? 0, hasReacted: !had || !!error });
 }

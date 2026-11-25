@@ -9,6 +9,7 @@ import {
   friendshipRowSchema,
   liveRowSchema,
   postRowSchema,
+  reactionRowSchema,
   profileRowSchema,
   statsRowSchema,
 } from "../schemas";
@@ -165,9 +166,7 @@ export async function getFeed(input: { cursor?: string; limit?: number } = {}): 
 
   let query = supabase
     .from("posts")
-    .select(
-      "id, user_id, type, subject_name, duration_minutes, earned_xp, streak_days, created_at, post_reactions(user_id)",
-    )
+    .select("id, user_id, type, subject_name, duration_minutes, earned_xp, streak_days, created_at")
     .order("created_at", { ascending: false })
     .limit(limit + 1);
   if (cursor && !Number.isNaN(Date.parse(cursor))) query = query.lt("created_at", cursor);
@@ -177,6 +176,22 @@ export async function getFeed(input: { cursor?: string; limit?: number } = {}): 
   const rows = postRowSchema.array().parse(data ?? []);
   const page = rows.slice(0, limit);
   const profiles = await loadProfiles(supabase, [...new Set(page.map((r) => r.user_id))]);
+
+  // Reactions in a second query (RLS: only those on posts the caller can read).
+  const reactionsByPost = new Map<string, string[]>();
+  if (page.length > 0) {
+    const { data: reactionData, error: reactionError } = await supabase
+      .from("post_reactions")
+      .select("post_id, user_id")
+      .in(
+        "post_id",
+        page.map((r) => r.id),
+      );
+    if (reactionError) throw new Error("Impossible de charger les réactions.");
+    for (const r of reactionRowSchema.array().parse(reactionData ?? [])) {
+      reactionsByPost.set(r.post_id, [...(reactionsByPost.get(r.post_id) ?? []), r.user_id]);
+    }
+  }
 
   const posts = page.flatMap((r): FeedPost[] => {
     const author = profiles.get(r.user_id);
@@ -192,8 +207,8 @@ export async function getFeed(input: { cursor?: string; limit?: number } = {}): 
         durationMinutes: r.duration_minutes,
         earnedXp: r.earned_xp,
         streakDays: r.streak_days,
-        reactionsCount: r.post_reactions.length,
-        hasReacted: r.post_reactions.some((x) => x.user_id === user.id),
+        reactionsCount: (reactionsByPost.get(r.id) ?? []).length,
+        hasReacted: (reactionsByPost.get(r.id) ?? []).includes(user.id),
       },
     ];
   });

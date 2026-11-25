@@ -58,13 +58,15 @@ export async function getRecentSessions(limit = 5): Promise<RecentSession[]> {
     .select("id, ended_at, result")
     .eq("user_id", user.id)
     .eq("status", "completed")
-    .not("result", "is", null)
     .order("ended_at", { ascending: false })
     .limit(limit);
   if (error) throw new Error("Impossible de charger tes séances.");
-  const parsed = z.array(recentSchema).safeParse(data ?? []);
-  if (!parsed.success) return [];
-  return parsed.data.map((r) => ({
+  // Sessions finished before the engine existed have no stored summary: skip them.
+  const rows = (data ?? []).flatMap((row) => {
+    const parsed = recentSchema.safeParse(row);
+    return parsed.success ? [parsed.data] : [];
+  });
+  return rows.map((r) => ({
     id: r.id,
     subjectName: r.result.subject_name,
     endedAt: r.ended_at,
