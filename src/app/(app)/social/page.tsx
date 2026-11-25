@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProfileForm } from "@/modules/profile/components/profile-form";
-import { getMyProfile } from "@/modules/profile/server/queries";
 import { AutoRefresh } from "@/modules/social/components/auto-refresh";
 import { FeedCard } from "@/modules/social/components/feed-card";
 import { FriendList } from "@/modules/social/components/friend-list";
@@ -16,32 +13,12 @@ import { getFeed, getLiveFriends, listFriendRequests, listFriends } from "@/modu
 export const metadata: Metadata = { title: "Social" };
 
 export default async function SocialPage() {
-  const [profile, feed, live, friends, requests] = await Promise.all([
-    getMyProfile(),
+  const [feed, live, friends, requests] = await Promise.all([
     getFeed(),
     getLiveFriends(),
     listFriends(),
     listFriendRequests(),
   ]);
-  if (profile.needsUsername) {
-    return (
-      <>
-        <PageHeader title="Social" description="Tes amis et le fil de leurs séances." />
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Choisis ton pseudo</CardTitle>
-            <CardDescription>
-              Tes amis te trouvent grâce à ton pseudo : il est nécessaire pour accéder à Social. Il est
-              visible par les autres utilisateurs, ta note ne l&apos;est jamais.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ProfileForm username="" displayName={profile.displayName} />
-          </CardContent>
-        </Card>
-      </>
-    );
-  }
   const incoming = requests.filter((r) => r.direction === "incoming");
   const outgoing = requests.filter((r) => r.direction === "outgoing");
 
