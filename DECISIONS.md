@@ -107,27 +107,6 @@ Dedans : compte + pseudo, matières, notes, moyenne, simulateur simple, Focus (l
 rebours), XP, niveaux, streak, amis, fil des séances, réaction. Dehors (marqué `NotImplemented`) :
 agenda, planning, trophées, classements, ligues, défis, notifications, paiements, Google, temps réel.
 
-## Ajoutées par la PR `charles/focus-social-v2` (à relire par Stan)
-
-### D-22 — Libellé de séance libre plutôt que matière du module `academic`
-
-Les matières (module de Stan) ne sont pas encore éditables dans l'interface. La séance porte donc un libellé
-libre (`study_sessions.label`, ≤ 60 caractères) que l'utilisateur tape lui-même ; il est copié dans la publication
-et visible des amis seulement si la séance est partagée. Cohérent avec D-16 (la table `subjects` reste privée).
-Quand les matières seront branchées, le libellé pourra être pré-rempli par le nom de la matière.
-
-### D-23 — Moteur XP écrit par Charles, par-dessus les fonctions de Stan
-
-La migration `20261125030000_focus_xp_social.sql` n'altère aucune fonction de la migration de Stan. Elle ajoute
-`finalize_study_session`, qui appelle `finish_study_session` puis applique D-14 / D-15 / D-18. **Écart avec D-20**
-(« seul Stan écrit des migrations ») : voir la description de la PR ; Stan peut reprendre ou remplacer cette
-migration (S-05, S-06) sans toucher aux composants, qui ne dépendent que de `contracts.ts`.
-
-### D-24 — Heures et fuseau
-
-Tant que `profiles.timezone` n'existe pas (S-04), les jours (série, objectif du jour, plafond quotidien) sont
-calculés en `Europe/Paris`, objectif du jour fixé à 30 minutes.
-
 ## Ouvertes
 
 - Confirmation d'e-mail activée ou non pour la démo.

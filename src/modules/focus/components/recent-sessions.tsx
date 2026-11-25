@@ -21,7 +21,7 @@ export function RecentSessions({ sessions }: { sessions: RecentSession[] }) {
             className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:outline-none"
           >
             <span className="min-w-0 flex-1">
-              <span className="block truncate font-medium">{s.label ?? "Révision"}</span>
+              <span className="block truncate font-medium">{s.subjectName ?? "Révision"}</span>
               <span className="text-xs text-muted-foreground">{dateFmt.format(new Date(s.endedAt))}</span>
             </span>
             <span className="text-muted-foreground tabular-nums">{formatMinutes(s.durationMinutes)}</span>

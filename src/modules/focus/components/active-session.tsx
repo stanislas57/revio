@@ -64,7 +64,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
     >
       <div className="space-y-1">
         <p className="text-sm text-muted-foreground">{paused ? "En pause" : "Séance en cours"}</p>
-        <h2 className="text-xl font-semibold">{session.label || session.subject?.name || "Révision"}</h2>
+        <h2 className="text-xl font-semibold">{session.subject?.name ?? "Révision"}</h2>
       </div>
 
       <p

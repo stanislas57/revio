@@ -4,8 +4,9 @@ import { useState, useTransition } from "react";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
+import type { SubjectRef } from "../domain/session-row";
 import { startSession } from "../server/actions";
 
 const DURATIONS = [
@@ -16,8 +17,8 @@ const DURATIONS = [
   { value: "90", label: "1 h 30" },
 ];
 
-/** Preparation screen: label, duration (free or countdown) and sharing. */
-export function StartSessionForm() {
+/** Preparation screen: subject (optional), duration (free or countdown) and sharing. */
+export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -25,7 +26,7 @@ export function StartSessionForm() {
     <Card>
       <CardHeader>
         <CardTitle>Nouvelle séance</CardTitle>
-        <CardDescription>Choisis ce que tu révises et lance le chrono. 1 minute = 1 XP.</CardDescription>
+        <CardDescription>Choisis la durée et lance le chrono. 1 minute = 1 XP.</CardDescription>
       </CardHeader>
       <CardContent>
         <form
@@ -34,25 +35,34 @@ export function StartSessionForm() {
             e.preventDefault();
             const form = new FormData(e.currentTarget);
             const planned = String(form.get("plannedMinutes") ?? "");
-            const label = String(form.get("label") ?? "").trim();
+            const subjectId = String(form.get("subjectId") ?? "");
             startTransition(async () => {
               const res = await startSession({
                 mode: planned ? "countdown" : "free",
                 plannedMinutes: planned ? Number(planned) : undefined,
                 visibility: form.get("share") === "on" ? "friends" : "private",
-                label: label || undefined,
+                subjectId: subjectId || undefined,
               });
               setError(res.ok ? null : res.error.message);
             });
           }}
         >
-          <div className="space-y-2">
-            <Label htmlFor="label">Matière ou sujet</Label>
-            <Input id="label" name="label" maxLength={60} placeholder="Ex. Statistiques" autoComplete="off" />
-            <p className="text-xs text-muted-foreground">
-              Facultatif. Visible par tes amis si tu partages la séance.
-            </p>
-          </div>
+          {subjects.length > 0 && (
+            <div className="space-y-2">
+              <Label htmlFor="subjectId">Matière</Label>
+              <NativeSelect id="subjectId" name="subjectId" className="w-full" defaultValue="">
+                <option value="">Aucune matière</option>
+                {subjects.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </NativeSelect>
+              <p className="text-xs text-muted-foreground">
+                Ta matière reste privée : tes amis ne la voient que si tu l&apos;autorises dans tes réglages.
+              </p>
+            </div>
+          )}
 
           <fieldset className="space-y-2">
             <legend className="text-sm font-medium">Durée</legend>

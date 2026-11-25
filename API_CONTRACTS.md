@@ -58,21 +58,21 @@ export type PublicUser = {
 
 ## Statut d'implémentation
 
-| Contrat                                              | Module       | Types                    | Fixture | Serveur | Utilisé par        | Statut                                 |
-| ---------------------------------------------------- | ------------ | ------------------------ | ------- | ------- | ------------------ | -------------------------------------- |
-| `LevelProgress`, `levelProgress()`                   | gamification | S-01                     | S-01    | S-06    | C-01, C-03, C-08   | Types + fixture faits, serveur à faire |
-| `StreakSummary`                                      | gamification | S-01                     | S-01    | S-05/06 | C-01, C-03, C-08   | Types + fixture faits, serveur à faire |
-| `ActiveSession` + actions Focus                      | focus        | S-01                     | S-01    | S-08    | C-02               | Types + fixture faits, serveur à faire |
-| `SessionResult`                                      | focus        | S-01                     | S-01    | S-05    | C-03               | Types + fixture faits, serveur à faire |
-| `MyProfile`, `updateProfile`                         | profile      | S-01                     | S-01    | S-04    | onboarding, Profil | Types + fixture faits, serveur à faire |
-| `SocialProfile`                                      | social       | S-01                     | S-01    | S-09    | C-08               | Types + fixture faits, serveur à faire |
-| Amis (`UserSearchResult`, `FriendRequest`, `Friend`) | social       | S-01                     | S-01    | S-09    | C-04               | Types + fixture faits, serveur à faire |
-| `FeedPost`, `FeedPage`, réactions                    | social       | S-01                     | S-01    | S-10    | C-05               | Types + fixture faits, serveur à faire |
-| `LiveFriend`                                         | social       | S-01                     | S-01    | S-11    | C-06               | Types + fixture faits, serveur à faire |
-| `StudyStats`                                         | focus        | P1                       | P1      | S-20    | C-10               | Brouillon                              |
-| `Achievement`                                        | gamification | P1                       | P1      | S-18    | C-11               | Brouillon                              |
-| `LeaderboardEntry`                                   | gamification | P1                       | P1      | S-19    | C-12               | Brouillon                              |
-| Académique (`Dashboard`, `Subject`, `Grade`, `Exam`) | academic     | existe (`stan/academic`) | —       | S-02    | écrans de Stan     | Partiel                                |
+| Contrat                                              | Module       | Types                    | Fixture | Serveur | Utilisé par        | Statut                                             |
+| ---------------------------------------------------- | ------------ | ------------------------ | ------- | ------- | ------------------ | -------------------------------------------------- |
+| `LevelProgress`, `levelProgress()`                   | gamification | S-01                     | S-01    | S-06    | C-01, C-03, C-08   | Fait (fonction pure), UI à faire                   |
+| `StreakSummary`                                      | gamification | S-01                     | S-01    | S-05/06 | C-01, C-03, C-08   | Fait (dans `SessionResult`), lecture seule à faire |
+| `ActiveSession` + actions Focus                      | focus        | S-01                     | S-01    | S-08    | C-02               | Fait (`focus/server`), UI à faire                  |
+| `SessionResult`                                      | focus        | S-01                     | S-01    | S-05    | C-03               | Fait (`finishSession`), UI à faire                 |
+| `MyProfile`, `updateProfile`                         | profile      | S-01                     | S-01    | S-04    | onboarding, Profil | Types + fixture faits, serveur à faire             |
+| `SocialProfile`                                      | social       | S-01                     | S-01    | S-09    | C-08               | Types + fixture faits, serveur à faire             |
+| Amis (`UserSearchResult`, `FriendRequest`, `Friend`) | social       | S-01                     | S-01    | S-09    | C-04               | Types + fixture faits, serveur à faire             |
+| `FeedPost`, `FeedPage`, réactions                    | social       | S-01                     | S-01    | S-10    | C-05               | Types + fixture faits, serveur à faire             |
+| `LiveFriend`                                         | social       | S-01                     | S-01    | S-11    | C-06               | Types + fixture faits, serveur à faire             |
+| `StudyStats`                                         | focus        | P1                       | P1      | S-20    | C-10               | Brouillon                                          |
+| `Achievement`                                        | gamification | P1                       | P1      | S-18    | C-11               | Brouillon                                          |
+| `LeaderboardEntry`                                   | gamification | P1                       | P1      | S-19    | C-12               | Brouillon                                          |
+| Académique (`Dashboard`, `Subject`, `Grade`, `Exam`) | academic     | existe (`stan/academic`) | —       | S-02    | écrans de Stan     | Partiel                                            |
 
 ## 1. Gamification
 
@@ -193,9 +193,6 @@ export type ActiveSession = {
 export function elapsedSeconds(session: ActiveSession, nowMs: number): number;
 // = (pausedAt ?? now) - startedAt - pausedSeconds, jamais négatif
 ```
-
-Champs optionnels ajoutés (compatibles) : `ActiveSession.label?: string | null` et `StartSessionInput.label?: string`
-(libellé libre ≤ 60 caractères, décision D-22).
 
 ### Requêtes et actions
 

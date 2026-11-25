@@ -6,7 +6,6 @@ import { ProgressBar } from "@/modules/gamification/components/progress-bar";
 import type { SessionResult } from "../contracts";
 import { formatMinutes } from "../domain/format";
 import { CountUp } from "./count-up";
-import { ShareToggle } from "./share-toggle";
 
 const appear =
   "animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 motion-reduce:animate-none";
@@ -15,7 +14,7 @@ const appear =
  * End-of-session recap. Every number comes from the official result computed by
  * the database (`finishSession`); nothing is computed or granted here.
  */
-export function SessionSummary({ result, shared }: { result: SessionResult; shared: boolean | null }) {
+export function SessionSummary({ result }: { result: SessionResult }) {
   const { level, streak } = result;
   const percent = Math.floor(level.progress * 100);
 
@@ -100,11 +99,11 @@ export function SessionSummary({ result, shared }: { result: SessionResult; shar
         </p>
       </div>
 
-      {shared !== null && !result.belowMinimum && (
-        <div className={cn("delay-700", appear)}>
-          <ShareToggle sessionId={result.sessionId} shared={shared} />
-        </div>
-      )}
+      <p className={cn("text-center text-sm text-muted-foreground delay-700", appear)}>
+        {result.postCreated
+          ? "Cette séance est publiée dans le fil de tes amis."
+          : "Cette séance n'a pas été publiée dans le fil de tes amis."}
+      </p>
 
       <div className="flex flex-col gap-2 sm:flex-row">
         <Button asChild className="flex-1">

@@ -146,10 +146,15 @@ ok("double pause rejected", !!(await as(B, `select public.pause_study_session($1
 ok("B resumes", !(await as(B, `select public.resume_study_session($1)`, [bs])).error);
 ok("resume when running rejected", !!(await as(B, `select public.resume_study_session($1)`, [bs])).error);
 ok("heartbeat ok", !(await as(B, `select public.heartbeat_study_session($1)`, [bs])).error);
-const f1 = (await as(B, `select status, ended_at from public.finish_study_session($1)`, [bs])).rows?.[0];
-const f2 = (await as(B, `select status, ended_at from public.finish_study_session($1)`, [bs])).rows?.[0];
-ok("finish completes the session", f1?.status === "completed" && !!f1?.ended_at);
-ok("finish is idempotent", String(f1?.ended_at) === String(f2?.ended_at));
+const f1 = (await as(B, `select public.finish_study_session($1) as r`, [bs])).rows?.[0]?.r;
+const f2 = (await as(B, `select public.finish_study_session($1) as r`, [bs])).rows?.[0]?.r;
+const bsRow = (await db.query(`select status, ended_at from study_sessions where id=$1`, [bs])).rows[0];
+ok("finish completes the session", bsRow?.status === "completed" && !!bsRow?.ended_at);
+ok("finish is idempotent", f1?.already_finalized === false && f2?.already_finalized === true);
+ok(
+  "too-short session earns nothing and posts nothing",
+  f1?.below_minimum === true && f1?.earned_xp === 0 && f1?.post_created === false,
+);
 ok("cancel after finish rejected", !!(await as(B, `select public.cancel_study_session($1)`, [bs])).error);
 ok(
   "duration is computed by the server and never negative",
@@ -181,6 +186,113 @@ ok(
   !!(await as(C, `select public.start_study_session('free', $1)`, [subj])).error,
 );
 
+// gamification engine (finish grants XP, streak, stats, post)
+await db.query(
+  `update study_sessions set status='abandoned', ended_at=now() where user_id=$1 and status='in_progress'`,
+  [B],
+);
+const g1 = (await as(B, `select (public.start_study_session('free')).id`)).rows?.[0]?.id;
+await db.query(
+  `update study_sessions set started_at = now() - interval '45 minutes', last_heartbeat_at = now() where id=$1`,
+  [g1],
+);
+const r1 = (await as(B, `select public.finish_study_session($1) as r`, [g1])).rows?.[0]?.r;
+ok("45 min + daily goal = 95 XP", r1?.earned_xp === 95 && r1?.daily_goal_completed === true);
+ok("streak day validated", r1?.streak_days === 1 && r1?.today_validated === true);
+ok("post created for a shared session", r1?.post_created === true);
+const r1b = (await as(B, `select public.finish_study_session($1) as r`, [g1])).rows?.[0]?.r;
+ok("replaying finish grants nothing more", r1b?.already_finalized === true && r1b?.earned_xp === 95);
+ok(
+  "XP ledger holds exactly 95 for B",
+  (await db.query(`select sum(amount)::int n from xp_transactions where user_id=$1`, [B])).rows[0].n === 95,
+);
+ok(
+  "one post for the session",
+  (await db.query(`select count(*)::int n from posts where study_session_id=$1`, [g1])).rows[0].n === 1,
+);
+const g2 = (await as(B, `select (public.start_study_session('free')).id`)).rows?.[0]?.id;
+await db.query(`update study_sessions set started_at = now() - interval '20 minutes' where id=$1`, [g2]);
+const r2 = (await as(B, `select public.finish_study_session($1) as r`, [g2])).rows?.[0]?.r;
+ok("daily goal bonus only once per day", r2?.earned_xp === 20 && r2?.total_xp === 115);
+ok(
+  "subject not shared in feed by default",
+  (await db.query(`select subject_name from posts where study_session_id=$1`, [g1])).rows[0].subject_name ===
+    null,
+);
+ok("A (friend) sees B posts", (await as(A, `select * from posts`)).rows?.length === 2);
+ok("C (not friend) sees no B post", (await as(C, `select * from posts`)).rows?.length === 0);
+ok(
+  "A sees B stats",
+  (await as(A, `select total_xp from user_stats where user_id='${B}'`)).rows?.[0]?.total_xp === 115,
+);
+ok("C cannot see B stats", (await as(C, `select * from user_stats`)).rows?.length === 0);
+ok("client cannot write stats", !!(await as(B, `update user_stats set total_xp = 99999`)).error);
+ok(
+  "client cannot forge a post",
+  !!(
+    await as(
+      B,
+      `insert into posts (user_id, duration_minutes, earned_xp, streak_days) values ('${B}', 600, 9999, 99)`,
+    )
+  ).error,
+);
+const post1 = (await db.query(`select id from posts where study_session_id=$1`, [g1])).rows[0].id;
+ok("A reacts to B post", !(await as(A, `insert into post_reactions (post_id) values ($1)`, [post1])).error);
+ok(
+  "double reaction rejected",
+  !!(await as(A, `insert into post_reactions (post_id) values ($1)`, [post1])).error,
+);
+ok(
+  "C cannot react to an invisible post",
+  !!(await as(C, `insert into post_reactions (post_id) values ($1)`, [post1])).error,
+);
+ok(
+  "C cannot react as A",
+  !!(await as(C, `insert into post_reactions (post_id, user_id) values ($1, '${A}')`, [post1])).error,
+);
+ok(
+  "B sees the reaction count",
+  (await as(B, `select count(*)::int n from post_reactions where post_id=$1`, [post1])).rows?.[0]?.n === 1,
+);
+ok(
+  "B deletes own post",
+  (await as(B, `delete from posts where id=$1 returning id`, [post1])).rows?.length === 1,
+);
+ok("A cannot delete B post", (await as(A, `delete from posts returning id`)).rows?.length === 0);
+ok(
+  "settings are private",
+  !(await as(B, `insert into user_settings (timezone) values ('Europe/Paris')`)).error &&
+    (await as(A, `select * from user_settings`)).rows?.length === 0,
+);
+ok(
+  "unknown time zone rejected",
+  !!(await as(A, `insert into user_settings (timezone) values ('Mars/Olympus')`)).error,
+);
+
+// streak milestone: 6 past days + today = 7 days → +100, once
+for (let k = 6; k >= 1; k--) {
+  await db.query(
+    `insert into study_sessions (user_id, status, started_at, ended_at, last_heartbeat_at)
+     values ($1, 'completed', now() - make_interval(days => $2) - interval '15 minutes', now() - make_interval(days => $2), now())`,
+    [C, k],
+  );
+}
+const c7 = (await as(C, `select (public.start_study_session('free')).id`)).rows?.[0]?.id;
+await db.query(`update study_sessions set started_at = now() - interval '15 minutes' where id=$1`, [c7]);
+const rc = (await as(C, `select public.finish_study_session($1) as r`, [c7])).rows?.[0]?.r;
+ok("7-day streak detected", rc?.streak_days === 7 && rc?.record_days === 7);
+ok(
+  "streak milestone bonus granted",
+  rc?.breakdown?.some((b) => b.reason === "streak_milestone" && b.xp === 100) && rc?.earned_xp === 115,
+);
+const c8 = (await as(C, `select (public.start_study_session('free')).id`)).rows?.[0]?.id;
+await db.query(`update study_sessions set started_at = now() - interval '15 minutes' where id=$1`, [c8]);
+const rc2 = (await as(C, `select public.finish_study_session($1) as r`, [c8])).rows?.[0]?.r;
+ok(
+  "milestone not granted twice (15 min + daily goal 50)",
+  rc2?.earned_xp === 65 && !rc2?.breakdown?.some((b) => b.reason === "streak_milestone"),
+);
+
 // XP
 ok(
   "client cannot insert XP",
@@ -206,7 +318,10 @@ try {
 }
 ok("duplicate XP grant rejected (idempotent)", !!dup);
 ok("A reads own XP", (await as(A, `select * from xp_transactions`)).rows.length === 1);
-ok("B cannot read A XP", (await as(B, `select * from xp_transactions`)).rows.length === 0);
+ok(
+  "B cannot read A XP",
+  (await as(B, `select * from xp_transactions where user_id = '${A}'`)).rows.length === 0,
+);
 
 // academic module: settings, exams, new subject/grade fields
 ok("A sets own target", !(await as(A, `insert into academic_settings (target_average) values (12)`)).error);
@@ -267,222 +382,6 @@ await as(A, `delete from subjects where id=$1`, [subj]);
 ok(
   "deleting a subject keeps the exam, detached",
   (await as(A, `select subject_id from exams`)).rows?.[0]?.subject_id === null,
-);
-
-// ---------------------------------------------------------------------------
-// XP engine, streak, posts, reactions (migration focus_xp_social)
-// ---------------------------------------------------------------------------
-const D = "00000000-0000-0000-0000-0000000000d1";
-const E = "00000000-0000-0000-0000-0000000000e1";
-const F = "00000000-0000-0000-0000-0000000000f1";
-const G = "00000000-0000-0000-0000-0000000000a1";
-await db.exec(`insert into auth.users (id, email) values
- ('${D}','d@x.fr'),('${E}','e@x.fr'),('${F}','f@x.fr'),('${G}','g@x.fr');
- insert into friendships (requester_id, addressee_id, status) values ('${D}','${E}','accepted');`);
-
-const startAs = async (uid, minutesAgo, extra = "") => {
-  const id = (await as(uid, `select id from public.start_study_session('free')`)).rows?.[0]?.id;
-  await db.query(
-    `update study_sessions set started_at = now() - make_interval(mins => $2) ${extra} where id = $1`,
-    [id, minutesAgo],
-  );
-  return id;
-};
-const finalize = async (uid, id) =>
-  (await as(uid, `select public.finalize_study_session($1) as r`, [id])).rows?.[0]?.r;
-const xpRows = async (uid) =>
-  (await db.query(`select reason, amount, idempotency_key from xp_transactions where user_id = $1`, [uid]))
-    .rows;
-
-// 45 min + daily goal = 95 XP (spec example without planning bonus)
-const d1 = await startAs(D, 45);
-await as(D, `select public.set_study_session_label($1, '  Statistiques ')`, [d1]);
-const r1 = await finalize(D, d1);
-ok("45 min session = 45 + 50 (daily goal) = 95 XP", r1?.earnedXp === 95 && r1?.xpBreakdown?.length === 2);
-ok(
-  "result carries label, minutes and post flag",
-  r1?.subjectName === "Statistiques" && r1?.durationMinutes === 45 && r1?.postCreated === true,
-);
-const r1b = await finalize(D, d1);
-ok(
-  "finalize twice: same result, flagged, no extra XP",
-  r1b?.alreadyFinalized === true && r1b?.earnedXp === 95 && (await xpRows(D)).length === 2,
-);
-ok(
-  "one post per session",
-  (await db.query(`select count(*)::int n from posts where study_session_id = $1`, [d1])).rows[0].n === 1,
-);
-
-// minimum, per-session and per-day caps
-const dShort = await startAs(D, 0);
-const rShort = await finalize(D, dShort);
-ok(
-  "< 5 min: saved, 0 XP, no post",
-  rShort?.belowMinimum === true && rShort?.earnedXp === 0 && rShort?.postCreated === false,
-);
-const dLong = await startAs(D, 240);
-const rLong = await finalize(D, dLong);
-ok(
-  "session counts at most 180 min (45 + 180 = 225 of 300)",
-  rLong?.countedMinutes === 180 && rLong?.earnedXp === 180,
-);
-const dCap = await startAs(D, 200);
-const rCap = await finalize(D, dCap);
-ok("daily study XP capped at 300 (75 left)", rCap?.earnedXp === 75);
-const dCap2 = await startAs(D, 60);
-ok("nothing left today: 0 duration XP", (await finalize(D, dCap2))?.earnedXp === 0);
-ok("total XP of the day = 300 + 50", (await xpRows(D)).reduce((a, r) => a + r.amount, 0) === 350);
-
-// who can finalize
-const dRun = (await as(D, `select id from public.start_study_session('free')`)).rows?.[0]?.id;
-ok("E cannot finalize D session", !!(await as(E, `select public.finalize_study_session($1)`, [dRun])).error);
-ok("anon cannot finalize", !!(await as(null, `select public.finalize_study_session($1)`, [dRun])).error);
-await as(D, `select public.cancel_study_session($1)`, [dRun]);
-ok(
-  "cancelled session cannot be finalized",
-  !!(await as(D, `select public.finalize_study_session($1)`, [dRun])).error,
-);
-
-// clients cannot write game data
-ok(
-  "client cannot write user_stats",
-  !!(await as(D, `insert into user_stats (user_id, total_xp) values ('${D}', 99999)`)).error,
-);
-ok("client cannot update user_stats", !!(await as(D, `update user_stats set total_xp = 99999`)).error);
-ok(
-  "client cannot create a post",
-  !!(
-    await as(
-      D,
-      `insert into posts (user_id, study_session_id, duration_minutes, earned_xp, streak_days) values ('${D}', $1, 600, 9999, 99)`,
-      [d1],
-    )
-  ).error,
-);
-ok("client cannot call _streak_stats", !!(await as(D, `select * from public._streak_stats('${D}')`)).error);
-ok(
-  "client cannot insert XP with the new reasons",
-  !!(
-    await as(
-      D,
-      `insert into xp_transactions (user_id, amount, reason, idempotency_key) values ('${D}', 500, 'daily_goal', 'hack')`,
-    )
-  ).error,
-);
-ok(
-  "other user cannot relabel a session",
-  !!(await as(E, `select public.set_study_session_label($1, 'x')`, [d1])).error,
-);
-ok(
-  "label longer than 60 chars rejected",
-  !!(await as(D, `select public.set_study_session_label($1, $2)`, [d1, "x".repeat(61)])).error,
-);
-
-// visibility of stats, posts and reactions
-ok(
-  "friend reads D stats",
-  (await as(E, `select * from user_stats where user_id = '${D}'`)).rows?.length === 1,
-);
-ok(
-  "stranger cannot read D stats",
-  (await as(F, `select * from user_stats where user_id = '${D}'`)).rows?.length === 0,
-);
-ok(
-  "owner reads own stats (total XP)",
-  (await as(D, `select total_xp from user_stats`)).rows?.[0]?.total_xp === 350,
-);
-const postId = (await db.query(`select id from posts where study_session_id = $1`, [d1])).rows[0].id;
-ok("friend sees the post", (await as(E, `select * from posts where id = $1`, [postId])).rows?.length === 1);
-ok(
-  "stranger does not see the post",
-  (await as(F, `select * from posts where id = $1`, [postId])).rows?.length === 0,
-);
-const react = (uid) => as(uid, `insert into post_reactions (post_id) values ($1)`, [postId]);
-ok("friend reacts", !(await react(E)).error);
-ok("one reaction per person", !!(await react(E)).error);
-ok("stranger cannot react", !!(await react(F)).error);
-ok("friend sees the reaction", (await as(D, `select * from post_reactions`)).rows?.length === 1);
-ok("stranger sees no reaction", (await as(F, `select * from post_reactions`)).rows?.length === 0);
-ok(
-  "cannot react in someone else's name",
-  !!(await as(F, `insert into post_reactions (post_id, user_id) values ($1, '${E}')`, [postId])).error,
-);
-await as(D, `select public.set_study_session_visibility($1, 'private')`, [d1]);
-ok(
-  "making the session private hides the post",
-  (await as(E, `select * from posts where id = $1`, [postId])).rows?.length === 0,
-);
-ok(
-  "owner still sees the post",
-  (await as(D, `select * from posts where id = $1`, [postId])).rows?.length === 1,
-);
-await as(D, `select public.set_study_session_visibility($1, 'friends')`, [d1]);
-ok(
-  "friend can remove own reaction",
-  !(await as(E, `delete from post_reactions where post_id = $1 returning 1`, [postId])).error,
-);
-ok("reaction removed", (await as(D, `select * from post_reactions`)).rows?.length === 0);
-
-// live friends: a shared running session is readable by friends only
-const dLive = (await as(D, `select id from public.start_study_session('free', null, null, 'friends')`))
-  .rows?.[0]?.id;
-ok(
-  "friend sees the running session, stranger does not",
-  (await as(E, `select id from study_sessions where id = $1 and status = 'in_progress'`, [dLive])).rows
-    ?.length === 1 &&
-    (await as(F, `select id from study_sessions where id = $1`, [dLive])).rows?.length === 0,
-);
-await as(D, `select public.cancel_study_session($1)`, [dLive]);
-
-// regularity grid
-ok(
-  "my_daily_minutes returns today's minutes",
-  (await as(D, `select * from public.my_daily_minutes(28)`)).rows?.[0]?.minutes >= 45,
-);
-ok(
-  "my_daily_minutes is private to the caller",
-  (await as(F, `select * from public.my_daily_minutes(28)`)).rows?.length === 0,
-);
-
-// streak: 6 validated days + today = 7 days, +100 XP once
-for (let k = 1; k <= 6; k++) {
-  await db.query(
-    `insert into study_sessions (user_id, status, mode, started_at, ended_at)
-     values ($1, 'completed', 'free', now() - make_interval(days => $2, mins => 30), now() - make_interval(days => $2))`,
-    [G, k],
-  );
-}
-const g1 = await startAs(G, 15);
-const rg1 = await finalize(G, g1);
-ok(
-  "7th streak day grants +100 XP (15 + 100)",
-  rg1?.streak?.currentDays === 7 &&
-    rg1?.earnedXp === 115 &&
-    rg1?.xpBreakdown?.some((b) => b.reason === "streak_milestone" && b.xp === 100),
-);
-ok(
-  "daily goal not reached with 15 min",
-  rg1?.dailyGoalCompleted === false && rg1?.streak?.todayValidated === true,
-);
-const g2 = await startAs(G, 6);
-const rg2 = await finalize(G, g2);
-ok(
-  "milestone bonus not granted twice the same day",
-  rg2?.xpBreakdown?.every((b) => b.reason !== "streak_milestone"),
-);
-ok(
-  "user_stats reflects the streak",
-  (await db.query(`select current_streak, best_streak from user_stats where user_id = $1`, [G])).rows[0]
-    ?.current_streak === 7,
-);
-// a gap breaks the streak: drop yesterday and today, the last validated day is 2 days ago
-await db.query(
-  `delete from study_sessions where user_id = $1 and ended_at > now() - interval '1 day 12 hours'`,
-  [G],
-);
-ok(
-  "a missed day resets the current streak",
-  (await db.query(`select current_streak from public._streak_stats($1)`, [G])).rows[0]?.current_streak === 0,
 );
 
 // delete cascade

@@ -1,6 +1,6 @@
 import type { PublicUser } from "@/lib/contracts";
 import { levelProgress } from "@/modules/gamification/domain/levels";
-import { effectiveStreakDays } from "@/modules/gamification/domain/streak";
+import { effectiveStreakDays } from "@/modules/gamification/domain/streak-display";
 import type { Friend } from "../contracts";
 import type { ProfileRow } from "../schemas";
 

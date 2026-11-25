@@ -1,7 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { parisDay } from "@/modules/gamification/domain/streak";
+import { today as todayInParis } from "@/modules/gamification/domain/streak-display";
 import type { FeedPage, FeedPost, Friend, FriendRequest, LiveFriend } from "../contracts";
 import {
   PROFILE_COLUMNS,
@@ -73,7 +73,7 @@ export async function listFriends(): Promise<Friend[]> {
       .map((s) => [s.user_id, s]),
   );
   const liveSet = new Set(live);
-  const today = parisDay(new Date());
+  const today = todayInParis();
 
   return rows.flatMap((r) => {
     const profile = profiles.get(otherId(r));
@@ -124,7 +124,7 @@ export async function getLiveFriends(): Promise<LiveFriend[]> {
   const since = new Date(Date.now() - ONLINE_WINDOW_MS).toISOString();
   const { data, error } = await supabase
     .from("study_sessions")
-    .select("id, user_id, label, started_at, paused_at, paused_seconds")
+    .select("id, user_id, started_at, paused_at, paused_seconds")
     .neq("user_id", user.id)
     .eq("status", "in_progress")
     .eq("visibility", "friends")
@@ -148,7 +148,8 @@ export async function getLiveFriends(): Promise<LiveFriend[]> {
         startedAt: r.started_at,
         pausedAt: r.paused_at,
         pausedSeconds: r.paused_seconds,
-        subjectName: r.label,
+        // D-16: friends never see a subject (private table); only posts may carry it, with opt-in.
+        subjectName: null,
         serverNow,
       },
     ];

@@ -1,67 +1,87 @@
 /**
- * Streak display helpers (pure). The streak itself is computed by the database
- * (finalize_study_session); this only decides what to show.
+ * Streak — Revio convention (decision D-15).
+ * A day counts when finished sessions total at least XP_RULES.streakDayMinutes.
+ * A session belongs to the local day (user's time zone) on which it ENDED,
+ * so a session crossing midnight counts for the day it finished.
  */
 
 import type { IsoDate } from "@/lib/contracts";
-import type { StreakSummary } from "../contracts";
-import { nextStreakMilestone } from "./levels";
+import { XP_RULES } from "./xp";
 
-export const STREAK_DAY_MIN_MINUTES = 10;
-export const DAILY_GOAL_MINUTES = 30;
-/** XP bonus granted by the server at some milestones (decision D-14). */
-export const STREAK_BONUS_XP: Readonly<Record<number, number>> = { 7: 100, 21: 250, 30: 500 };
-
-const DAY_MS = 86_400_000;
-
-/** Calendar day "YYYY-MM-DD" of `date` in the Europe/Paris time zone. */
-export function parisDay(date: Date): IsoDate {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris" }).format(date);
+/** Local calendar day "YYYY-MM-DD" of an instant in an IANA time zone (DST-safe). */
+export function localDate(instant: Date | string, timeZone: string): IsoDate {
+  const date = typeof instant === "string" ? new Date(instant) : instant;
+  if (Number.isNaN(date.getTime())) throw new RangeError("Date invalide.");
+  // en-CA formats as YYYY-MM-DD.
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
 }
 
-function dayNumber(day: IsoDate): number {
-  return Math.floor(Date.parse(`${day}T00:00:00Z`) / DAY_MS);
+function addDays(day: IsoDate, delta: number): IsoDate {
+  const [y, m, d] = day.split("-").map(Number) as [number, number, number];
+  return new Date(Date.UTC(y, m - 1, d + delta)).toISOString().slice(0, 10);
 }
+
+export type FinishedSession = { endedAt: string; seconds: number };
+
+/** Study minutes per local day. */
+export function minutesByDay(sessions: readonly FinishedSession[], timeZone: string): Map<IsoDate, number> {
+  const byDay = new Map<IsoDate, number>();
+  for (const s of sessions) {
+    const day = localDate(s.endedAt, timeZone);
+    byDay.set(day, (byDay.get(day) ?? 0) + Math.max(0, s.seconds) / 60);
+  }
+  return byDay;
+}
+
+export type StreakState = {
+  currentDays: number;
+  recordDays: number;
+  todayValidated: boolean;
+  todayMinutes: number;
+  lastValidatedOn: IsoDate | null;
+};
 
 /**
- * The stored streak is as of the last finalized session. It is still alive when
- * the last validated day is today or yesterday, otherwise it is 0 (a rest day
- * keeps the record, never the current run).
+ * Current streak: consecutive validated days ending today, or ending yesterday
+ * when today is not validated yet (the streak is not lost until the day is over).
  */
-export function effectiveStreakDays(
-  current: number,
-  lastValidatedOn: IsoDate | null,
+export function computeStreak(
+  sessions: readonly FinishedSession[],
   today: IsoDate,
-): number {
-  if (!lastValidatedOn || current <= 0) return 0;
-  return dayNumber(today) - dayNumber(lastValidatedOn) <= 1 ? current : 0;
-}
-
-/** Last `count` calendar days ending at `today` (inclusive), oldest first. */
-export function lastDays(today: IsoDate, count: number): IsoDate[] {
-  const end = dayNumber(today);
-  return Array.from({ length: count }, (_, i) =>
-    new Date((end - (count - 1 - i)) * DAY_MS).toISOString().slice(0, 10),
+  timeZone: string,
+): StreakState {
+  const byDay = minutesByDay(sessions, timeZone);
+  const validated = new Set(
+    [...byDay].filter(([, minutes]) => minutes >= XP_RULES.streakDayMinutes).map(([day]) => day),
   );
-}
+  const todayMinutes = Math.floor(byDay.get(today) ?? 0);
+  const todayValidated = validated.has(today);
 
-export function buildStreakSummary(
-  stats: { current_streak: number; best_streak: number; last_validated_on: IsoDate | null },
-  todayMinutes: number,
-  today: IsoDate,
-): StreakSummary {
-  const base = effectiveStreakDays(stats.current_streak, stats.last_validated_on, today);
-  const todayValidated = todayMinutes >= STREAK_DAY_MIN_MINUTES;
-  // Today's session may not be reflected in `base` yet when the day is not validated.
-  const currentDays = base;
+  let currentDays = 0;
+  let cursor = todayValidated ? today : addDays(today, -1);
+  while (validated.has(cursor)) {
+    currentDays++;
+    cursor = addDays(cursor, -1);
+  }
+
+  const days = [...validated].filter((d) => d <= today).sort();
+  let recordDays = 0;
+  let run = 0;
+  for (let i = 0; i < days.length; i++) {
+    run = i > 0 && addDays(days[i - 1]!, 1) === days[i] ? run + 1 : 1;
+    recordDays = Math.max(recordDays, run);
+  }
+
   return {
     currentDays,
-    recordDays: Math.max(stats.best_streak, currentDays),
+    recordDays,
     todayValidated,
     todayMinutes,
-    dailyGoalMinutes: DAILY_GOAL_MINUTES,
-    dailyGoalCompleted: todayMinutes >= DAILY_GOAL_MINUTES,
-    nextMilestone: nextStreakMilestone(currentDays),
-    lastValidatedOn: stats.last_validated_on,
+    lastValidatedOn: days.at(-1) ?? null,
   };
 }

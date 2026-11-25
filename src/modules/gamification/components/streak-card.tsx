@@ -2,7 +2,8 @@ import { Flame } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { StreakSummary } from "../contracts";
-import { STREAK_BONUS_XP, STREAK_DAY_MIN_MINUTES, lastDays, parisDay } from "../domain/streak";
+import { lastDays, today as todayInParis } from "../domain/streak-display";
+import { XP_RULES } from "../domain/xp";
 
 const dayFmt = new Intl.DateTimeFormat("fr-FR", {
   weekday: "short",
@@ -15,7 +16,7 @@ const dayFmt = new Intl.DateTimeFormat("fr-FR", {
 export function StreakCard({
   streak,
   days = [],
-  today = parisDay(new Date()),
+  today = todayInParis(),
 }: {
   streak: StreakSummary;
   /** Minutes per day (Paris), any order. */
@@ -24,7 +25,7 @@ export function StreakCard({
 }) {
   const byDate = new Map(days.map((d) => [d.date, d.minutes]));
   const { currentDays, recordDays, nextMilestone } = streak;
-  const bonus = nextMilestone ? STREAK_BONUS_XP[nextMilestone] : undefined;
+  const bonus = nextMilestone ? XP_RULES.streakBonuses[nextMilestone] : undefined;
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -51,7 +52,7 @@ export function StreakCard({
         <ul className="grid grid-cols-7 gap-1.5" aria-label="Régularité des 28 derniers jours">
           {lastDays(today, 28).map((date) => {
             const minutes = byDate.get(date) ?? 0;
-            const valid = minutes >= STREAK_DAY_MIN_MINUTES;
+            const valid = minutes >= XP_RULES.streakDayMinutes;
             const label = `${dayFmt.format(new Date(`${date}T00:00:00Z`))} : ${minutes} min${valid ? ", jour validé" : ""}`;
             return (
               <li
@@ -73,7 +74,7 @@ export function StreakCard({
           })}
         </ul>
         <p className="text-xs text-muted-foreground">
-          Un jour compte dès {STREAK_DAY_MIN_MINUTES} min de révision terminées. Un jour de repos
+          Un jour compte dès {XP_RULES.streakDayMinutes} min de révision terminées. Un jour de repos
           n&apos;efface pas ton record.
         </p>
       </CardContent>

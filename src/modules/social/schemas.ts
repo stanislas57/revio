@@ -31,7 +31,6 @@ export const statsRowSchema = z.object({
 export const liveRowSchema = z.object({
   id: z.string(),
   user_id: z.string(),
-  label: z.string().nullable(),
   started_at: z.string(),
   paused_at: z.string().nullable(),
   paused_seconds: z.number(),
