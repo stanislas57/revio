@@ -30,7 +30,13 @@ export function ReactionButton({
       size="sm"
       aria-pressed={state.reacted}
       disabled={pending}
-      className={cn(state.reacted && "text-pink-600 dark:text-pink-400", "min-h-11")}
+      className={cn(
+        "min-h-11 rounded-pill px-4",
+        // The gradient is the kudos pill; once the bravo is sent it becomes a quiet outlined state.
+        state.reacted
+          ? "border border-revio-magenta-text text-revio-magenta-text"
+          : "bg-revio-gradient-solid text-white hover:text-white hover:opacity-90",
+      )}
       onClick={() =>
         startTransition(async () => {
           const next = !state.reacted;

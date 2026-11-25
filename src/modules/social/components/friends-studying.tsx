@@ -1,12 +1,11 @@
 "use client";
 
 import { BookOpen } from "lucide-react";
+import { AvatarPresence } from "@/components/revio/avatar-presence";
 import { clockOffsetMs, elapsedSeconds } from "@/modules/focus/domain/elapsed";
-import { formatMinutes } from "@/modules/focus/domain/format";
 import { useNow } from "@/modules/focus/components/use-now";
 import type { LiveFriend } from "../contracts";
 import { userLabel } from "../domain/names";
-import { UserAvatar } from "./user-avatar";
 
 /** Friends currently in a shared Focus session. Compact, works on mobile. */
 export function FriendsStudying({ friends }: { friends: LiveFriend[] }) {
@@ -25,19 +24,25 @@ export function FriendsStudying({ friends }: { friends: LiveFriend[] }) {
       <p className="text-sm font-medium">
         {friends.length} ami{friends.length > 1 ? "s révisent" : " révise"} en ce moment
       </p>
-      <ul className="flex gap-3 overflow-x-auto pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible">
+      <ul className="flex flex-wrap gap-x-5 gap-y-3 pb-1">
         {friends.map((f) => {
           const seconds = now === null ? null : elapsedSeconds(f, now + clockOffsetMs(f.serverNow, now));
+          const minutes = seconds === null ? 0 : Math.floor(seconds / 60);
+          const name = userLabel(f.user);
+          const subject = `${f.subjectName ?? "Révision"}${f.status === "paused" ? " (pause)" : ""}`;
           return (
-            <li key={f.sessionId} className="flex min-w-56 items-center gap-3 rounded-lg border px-3 py-2">
-              <UserAvatar user={f.user} live={f.status === "running"} className="size-9" />
-              <div className="min-w-0">
-                <p className="text-sm font-medium break-words">{userLabel(f.user)}</p>
-                <p className="text-xs break-words text-muted-foreground">
-                  {f.subjectName ?? "Révision"} · {seconds === null ? "…" : formatMinutes(seconds / 60)}
-                  {f.status === "paused" && " (pause)"}
-                </p>
-              </div>
+            <li key={f.sessionId} className="min-w-56 rounded-lg border px-3 py-2">
+              {/* One turn of the ring is one hour of study. The subject is only written when the friend shares it. */}
+              <AvatarPresence
+                friend={{
+                  id: f.sessionId,
+                  name,
+                  initials: name.replace(/^@/, "").slice(0, 2).toUpperCase(),
+                  subject,
+                  minutes,
+                  value: Math.min(1, minutes / 60),
+                }}
+              />
             </li>
           );
         })}

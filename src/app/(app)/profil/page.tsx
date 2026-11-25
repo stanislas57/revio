@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LevelCard } from "@/modules/gamification/components/level-card";
 import { LevelLadder } from "@/modules/gamification/components/level-ladder";
 import { StatTiles } from "@/modules/gamification/components/stat-tiles";
-import { StreakCard } from "@/modules/gamification/components/streak-card";
+import { StreakPanel } from "@/modules/gamification/components/streak-panel";
 import { getMyGamification } from "@/modules/gamification/server/queries";
 import { RemindersMock } from "@/modules/profile/components/reminders-mock";
 import { MyData } from "@/modules/profile/components/my-data";
@@ -38,7 +38,7 @@ export default async function ProfilPage() {
       <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
           <LevelCard level={stats.level} />
-          <StreakCard streak={stats.streak} days={stats.days} />
+          <StreakPanel streak={stats.streak} days={stats.days} />
         </div>
         {stats.sessionsCount === 0 && (
           <EmptyState

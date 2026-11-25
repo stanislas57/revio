@@ -19,7 +19,16 @@ export type PresenceFriend = {
 };
 
 /** A friend with the presence ring: the name, the subject and the duration are always written, never colour alone. */
-export function AvatarPresence({ friend, compact = false }: { friend: PresenceFriend; compact?: boolean }) {
+export function AvatarPresence({
+  friend,
+  compact = false,
+  fallbackSubject = "Matière non partagée",
+}: {
+  friend: PresenceFriend;
+  compact?: boolean;
+  /** Written when the friend does not share the subject. */
+  fallbackSubject?: string;
+}) {
   return (
     <div className={cn("flex items-center gap-3", compact && "flex-col gap-1.5 text-center")}>
       <RevioRing variant="presence" value={friend.value} size={compact ? 60 : 52} stroke={4} live>
@@ -36,7 +45,7 @@ export function AvatarPresence({ friend, compact = false }: { friend: PresenceFr
         <p className="truncate text-sm font-semibold">{friend.name}</p>
         {!compact && (
           <p className="truncate text-xs text-muted-foreground">
-            {friend.subject ?? "Matière non partagée"} · {friend.minutes} min
+            {friend.subject ?? fallbackSubject} · {friend.minutes} min
           </p>
         )}
       </div>
