@@ -54,7 +54,9 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
     startTransition(async () => {
       const res = await fn();
       if (!res.ok) toast.error(res.error.message);
-      else then?.();
+      else if (then) then();
+      // The server actions do not revalidate the page: re-read the session state.
+      else router.refresh();
     });
 
   return (
@@ -93,7 +95,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
         {paused ? (
           <Button
             size="lg"
-            className="flex-1"
+            className="min-h-11 flex-1"
             disabled={pending}
             onClick={() => run(() => resumeSession(session.id))}
           >
@@ -103,7 +105,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
           <Button
             size="lg"
             variant="secondary"
-            className="flex-1"
+            className="min-h-11 flex-1"
             disabled={pending}
             onClick={() => run(() => pauseSession(session.id))}
           >
@@ -112,7 +114,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
         )}
         <Button
           size="lg"
-          className="flex-1"
+          className="min-h-11 flex-1"
           disabled={pending}
           onClick={() =>
             run(
@@ -125,6 +127,7 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
         </Button>
       </div>
       <Button
+        className="min-h-11"
         variant="ghost"
         size="sm"
         disabled={pending}

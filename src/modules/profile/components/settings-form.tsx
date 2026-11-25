@@ -82,7 +82,7 @@ export function SettingsForm({ settings, onSave = updateSettings }: Props) {
           id="timezone"
           name="timezone"
           defaultValue={settings.timezone}
-          className="w-full sm:max-w-sm"
+          className="h-11 w-full sm:max-w-sm"
         >
           {zones.map((z) => (
             <option key={z.value} value={z.value}>
@@ -140,7 +140,7 @@ export function SettingsForm({ settings, onSave = updateSettings }: Props) {
           </p>
         )}
       </div>
-      <Button type="submit" size="lg" disabled={pending} className="w-full sm:w-auto">
+      <Button type="submit" size="lg" disabled={pending} className="min-h-11 w-full sm:w-auto">
         {pending ? "Enregistrement…" : "Enregistrer les réglages"}
       </Button>
       <p className="text-xs text-muted-foreground">

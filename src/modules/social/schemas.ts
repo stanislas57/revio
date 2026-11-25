@@ -45,8 +45,9 @@ export const postRowSchema = z.object({
   earned_xp: z.number(),
   streak_days: z.number(),
   created_at: z.string(),
-  post_reactions: z.array(z.object({ user_id: z.string() })),
 });
+
+export const reactionRowSchema = z.object({ post_id: z.string(), user_id: z.string() });
 
 /** Prefix of a username: 3 to 24 characters among a-z, 0-9 and _. */
 export const searchQuerySchema = z

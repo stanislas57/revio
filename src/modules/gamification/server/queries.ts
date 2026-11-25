@@ -41,11 +41,8 @@ export async function getMyGamification(): Promise<MyGamification> {
       .eq("user_id", user.id)
       .eq("status", "completed")
       .gte("ended_at", since),
-    supabase
-      .from("study_sessions")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("status", "completed"),
+    // Counted in code: a user has far fewer than 1 000 sessions in the demo period.
+    supabase.from("study_sessions").select("id").eq("user_id", user.id).eq("status", "completed").limit(1000),
     loadSettings(supabase, user.id),
   ]);
   if (stats.error || recent.error || count.error) throw new Error("Impossible de charger ta progression.");
@@ -76,7 +73,7 @@ export async function getMyGamification(): Promise<MyGamification> {
     level: levelProgress(s.total_xp),
     streak: buildStreakSummary(s, todayMinutes, day, settings.dailyGoalMinutes),
     totalMinutes: Math.floor(s.total_study_seconds / 60),
-    sessionsCount: count.count ?? 0,
+    sessionsCount: count.data?.length ?? 0,
     days,
   };
 }
