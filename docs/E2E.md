@@ -35,3 +35,11 @@ Pourquoi c'est sans risque en production :
 - la route refuse toute valeur hors de 1 à 600 minutes.
 
 Limite connue : seul `started_at` est déplacé, pas les battements de cœur ; c'est le cas réaliste d'un client qui bat toutes les minutes. Un test des 3 minutes de silence (D-19) demanderait une autre commande.
+
+## Vérification sur un vrai Supabase (`npm run test:live`)
+
+```bash
+set -a && . ./.env.local && set +a && npm run test:live
+```
+
+`scripts/check-live.mjs` rejoue, avec la seule clé publishable, les contrôles de l'agenda, du planning, des réglages de confidentialité (statut en direct, visibilité par défaut) et de la suppression de compte sur le projet réellement branché. Il crée **deux comptes jetables** (`check-live-*@example.test`, mot de passe aléatoire jamais affiché) et les supprime à la fin avec `delete_my_account()`. La confirmation d'e-mail doit être désactivée. Il sert aussi à valider une migration juste après un `db push`. Le même script tourne sur le faux serveur : `--url http://127.0.0.1:54399 --key local-fake-key`.
