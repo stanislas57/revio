@@ -40,9 +40,78 @@ Stan : module académique et tableau de bord Accueil. Charles : Focus, XP, strea
 11. **Clé Supabase « publishable »** (`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, format `sb_publishable_…`)
     plutôt que l'ancienne clé `anon`. Les deux fonctionnent ; adapter si le projet ne propose que `anon`.
 
+## Proposées par l'audit du 25/11/2026 (à valider par Stan **et** Charles)
+
+Statut : **proposées**. Elles deviennent « validées » quand les deux fondateurs ont approuvé la PR
+qui les contient. D-12 et D-20 impliquent ensuite une mise à jour de `CLAUDE.md`.
+
+### D-12 — Répartition v2 (remplace « 2026-11-25 — Répartition »)
+
+Stan : architecture, base, migrations, RLS, auth, `domain/` et `server/` de **tous** les modules
+(y compris Focus, gamification, social), écrans académiques, agenda, simulateur, intégration,
+déploiement. Charles : `components/` des modules `focus`, `gamification`, `social`, landing page,
+profil social, animations, identité visuelle, responsive de ses écrans. Raison : nouveau cahier des
+charges de Stan (67 % / 33 %). La table « Propriété des modules » de `CLAUDE.md` est à mettre à jour.
+
+### D-13 — Forme des contrats
+
+Pas d'API REST : types TypeScript dans `src/modules/<m>/contracts.ts`, fixtures dans `fixtures.ts`,
+lectures par requêtes serveur, écritures par Server Actions renvoyant `ActionResult<T>`, écritures
+sensibles (durées, XP, publications) dans des fonctions SQL `security definer`. Raison : cohérent avec
+l'architecture existante, zéro service en plus, typé de bout en bout. Détail : `API_CONTRACTS.md`.
+
+### D-14 — Barème XP de la démo
+
+1 XP par minute, 5 minutes minimum, 180 minutes comptées au plus par séance, 300 XP de durée par jour,
+objectif du jour +50 (30 min par défaut), paliers de streak +100 (7 j), +250 (21 j), +500 (30 j).
+Bonus « séance planifiée » (+20) après la démo. Règles centralisées dans `gamification/domain/` et
+recopiées dans la fonction SQL (une seule source à terme : table `xp_rules`, P1). Convention Revio.
+
+### D-15 — Validation d'un jour de streak
+
+Un jour compte s'il cumule au moins 10 minutes de séances terminées. Le jour est celui de la fin de
+séance dans le fuseau de l'utilisateur (`profiles.timezone`, `Europe/Paris` par défaut). Gels de streak
+et jours de repos : P1.
+
+### D-16 — Matière visible dans le fil
+
+Par défaut **non partagée** (cohérent avec la décision 6) ; l'utilisateur peut l'activer. La matière est
+copiée dans la publication au moment de la fin de séance, la table `subjects` reste privée.
+
+### D-17 — Horodatages des séances écrits par le serveur uniquement
+
+Le client ne peut plus modifier `started_at`, `ended_at`, `status` de `study_sessions` (droits par colonne
+retirés) ; tout passe par `start/pause/resume/heartbeat/cancel/finish_study_session`. Raison : sinon un
+utilisateur peut déclarer une séance de 10 h et obtenir l'XP correspondante.
+
+### D-18 — Fil et statistiques publiques
+
+Table `posts` créée par `finish_study_session` (unique par séance, pas de note scolaire) et table
+`user_stats` (XP total, streak, record, minutes totales) lisible par soi et ses amis. Raison : les amis ne
+peuvent pas lire `xp_transactions` ni `subjects` (RLS propriétaire), il faut des données publiques dédiées.
+
+### D-19 — Amis en révision sans temps réel pour la démo
+
+Heartbeat toutes les 60 s, actualisation toutes les 30 s, hors ligne après 3 min sans heartbeat.
+Supabase Realtime plus tard si besoin.
+
+### D-20 — Organisation Git
+
+On garde la convention de `CLAUDE.md` (`stan/<sujet>`, `charles/<sujet>`, `fix/<sujet>`) plutôt que
+`feature/stanislas-*`. Pas de branche `develop` : `main` est protégée (PR + CI obligatoires), fusion en
+« squash ». Seul Stan écrit des migrations. Un seul ajout de dépendance par PR, annoncé.
+
+### D-21 — Périmètre de la démo du 30/11
+
+Dedans : compte + pseudo, matières, notes, moyenne, simulateur simple, Focus (libre et compte à
+rebours), XP, niveaux, streak, amis, fil des séances, réaction. Dehors (marqué `NotImplemented`) :
+agenda, planning, trophées, classements, ligues, défis, notifications, paiements, Google, temps réel.
+
 ## Ouvertes
 
 - Confirmation d'e-mail activée ou non pour la démo.
 - Région du projet Supabase (UE recommandée, RGPD).
 - Visibilité par défaut des séances (point 6).
 - Offre Vercel Hobby réservée à un usage non commercial : à revoir avant monétisation.
+- Dépôt GitHub **public** (constaté le 25/11/2026) alors qu'il était prévu privé : à confirmer.
+- Pseudo : obligatoire avant d'utiliser Social (proposé en S-04).
