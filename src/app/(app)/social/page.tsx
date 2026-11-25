@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Medal, UserRound, Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
+import { Button } from "@/components/ui/button";
 import { AutoRefresh } from "@/modules/social/components/auto-refresh";
 import { FeedCard } from "@/modules/social/components/feed-card";
 import { FriendList } from "@/modules/social/components/friend-list";
@@ -71,7 +73,17 @@ export default async function SocialPage() {
                   ? "Ajoute des amis ci-dessous. Le fil ne montre que les séances qu'ils choisissent de partager. Jamais leurs notes."
                   : "Termine une séance Focus : elle apparaîtra ici, ainsi que celles de tes amis."
               }
-            />
+            >
+              {friends.length === 0 ? (
+                <Button asChild className="min-h-11">
+                  <Link href="#ajouter-ami">Ajoute ton premier ami</Link>
+                </Button>
+              ) : (
+                <Button asChild className="min-h-11">
+                  <Link href="/focus">Lance une séance</Link>
+                </Button>
+              )}
+            </EmptyState>
           )}
         </section>
 
@@ -95,7 +107,7 @@ export default async function SocialPage() {
           )}
         </section>
 
-        <section className="space-y-3" aria-labelledby="add-title">
+        <section id="ajouter-ami" className="scroll-mt-20 space-y-3" aria-labelledby="add-title">
           <h2 id="add-title" className="text-lg font-semibold">
             Ajouter un ami
           </h2>
