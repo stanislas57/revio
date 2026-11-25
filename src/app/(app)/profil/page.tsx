@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Sprout } from "lucide-react";
 import { BarChart3, Trophy } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { EmptyState } from "@/components/states/empty-state";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LevelCard } from "@/modules/gamification/components/level-card";
 import { LevelLadder } from "@/modules/gamification/components/level-ladder";
@@ -35,6 +39,22 @@ export default async function ProfilPage() {
           <LevelCard level={stats.level} />
           <StreakCard streak={stats.streak} days={stats.days} />
         </div>
+        {stats.sessionsCount === 0 && (
+          <EmptyState
+            icon={Sprout}
+            title="Ta progression démarre avec ta première séance"
+            description="Ton niveau, ta série et ton temps révisé se remplissent dès ta première séance Focus. Tes amis verront ton niveau, jamais tes notes."
+          >
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button asChild className="min-h-11">
+                <Link href="/focus">Lance ta première séance</Link>
+              </Button>
+              <Button asChild variant="outline" className="min-h-11">
+                <Link href="/social#ajouter-ami">Ajoute ton premier ami</Link>
+              </Button>
+            </div>
+          </EmptyState>
+        )}
         <StatTiles totalMinutes={stats.totalMinutes} sessions={stats.sessionsCount} />
 
         <SectionLinks
