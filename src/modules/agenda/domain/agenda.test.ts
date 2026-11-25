@@ -14,6 +14,8 @@ const base: CalendarEvent = {
   startTime: "18:00:00",
   endTime: "19:30:00",
   recurrence: "none",
+  planStatus: null,
+  planReason: null,
 };
 
 describe("dates", () => {

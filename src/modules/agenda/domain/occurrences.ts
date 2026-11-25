@@ -46,6 +46,8 @@ export function expandRange(
         startTime: trimTime(event.startTime),
         endTime: trimTime(event.endTime),
         recurring: event.recurrence !== "none",
+        planStatus: event.planStatus,
+        planReason: event.planReason,
       });
     }
   }
@@ -62,6 +64,8 @@ export function expandRange(
       startTime: null,
       endTime: null,
       recurring: false,
+      planStatus: null,
+      planReason: null,
     });
   }
 

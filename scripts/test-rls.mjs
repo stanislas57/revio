@@ -467,6 +467,62 @@ ok(
     .rows?.[0]?.n === 1,
 );
 
+// planning: plan_status on calendar_events
+const planned = (status, extra = "") =>
+  as(
+    C,
+    `insert into calendar_events (title, kind, starts_on, last_on, start_time, end_time, plan_status${extra ? ", " + extra.split("=")[0] : ""}) values ('Réviser', 'study', '2026-12-03', '2026-12-03', '18:00', '18:45', ${status}${extra ? ", " + extra.split("=")[1] : ""})`,
+  );
+ok("C creates a recommended session", !(await planned("'recommended'")).error);
+ok("C creates an accepted session", !(await planned("'accepted'")).error);
+ok(
+  "C creates a locked session with a reason",
+  !(await planned("'locked'", "plan_reason='Examen proche'")).error,
+);
+ok("unknown plan status rejected", !!(await planned("'magic'")).error);
+ok(
+  "planned session must be a timed study slot",
+  !!(
+    await as(
+      C,
+      `insert into calendar_events (title, kind, starts_on, last_on, start_time, end_time, plan_status) values ('x', 'class', '2026-12-03', '2026-12-03', '18:00', '18:45', 'accepted')`,
+    )
+  ).error &&
+    !!(
+      await as(
+        C,
+        `insert into calendar_events (title, kind, starts_on, last_on, plan_status) values ('x', 'study', '2026-12-03', '2026-12-03', 'accepted')`,
+      )
+    ).error,
+);
+ok(
+  "planned session cannot repeat",
+  !!(
+    await as(
+      C,
+      `insert into calendar_events (title, kind, starts_on, last_on, start_time, end_time, recurrence, plan_status) values ('x', 'study', '2026-12-03', '2026-12-10', '18:00', '18:45', 'weekly', 'accepted')`,
+    )
+  ).error,
+);
+ok(
+  "plan reason longer than 400 rejected",
+  !!(await planned("'accepted'", `plan_reason='${"x".repeat(401)}'`)).error,
+);
+ok(
+  "C moves a session through the statuses",
+  !(await as(C, `update calendar_events set plan_status='locked' where plan_status='recommended'`)).error,
+);
+ok(
+  "a manual event keeps a null plan_status",
+  (await as(B, `select count(*)::int n from calendar_events where plan_status is not null`)).rows?.[0]?.n ===
+    0,
+);
+ok(
+  "B cannot change the status of C sessions",
+  (await as(B, `update calendar_events set plan_status='locked' where user_id='${C}' returning id`)).rows
+    ?.length === 0,
+);
+
 // delete cascade
 await db.exec(`delete from auth.users where id='${A}'`);
 ok("user deletion cascades", (await db.query(`select count(*)::int n from grades`)).rows[0].n === 0);
@@ -476,7 +532,7 @@ ok(
     .rows[0].n == 0,
 );
 
-await db.exec(`delete from auth.users where id='${B}'`);
+await db.exec(`delete from auth.users where id in ('${B}', '${C}')`);
 ok(
   "user deletion cascades to calendar events",
   (await db.query(`select count(*)::int n from calendar_events`)).rows[0].n === 0,

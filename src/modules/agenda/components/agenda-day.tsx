@@ -5,8 +5,9 @@ import { Pencil, Repeat, Trash2, TriangleAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatLongDate } from "../domain/dates";
-import { KIND_LABELS, type AgendaItem, type CalendarEvent } from "../domain/types";
+import { KIND_LABELS, PLAN_STATUS_LABELS, type AgendaItem, type CalendarEvent } from "../domain/types";
 import { deleteEvent } from "../server/actions";
+import { setPlanStatus } from "@/modules/planning/server/actions";
 import { EventForm } from "./event-form";
 
 type Props = {
@@ -24,6 +25,13 @@ export function AgendaDay({ date, today, items, conflicts, events, subjects }: P
   const [message, setMessage] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const names = new Map(subjects.map((s) => [s.id, s.name]));
+
+  function changeStatus(id: string, status: "accepted" | "locked") {
+    start(async () => {
+      const res = await setPlanStatus(id, status);
+      setMessage(res.ok ? null : res.error.message);
+    });
+  }
 
   return (
     <section aria-label={formatLongDate(date)} className="space-y-2">
@@ -81,11 +89,55 @@ export function AgendaDay({ date, today, items, conflicts, events, subjects }: P
                         <TriangleAlert className="size-3" aria-hidden /> chevauche un autre créneau
                       </span>
                     )}
+                    {item.planStatus && (
+                      <Badge variant={item.planStatus === "recommended" ? "outline" : "secondary"}>
+                        {PLAN_STATUS_LABELS[item.planStatus]}
+                      </Badge>
+                    )}
                     {item.source === "exam" && <span>· modifiable depuis l&apos;Accueil</span>}
                   </p>
+                  {item.planReason && (
+                    <details className="mt-1 text-xs text-muted-foreground">
+                      <summary className="cursor-pointer">Pourquoi cette séance ?</summary>
+                      <p className="mt-1">{item.planReason}</p>
+                    </details>
+                  )}
                 </div>
                 {event && (
-                  <div className="flex shrink-0">
+                  <div className="flex shrink-0 items-center">
+                    {item.planStatus === "recommended" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={pending}
+                        aria-label={`Accepter ${item.title}`}
+                        onClick={() => changeStatus(event.id, "accepted")}
+                      >
+                        Accepter
+                      </Button>
+                    )}
+                    {item.planStatus === "accepted" && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        disabled={pending}
+                        aria-label={`Verrouiller ${item.title}`}
+                        onClick={() => changeStatus(event.id, "locked")}
+                      >
+                        Verrouiller
+                      </Button>
+                    )}
+                    {item.planStatus === "locked" && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        disabled={pending}
+                        aria-label={`Déverrouiller ${item.title}`}
+                        onClick={() => changeStatus(event.id, "accepted")}
+                      >
+                        Déverrouiller
+                      </Button>
+                    )}
                     <Button
                       size="icon"
                       variant="ghost"

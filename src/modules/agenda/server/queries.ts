@@ -1,7 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { EVENT_KINDS, RECURRENCES, type CalendarEvent, type ExamItem } from "../domain/types";
+import { EVENT_KINDS, PLAN_STATUSES, RECURRENCES, type CalendarEvent, type ExamItem } from "../domain/types";
 
 const eventRow = z.object({
   id: z.string(),
@@ -13,6 +13,8 @@ const eventRow = z.object({
   start_time: z.string().nullable(),
   end_time: z.string().nullable(),
   recurrence: z.enum(RECURRENCES),
+  plan_status: z.enum(PLAN_STATUSES).nullable(),
+  plan_reason: z.string().nullable(),
 });
 const examRow = z.object({
   id: z.string(),
@@ -34,7 +36,9 @@ export async function getAgendaData(from: string, to: string): Promise<AgendaDat
   const [events, exams, subjects] = await Promise.all([
     supabase
       .from("calendar_events")
-      .select("id, subject_id, title, kind, starts_on, last_on, start_time, end_time, recurrence")
+      .select(
+        "id, subject_id, title, kind, starts_on, last_on, start_time, end_time, recurrence, plan_status, plan_reason",
+      )
       .lte("starts_on", to)
       .gte("last_on", from)
       .order("starts_on", { ascending: true }),
@@ -63,6 +67,8 @@ export async function getAgendaData(from: string, to: string): Promise<AgendaDat
         startTime: r.start_time,
         endTime: r.end_time,
         recurrence: r.recurrence,
+        planStatus: r.plan_status,
+        planReason: r.plan_reason,
       })),
     exams: z
       .array(examRow)
