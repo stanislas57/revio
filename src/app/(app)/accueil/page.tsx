@@ -8,17 +8,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DashboardSummary } from "@/modules/academic/components/dashboard-summary";
 import { ExamsCard } from "@/modules/academic/components/exams-card";
 import { Simulator } from "@/modules/academic/components/simulator";
+import { ScenarioSimulator } from "@/modules/academic/components/scenario-simulator";
 import { SubjectCard } from "@/modules/academic/components/subject-card";
 import { SubjectForm } from "@/modules/academic/components/subject-form";
 import { TargetForm } from "@/modules/academic/components/target-form";
 import { TemplateImport } from "@/modules/academic/components/template-import";
+import { TimePlanner } from "@/modules/academic/components/time-planner";
 import { buildDashboard } from "@/modules/academic/domain/dashboard";
 import { getAcademicSnapshot } from "@/modules/academic/server/queries";
+import { deleteScenario, saveScenario } from "@/modules/academic/server/scenario-actions";
+import { listScenarios } from "@/modules/academic/server/scenarios";
 
 export const metadata: Metadata = { title: "Accueil" };
 
 export default async function AccueilPage() {
-  const snapshot = await getAcademicSnapshot();
+  const [snapshot, scenarios] = await Promise.all([getAcademicSnapshot(), listScenarios()]);
   const dashboard = buildDashboard(snapshot);
   const names = new Map(snapshot.subjects.map((s) => [s.id, s.name]));
   const archived = snapshot.subjects.filter((s) => s.archived);
@@ -78,7 +82,16 @@ export default async function AccueilPage() {
 
         <ExamsCard exams={dashboard.upcomingExams} subjects={dashboard.activeSubjects} />
         {dashboard.activeSubjects.length > 0 && (
-          <Simulator subjects={dashboard.activeSubjects} defaultTarget={snapshot.targetAverage} />
+          <>
+            <Simulator subjects={dashboard.activeSubjects} defaultTarget={snapshot.targetAverage} />
+            <ScenarioSimulator
+              subjects={dashboard.activeSubjects}
+              saved={scenarios}
+              onSave={saveScenario}
+              onDelete={deleteScenario}
+            />
+            <TimePlanner subjects={dashboard.activeSubjects} priorities={dashboard.priorities} />
+          </>
         )}
       </div>
     </>
