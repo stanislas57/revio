@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Reveal } from "./reveal";
 
 const FREE = [
   "Matières, coefficients et notes",
@@ -31,29 +32,25 @@ function List({ items }: { items: string[] }) {
 
 export function Offer() {
   return (
-    <section
-      id="offre"
-      aria-labelledby="offre-title"
-      className="scroll-mt-16 border-t bg-muted/30 py-14 sm:py-20"
-    >
-      <div className="mx-auto max-w-4xl px-4">
+    <section id="offre" aria-labelledby="offre-title" className="scroll-mt-16 border-t py-16 sm:py-24">
+      <Reveal className="mx-auto max-w-4xl px-4">
         <div className="mx-auto max-w-2xl space-y-3 text-center">
-          <h2 id="offre-title" className="text-3xl font-bold tracking-tight">
-            Gratuit pour commencer
+          <h2 id="offre-title" className="landing-serif text-4xl sm:text-5xl">
+            Gratuit <em className="text-brand-text">pour commencer</em>
           </h2>
           <p className="text-muted-foreground">
             L&apos;essentiel est pensé pour être gratuit. Une offre Premium est envisagée plus tard.
           </p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
-          <article className="space-y-4 rounded-xl border bg-card p-6">
+          <article className="space-y-4 rounded-2xl border bg-card p-6 shadow-[0_18px_50px_-30px_rgb(20_20_20/0.3)]">
             <div className="flex items-center justify-between gap-2">
               <h3 className="text-lg font-semibold">Gratuit</h3>
               <Badge variant="secondary">Pendant la démonstration</Badge>
             </div>
             <List items={FREE} />
           </article>
-          <article className="space-y-4 rounded-xl border border-dashed bg-card p-6">
+          <article className="space-y-4 rounded-2xl border border-dashed bg-card p-6">
             <div className="flex items-center justify-between gap-2">
               <h3 className="text-lg font-semibold">Premium</h3>
               <Badge variant="outline">Envisagé</Badge>
@@ -64,7 +61,7 @@ export function Offer() {
         <p className="mt-6 text-center text-xs text-muted-foreground">
           Le contenu et les tarifs du Premium ne sont pas fixés. Rien n&apos;est à payer aujourd&apos;hui.
         </p>
-      </div>
+      </Reveal>
     </section>
   );
 }

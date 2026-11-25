@@ -12,11 +12,11 @@ const focusRing = "rounded-md outline-none focus-visible:ring-[3px] focus-visibl
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b bg-[var(--landing-bg)]/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
         <Link
           href="/"
-          className={`-mx-1 inline-flex min-h-11 items-center px-1 text-lg font-bold tracking-tight ${focusRing}`}
+          className={`landing-serif -mx-1 inline-flex min-h-11 items-center px-1 text-2xl ${focusRing}`}
         >
           Revio
         </Link>
