@@ -106,10 +106,10 @@ export function SessionSummary({ result }: { result: SessionResult }) {
       </p>
 
       <div className="flex flex-col gap-2 sm:flex-row">
-        <Button asChild className="flex-1">
+        <Button asChild className="min-h-11 flex-1">
           <Link href="/focus">Nouvelle séance</Link>
         </Button>
-        <Button asChild variant="outline" className="flex-1">
+        <Button asChild variant="outline" className="min-h-11 flex-1">
           <Link href="/social">Voir le fil</Link>
         </Button>
       </div>
