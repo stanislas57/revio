@@ -9,4 +9,8 @@ décision D-17) : le client appelle `supabase.rpc('start_study_session' | 'pause
 'set_study_session_visibility')`. Durée réelle : `study_session_seconds(session)`. Une séance sans
 heartbeat depuis 12 h est abandonnée au démarrage suivant.
 
-État : fonctions SQL et tests RLS faits ; Server Actions, XP et UI à faire.
+Serveur (pour l'UI de Charles) : `server/queries.ts` → `getActiveSession()` ; `server/actions.ts` →
+`startSession`, `pauseSession`, `resumeSession`, `cancelSession`, `heartbeatSession`, `finishSession`
+(renvoient `ActionResult<…>`, voir `contracts.ts`). Temps affiché : `domain/elapsed.ts`.
+
+État : moteur SQL, XP et actions serveur faits et testés ; UI (Charles) à faire.
