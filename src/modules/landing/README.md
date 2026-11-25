@@ -4,25 +4,25 @@ Page d'accueil publique (`src/app/page.tsx`). Aucun appel serveur, aucun appel �
 
 ## Ce qui est statique et ce qui est interactif
 
-- **Statique (rendu serveur)** : en-tête, textes du hero, offre, FAQ, bandeau final, pied de page, aperçus (`preview.tsx`).
-- **Îlots interactifs (JavaScript client)** : `orbit-stage.tsx` (cartes en orbite, parallaxe, pause, ouverture des vues),
-  `pillars.tsx` (onglets verticaux), `reveal.tsx` et `xp-count.tsx` (apparition au défilement, compteur).
-  Les vues de démo plein écran (`demo-dialog.tsx`, `demo-views.tsx`) ne sont chargées qu'à la première ouverture
-  d'une carte.
+- **Statique (rendu serveur)** : en-tête, hero de la charte (pastille, titre, sous-titre, boutons « Rejoindre la bêta »
+  et « Explorer la démo », bandeau « Planifie ✦ Révise ✦ Gagne de l'XP ✦ Recommence »), offre, FAQ, bandeau final,
+  pied de page, aperçus (`preview.tsx`).
+- **Îlots interactifs (JavaScript client)** : `pillars.tsx` (onglets verticaux), `reveal.tsx` et `xp-count.tsx`
+  (apparition au défilement, compteur). Le hero n'a plus de cartes en orbite ni de vues de démo plein écran
+  (retirées : la démo complète est sur `/demo`).
 
 ## Données de démo
 
 Toutes dans `demo-data.ts` (inventées, aucune vraie XP calculée par le serveur). Les niveaux, les paliers de série et
 les règles d'XP sont **lus dans le moteur** (`gamification/domain`) : la démo ne peut pas s'en écarter ; un test
-(`demo-data.test.ts`) le garantit (Challenger à 4 280 XP, 64 % vers Expert, 720 XP manquants, série de 15 jours,
-+115 XP = 65 min + 50 d'objectif du jour).
+(`demo-data.test.ts`) le garantit (Challenger à 4 280 XP, 64 % vers Expert, 720 XP manquants, +115 XP = 65 min + 50
+d'objectif du jour).
 
 ## Style
 
-`landing.css` (importé par la page seulement) : orbites, apparitions, mouvement réduit. Les couleurs, les polices
-(Space Grotesk pour les titres et les chiffres, Inter pour le texte) et la grille « petits carreaux » du hero viennent
-du design system Revio (`globals.css`, `docs/design-system.md`). Dans un titre, la partie accentuée est en couleur de
-marque, pas en italique (la police n'en a pas).
+`landing.css` (importé par la page seulement) : fond crème, fond du hero, titres, apparitions, petites animations des
+piliers, mouvement réduit. Les couleurs et la police (Inter) viennent de la charte graphique bêta 01 (`globals.css`,
+`docs/design-system.md`). Dans un titre, la partie accentuée est en couleur de marque, pas en italique.
 
 ## Règles de contenu
 
@@ -33,10 +33,7 @@ confidentialité) : à ajouter avant l'ouverture au public.
 
 ## Accessibilité et mouvement
 
-- Les orbites ne tournent que sur écran large (≥ 1024 px) **et** si le mouvement est autorisé ; ailleurs, les six cartes
-  forment une grille immobile (téléphone, tablette, `prefers-reduced-motion`).
-- Elles s'arrêtent au survol, au focus clavier et avec un bouton « Mettre le mouvement en pause » (un contenu animé
-  plus de 5 secondes doit pouvoir être arrêté).
-- Chaque carte est un bouton dont le nom accessible est son texte visible. La vue de démo est un dialogue (Radix) :
-  Échap, bouton « Retour » ou retour du navigateur la ferment (le hash `#serie`, `#progression-xp`… suit l'ouverture) ;
-  le focus revient à la carte.
+- Rien ne bouge en continu dans le hero (test e2e) : seules les apparitions au défilement et les petites animations des
+  piliers jouent une fois, et aucune avec `prefers-reduced-motion`.
+- Les anciennes adresses des vues de démo (`/#serie`, `/#progression-xp`…) n'ouvrent plus rien : la page s'affiche
+  normalement.
