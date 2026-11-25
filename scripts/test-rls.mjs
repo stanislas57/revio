@@ -575,6 +575,49 @@ ok(
     (await as(E, `select * from user_settings where user_id='${D}'`)).rows.length === 0,
   );
 
+  // achievements (S-18): automatic, non-repeatable, owner-only, no client write
+  await db.exec(
+    `update study_sessions set started_at = now() - interval '45 minutes', paused_seconds = 0
+       where user_id='${D}' and status='in_progress'`,
+  );
+  const achSid = (await as(D, `select id from study_sessions where status='in_progress'`)).rows?.[0]?.id;
+  ok("D finishes a session", !(await as(D, `select finish_study_session($1)`, [achSid])).error);
+  const ach = (await as(D, `select my_achievements() as a`)).rows?.[0]?.a ?? [];
+  const byId = Object.fromEntries(ach.map((a) => [a.id, a]));
+  ok("catalogue is returned in full", ach.length === 11);
+  ok(
+    "first session unlocked by finishing one",
+    !!byId.first_session?.unlockedAt && byId.first_session.progress === null,
+  );
+  ok("friend achievement unlocked by an accepted friendship", !!byId.first_friend?.unlockedAt);
+  ok(
+    "a locked achievement shows progress",
+    byId.friends_5?.progress?.current === 1 && byId.friends_5?.progress?.target === 5,
+  );
+  ok("streak achievement not unlocked after one day", !byId.streak_7?.unlockedAt);
+  const before = (await as(D, `select count(*)::int n from user_achievements`)).rows?.[0]?.n;
+  await as(D, `select my_achievements()`);
+  await as(D, `select my_achievements()`);
+  ok(
+    "awards are never duplicated",
+    (await as(D, `select count(*)::int n from user_achievements`)).rows?.[0]?.n === before,
+  );
+  ok(
+    "client cannot grant itself an achievement",
+    !!(await as(D, `insert into user_achievements (user_id, achievement_id) values ('${D}','streak_100')`))
+      .error,
+  );
+  ok(
+    "client cannot delete an award",
+    ((await as(D, `delete from user_achievements returning 1`)).rows ?? []).length === 0 ||
+      !!(await as(D, `delete from user_achievements`)).error,
+  );
+  ok(
+    "another user cannot read my awards",
+    (await as(E, `select * from user_achievements where user_id='${D}'`)).rows.length === 0,
+  );
+  ok("anon cannot read achievements", !!(await as(null, `select my_achievements()`)).error);
+
   // account deletion: everything of D goes, E stays
   await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);
   await as(D, `insert into exams (title, exam_on) values ('Partiel', '2026-12-10')`);

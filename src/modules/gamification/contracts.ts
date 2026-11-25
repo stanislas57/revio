@@ -33,7 +33,7 @@ export type XpReason = "study_duration" | "daily_goal" | "streak_milestone" | "p
 
 export type XpBreakdownItem = { reason: XpReason; xp: number; label: string };
 
-/** Draft (P1): not implemented server-side yet. */
+/** An achievement of the catalogue (S-18), from `my_achievements()`. Never tied to a grade. */
 export type Achievement = {
   id: string;
   name: string;
