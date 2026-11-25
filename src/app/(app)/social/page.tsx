@@ -2,24 +2,80 @@ import type { Metadata } from "next";
 import { Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
-import { NotImplemented } from "@/components/states/not-implemented";
+import { AutoRefresh } from "@/modules/social/components/auto-refresh";
+import { FeedCard } from "@/modules/social/components/feed-card";
+import { FriendList } from "@/modules/social/components/friend-list";
+import { FriendRequests } from "@/modules/social/components/friend-requests";
+import { FriendSearch } from "@/modules/social/components/friend-search";
+import { FriendsStudying } from "@/modules/social/components/friends-studying";
+import { getFeed, getFriendRequests, getFriendsOverview } from "@/modules/social/server/queries";
 
 export const metadata: Metadata = { title: "Social" };
 
-export default function SocialPage() {
+export default async function SocialPage() {
+  const [feed, friends, requests] = await Promise.all([getFeed(), getFriendsOverview(), getFriendRequests()]);
   return (
     <>
+      <AutoRefresh seconds={30} />
       <PageHeader title="Social" description="Tes amis et le fil de leurs séances." />
-      <div className="space-y-4">
-        <NotImplemented
-          owner="Charles"
-          feature="Ajout d'amis, demandes d'amitié et fil automatique des séances terminées."
-        />
-        <EmptyState
-          icon={Users}
-          title="Pas encore d'amis"
-          description="Le fil ne montrera que les séances que tes amis choisissent de partager. Jamais leurs notes."
-        />
+      <div className="space-y-8">
+        <FriendsStudying friends={friends} />
+
+        <section className="space-y-3" aria-labelledby="feed-title">
+          <h2 id="feed-title" className="text-lg font-semibold">
+            Fil d&apos;activité
+          </h2>
+          {feed.length > 0 ? (
+            <div className="space-y-3">
+              {feed.map((item) => (
+                <FeedCard key={item.id} item={item} />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              icon={Users}
+              title={friends.length === 0 ? "Pas encore d'amis" : "Aucune activité récente"}
+              description={
+                friends.length === 0
+                  ? "Ajoute des amis ci-dessous. Le fil ne montre que les séances qu'ils choisissent de partager. Jamais leurs notes."
+                  : "Termine une séance Focus : elle apparaîtra ici, ainsi que celles de tes amis."
+              }
+            />
+          )}
+        </section>
+
+        {requests.received.length > 0 && (
+          <section className="space-y-3" aria-labelledby="received-title">
+            <h2 id="received-title" className="text-lg font-semibold">
+              Demandes reçues ({requests.received.length})
+            </h2>
+            <FriendRequests requests={requests.received} received />
+          </section>
+        )}
+
+        <section className="space-y-3" aria-labelledby="friends-title">
+          <h2 id="friends-title" className="text-lg font-semibold">
+            Mes amis ({friends.length})
+          </h2>
+          {friends.length > 0 ? (
+            <FriendList friends={friends} />
+          ) : (
+            <p className="text-sm text-muted-foreground">Aucun ami pour l&apos;instant.</p>
+          )}
+        </section>
+
+        <section className="space-y-3" aria-labelledby="add-title">
+          <h2 id="add-title" className="text-lg font-semibold">
+            Ajouter un ami
+          </h2>
+          <FriendSearch />
+          {requests.sent.length > 0 && (
+            <div className="space-y-2 pt-2">
+              <h3 className="text-sm font-medium text-muted-foreground">Demandes envoyées</h3>
+              <FriendRequests requests={requests.sent} received={false} />
+            </div>
+          )}
+        </section>
       </div>
     </>
   );
