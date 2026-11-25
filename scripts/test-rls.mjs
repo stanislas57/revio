@@ -575,6 +575,24 @@ ok(
     (await as(E, `select * from user_settings where user_id='${D}'`)).rows.length === 0,
   );
 
+  // study stats (S-20): own completed sessions only, one call
+  await db.exec(
+    `update study_sessions set started_at = now() - interval '45 minutes', paused_seconds = 0
+       where user_id='${D}' and status='in_progress'`,
+  );
+  const sid = (await as(D, `select id from study_sessions where status='in_progress'`)).rows?.[0]?.id;
+  ok("D finishes a 45 min session", !(await as(D, `select finish_study_session($1)`, [sid])).error);
+  const st = (await as(D, `select my_study_stats(30) as s`)).rows?.[0]?.s;
+  ok("stats count my completed session", st?.sessionsCount === 1 && st?.totalMinutes >= 44);
+  ok("stats daily series covers 30 days", st?.daily?.length === 30);
+  ok("stats today minutes match", st?.todayMinutes >= 44 && st?.weekMinutes >= 44);
+  ok(
+    "a friend's stats never include my shared session",
+    (await as(E, `select my_study_stats(30) as s`)).rows?.[0]?.s?.sessionsCount === 0,
+  );
+  ok("stats refuse anon", !!(await as(null, `select my_study_stats(30)`)).error);
+  ok("stats refuse absurd windows", !!(await as(D, `select my_study_stats(5000)`)).error);
+
   // account deletion: everything of D goes, E stays
   await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);
   await as(D, `insert into exams (title, exam_on) values ('Partiel', '2026-12-10')`);
