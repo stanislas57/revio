@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Revio — Accueil web</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#7B2FF7}a:hover{color:#5B1BC4}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</helmet>
+<div style="min-height: 100vh; box-sizing: border-box; background-color: #FBF9FF; background-image: linear-gradient(#F1EAFD 1px, transparent 1px), linear-gradient(90deg, #F1EAFD 1px, transparent 1px); background-size: 24px 24px; font-family: Inter, system-ui, sans-serif; color: #1A1030">
+<div style="max-width: 1440px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<aside aria-label="Menu" style="flex: 1 1 220px; max-width: 100%; background: #1A1030; color: #FFFFFF; border-radius: 28px; padding: 24px 18px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+<a href="#" style="display: flex; align-items: center; gap: 10px; color: #FFFFFF; text-decoration: none">
+<svg width="40" height="40" viewBox="0 0 72 72" aria-hidden="true"><defs><linearGradient id="wLogo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B2FF7"></stop><stop offset="1" stop-color="#E11D8F"></stop></linearGradient></defs><circle cx="36" cy="36" r="30" fill="none" stroke="#3A2D55" stroke-width="9"></circle><circle cx="36" cy="36" r="30" fill="none" stroke="url(#wLogo)" stroke-width="9" stroke-linecap="round" stroke-dasharray="141 189" transform="rotate(-90 36 36)"></circle><text x="36" y="46" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="30" fill="#FFFFFF">R</text></svg>
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.02em">Revio</span>
+</a>
+<nav aria-label="Navigation principale" style="display: flex; flex-direction: column; gap: 4px">
+<a href="#" aria-current="page" style="height: 46px; padding: 0 14px; border-radius: 14px; background: #3A2D55; color: #FFFFFF; display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 600; font-size: 14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>Accueil</a>
+<a href="Fusion-02-Fil.dc.html" style="height: 46px; padding: 0 14px; border-radius: 14px; color: #CFC6E6; display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 500; font-size: 14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFC6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>Fil social<span style="margin-left: auto; font-size: 11px; font-weight: 700; color: #FFFFFF; background: #E11D8F; border-radius: 999px; padding: 2px 7px">3</span></a>
+<a href="Fusion-05-Fiches.dc.html" style="height: 46px; padding: 0 14px; border-radius: 14px; color: #CFC6E6; display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 500; font-size: 14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFC6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>Mes fiches</a>
+<a href="#" style="height: 46px; padding: 0 14px; border-radius: 14px; color: #CFC6E6; display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 500; font-size: 14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFC6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>Salles d'étude</a>
+<a href="Fusion-04-Progression.dc.html" style="height: 46px; padding: 0 14px; border-radius: 14px; color: #CFC6E6; display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 500; font-size: 14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFC6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>Progression</a>
+</nav>
+<a href="Fusion-03-Focus.dc.html" style="height: 54px; border-radius: 18px; background: linear-gradient(90deg, #7B2FF7, #E11D8F); color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px; box-shadow: 0 10px 24px rgba(225,29,143,0.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>Réviser maintenant</a>
+<div style="background: #261A40; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 38px; height: 38px; border-radius: 999px; background: #EBDDFF; color: #1A1030; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">IN</span>
+<div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Inès</strong><span style="font-size: 12px; color: #CFC6E6">Terminale · Niv. 12</span></div>
+</div>
+<div style="height: 8px; border-radius: 999px; background: #3A2D55; display: flex; overflow: hidden"><div style="width: 78%; background: #7B2FF7"></div><div style="width: 5%; background: #C6F432"></div></div>
+<span style="font-size: 12px; color: #CFC6E6">1 240 / 1 500 XP</span>
+</div>
+</aside>
+
+<div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<div style="flex: 1 1 260px; display: flex; flex-direction: column"><span style="font-size: 14px; color: #6B6280">Mercredi 25 novembre · J-12 avant le contrôle de SVT</span><h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 36px; letter-spacing: -0.02em">Bonjour Inès</h1></div>
+<div style="flex: 0 1 320px; display: flex; flex-direction: column">
+<label for="webSearch" class="sr-only">Rechercher une fiche, un ami ou une matière</label>
+<input id="webSearch" type="search" placeholder="Rechercher une fiche, un ami…" style="height: 46px; border-radius: 999px; border: 1px solid #E7DDFB; background: #FFFFFF; padding: 0 18px; font-family: Inter, sans-serif; font-size: 14px; color: #1A1030; box-sizing: border-box; width: 100%">
+</div>
+<span style="height: 46px; padding: 0 14px; border-radius: 999px; background: #1A1030; color: #FFFFFF; display: flex; align-items: center; gap: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E11D8F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>17 jours</span>
+<button type="button" aria-label="Notifications" style="width: 46px; height: 46px; border-radius: 999px; border: 1px solid #E7DDFB; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1030" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span style="position: absolute; top: 10px; right: 11px; width: 8px; height: 8px; border-radius: 999px; background: #E11D8F"></span></button>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<main style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+
+<section aria-label="Amis en révision maintenant" style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 24px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px">En révision maintenant</h2><a href="#" style="font-size: 13px; font-weight: 600; color: #C0157A">Voir les 6 amis</a></div>
+<div style="display: flex; flex-wrap: wrap; gap: 20px">
+<div style="display: flex; align-items: center; gap: 10px"><div style="position: relative; width: 56px; height: 56px"><svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="wa1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B2FF7"></stop><stop offset="1" stop-color="#E11D8F"></stop></linearGradient></defs><circle cx="28" cy="28" r="25" fill="none" stroke="#EBE2FC" stroke-width="4"></circle><circle cx="28" cy="28" r="25" fill="none" stroke="url(#wa1)" stroke-width="4" stroke-linecap="round" stroke-dasharray="110 157" transform="rotate(-90 28 28)"></circle></svg><span style="position: absolute; inset: 7px; border-radius: 999px; background: #FDEAF5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">LB</span><span style="position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; border-radius: 999px; background: #E11D8F; border: 3px solid #FFFFFF"></span></div><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Léo</strong><span style="font-size: 12px; color: #6B6280">Maths · 18 min</span></div></div>
+<div style="display: flex; align-items: center; gap: 10px"><div style="position: relative; width: 56px; height: 56px"><svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="wa2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B2FF7"></stop><stop offset="1" stop-color="#E11D8F"></stop></linearGradient></defs><circle cx="28" cy="28" r="25" fill="none" stroke="#EBE2FC" stroke-width="4"></circle><circle cx="28" cy="28" r="25" fill="none" stroke="url(#wa2)" stroke-width="4" stroke-linecap="round" stroke-dasharray="55 157" transform="rotate(-90 28 28)"></circle></svg><span style="position: absolute; inset: 7px; border-radius: 999px; background: #EBDDFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">SA</span><span style="position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; border-radius: 999px; background: #E11D8F; border: 3px solid #FFFFFF"></span></div><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Sarah</strong><span style="font-size: 12px; color: #6B6280">SVT · 9 min</span></div></div>
+<div style="display: flex; align-items: center; gap: 10px"><div style="position: relative; width: 56px; height: 56px"><svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="wa3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B2FF7"></stop><stop offset="1" stop-color="#E11D8F"></stop></linearGradient></defs><circle cx="28" cy="28" r="25" fill="none" stroke="#EBE2FC" stroke-width="4"></circle><circle cx="28" cy="28" r="25" fill="none" stroke="url(#wa3)" stroke-width="4" stroke-linecap="round" stroke-dasharray="140 157" transform="rotate(-90 28 28)"></circle></svg><span style="position: absolute; inset: 7px; border-radius: 999px; background: #FDEAF5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">NK</span><span style="position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; border-radius: 999px; background: #E11D8F; border: 3px solid #FFFFFF"></span></div><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Nour</strong><span style="font-size: 12px; color: #6B6280">Histoire · 41 min</span></div></div>
+<div style="display: flex; align-items: center; gap: 10px"><div style="position: relative; width: 56px; height: 56px"><svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><defs><linearGradient id="wa4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B2FF7"></stop><stop offset="1" stop-color="#E11D8F"></stop></linearGradient></defs><circle cx="28" cy="28" r="25" fill="none" stroke="#EBE2FC" stroke-width="4"></circle><circle cx="28" cy="28" r="25" fill="none" stroke="url(#wa4)" stroke-width="4" stroke-linecap="round" stroke-dasharray="75 157" transform="rotate(-90 28 28)"></circle></svg><span style="position: absolute; inset: 7px; border-radius: 999px; background: #EBDDFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">MT</span><span style="position: absolute; right: 0; bottom: 0; width: 14px; height: 14px; border-radius: 999px; background: #E11D8F; border: 3px solid #FFFFFF"></span></div><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Malo</strong><span style="font-size: 12px; color: #6B6280">Anglais · 22 min</span></div></div>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 28px; padding: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 28px; box-shadow: 0 14px 36px rgba(123,47,247,0.08)">
+<div style="position: relative; width: 168px; height: 168px; flex-shrink: 0">
+<svg width="168" height="168" viewBox="0 0 168 168" aria-hidden="true"><circle cx="84" cy="84" r="70" fill="none" stroke="#EBE2FC" stroke-width="16"></circle><circle cx="84" cy="84" r="70" fill="none" stroke="#7B2FF7" stroke-width="16" stroke-linecap="round" stroke-dasharray="262 440" transform="rotate(-90 84 84)"></circle><circle cx="84" cy="84" r="70" fill="none" stroke="#C6F432" stroke-width="16" stroke-linecap="round" stroke-dasharray="20 420" stroke-dashoffset="-256" transform="rotate(-90 84 84)"></circle></svg>
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 38px; font-variant-numeric: tabular-nums">64%</span><span style="font-size: 12px; color: #6B6280">du chapitre</span></div>
+</div>
+<div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; font-weight: 600; color: #7B2FF7; text-transform: uppercase; letter-spacing: 0.06em">Révision du jour</span>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 30px; line-height: 1.15; letter-spacing: -0.02em">Chimie · Les réactions acido-basiques</h2>
+<p style="margin: 0; font-size: 15px; color: #6B6280; line-height: 1.5">Il reste 14 cartes, environ 12 minutes. Sarah révise le même chapitre en ce moment.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px">
+<a href="Fusion-03-Focus.dc.html" style="height: 48px; padding: 0 22px; border-radius: 999px; background: #7B2FF7; color: #FFFFFF; display: flex; align-items: center; font-weight: 600; font-size: 15px; text-decoration: none">Reprendre</a>
+<a href="#" style="height: 48px; padding: 0 20px; border-radius: 999px; border: 1px solid #E7DDFB; color: #1A1030; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0157A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>Défier Sarah</a>
+</div>
+</div>
+</section>
+
+<section aria-label="Quêtes du jour" style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px">Quêtes du jour</h2><span style="font-size: 13px; color: #6B6280">1/3 · coffre bonus +120 XP</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px">
+<div style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 9px; background: #7B2FF7; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span style="font-size: 14px; color: #6B6280; text-decoration: line-through">Réviser 20 cartes</span><strong style="font-size: 13px">+30 XP · fait</strong></div>
+<div style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 9px; border: 2px solid #CDB8F5; box-sizing: border-box"></span><span style="font-size: 14px">2 sessions focus de 25 min</span><div style="height: 6px; border-radius: 999px; background: #EBE2FC"><div style="width: 50%; height: 6px; border-radius: 999px; background: #7B2FF7"></div></div><strong style="font-size: 13px">+50 XP</strong></div>
+<div style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px"><span style="width: 28px; height: 28px; border-radius: 9px; border: 2px solid #CDB8F5; box-sizing: border-box"></span><span style="font-size: 14px">Envoyer un kudos à un ami</span><strong style="font-size: 13px">+10 XP</strong></div>
+</div>
+</section>
+
+<section aria-label="Fil de tes amis" style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px">Fil de tes amis</h2><a href="Fusion-02-Fil.dc.html" style="font-size: 13px; font-weight: 600">Tout voir</a></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px">
+
+<article style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 40px; height: 40px; border-radius: 999px; background: #7B2FF7; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">CM</span><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Camille</strong><span style="font-size: 12px; color: #6B6280">a partagé une fiche · il y a 2 h</span></div><span style="margin-left: auto; font-size: 11px; font-weight: 700; background: #C6F432; border-radius: 999px; padding: 3px 8px">+40 XP</span></div>
+<div style="border-radius: 14px; padding: 16px; background-color: #F6F1FF; background-image: linear-gradient(#EBE2FC 1px, transparent 1px), linear-gradient(90deg, #EBE2FC 1px, transparent 1px); background-size: 16px 16px; display: flex; flex-direction: column; gap: 6px"><strong style="font-family: 'Space Grotesk', sans-serif; font-size: 19px">Les fonctions dérivées</strong><span style="font-size: 12px; color: #6B6280">Maths · Terminale · 18 cartes · 9 min</span></div>
+<div style="display: flex; align-items: center; gap: 6px">
+<button type="button" aria-label="Réagir : en feu" style="width: 40px; height: 40px; border-radius: 999px; border: none; background: linear-gradient(135deg, #7B2FF7, #E11D8F); display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></button>
+<button type="button" aria-label="Réagir : cœur" style="width: 40px; height: 40px; border-radius: 999px; border: 1px solid #E7DDFB; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1030" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<span style="font-size: 12px; color: #6B6280">Révisée par 7 amis</span>
+<button type="button" style="margin-left: auto; height: 40px; padding: 0 16px; border-radius: 999px; border: none; background: #7B2FF7; color: #FFFFFF; font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; cursor: pointer">Réviser</button>
+</div>
+</article>
+
+<article style="background: #1A1030; color: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden">
+<span style="position: absolute; right: 40px; top: 70px; width: 9px; height: 9px; border-radius: 999px; background: #E11D8F"></span>
+<span style="position: absolute; right: 90px; top: 96px; width: 7px; height: 12px; border-radius: 2px; background: #FFFFFF; transform: rotate(30deg)"></span>
+<span style="position: absolute; right: 24px; top: 118px; width: 10px; height: 10px; border-radius: 3px; background: #7B2FF7; transform: rotate(-20deg)"></span>
+<span style="position: absolute; right: 70px; top: 136px; width: 6px; height: 6px; border-radius: 999px; background: #C6F432"></span>
+<div style="display: flex; align-items: center; gap: 10px"><div style="position: relative; width: 44px; height: 44px"><svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><defs><linearGradient id="wfR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B2FF7"></stop><stop offset="1" stop-color="#E11D8F"></stop></linearGradient></defs><circle cx="22" cy="22" r="20" fill="none" stroke="url(#wfR)" stroke-width="3"></circle></svg><span style="position: absolute; inset: 5px; border-radius: 999px; background: #FDEAF5; color: #1A1030; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px">LB</span></div><div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Léo · 23 jours de série</strong><span style="font-size: 12px; color: #CFC6E6">Nouveau record perso · à l'instant</span></div></div>
+<strong style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; line-height: 1.15">Envoie-lui un kudos pour fêter ça.</strong>
+<button type="button" style="align-self: flex-start; height: 48px; padding: 0 20px; border-radius: 999px; border: none; background: linear-gradient(90deg, #7B2FF7, #E11D8F); color: #FFFFFF; display: flex; align-items: center; gap: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Bravo Léo !</button>
+</article>
+
+</div>
+</section>
+</main>
+
+<aside aria-label="Résumé" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+
+<section style="background: #1A1030; color: #FFFFFF; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 46px; height: 46px; border-radius: 14px; background: #E11D8F; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></span>
+<div style="display: flex; flex-direction: column"><strong style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; line-height: 1">17 jours</strong><span style="font-size: 12px; color: #CFC6E6">Record 23 · 1 joker restant</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; text-align: center; font-size: 11px; color: #CFC6E6">
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 999px; background: #E11D8F"></span>L</div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 999px; background: #E11D8F"></span>M</div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 999px; background: #7B2FF7; box-sizing: border-box; border: 2px solid #B79AF9"></span>M</div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 999px; background: #E11D8F"></span>J</div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 999px; box-sizing: border-box; border: 2px dashed #E11D8F"></span><strong style="color: #FFFFFF">V</strong></div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 999px; background: #2A1E45"></span>S</div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center"><span style="width: 26px; height: 26px; border-radius: 999px; background: #2A1E45"></span>D</div>
+</div>
+</section>
+
+<section aria-label="Binôme" style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px">Ton binôme</h2><strong style="font-size: 13px; color: #C0157A">Série à deux · 9 j</strong></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 44px; height: 44px; border-radius: 999px; background: #EBDDFF; box-shadow: 0 0 0 3px #7B2FF7; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0">IN</span>
+<div style="flex-grow: 1; position: relative; height: 4px"><div style="position: absolute; inset: 0; border-radius: 999px; background: #EBE2FC"></div><div style="position: absolute; left: 0; top: 0; width: 60%; height: 4px; border-radius: 999px; background: linear-gradient(90deg, rgba(123,47,247,0), #7B2FF7 40%, #E11D8F)"></div><span style="position: absolute; left: 57%; top: -5px; width: 14px; height: 14px; border-radius: 999px; background: #FFFFFF; box-shadow: 0 0 0 3px #E11D8F, 0 0 12px #E11D8F"></span></div>
+<span style="position: relative; width: 44px; height: 44px; border-radius: 999px; background: #FDEAF5; box-shadow: 0 0 0 3px #E11D8F; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0">SA</span>
+</div>
+<span style="font-size: 13px; color: #6B6280">Sarah révise en ce moment. Toi, c'est déjà fait aujourd'hui.</span>
+<button type="button" style="height: 44px; border-radius: 999px; border: 1px solid #E7DDFB; background: #FFFFFF; color: #1A1030; font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; cursor: pointer">Encourager Sarah</button>
+</section>
+
+<section aria-label="Ligue de la semaine" style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px"><h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px">Ligue Bronze</h2><span style="font-size: 12px; color: #6B6280">Fin dans 2 j</span></div>
+<div style="display: flex; align-items: center; gap: 10px; background: #F6F1FF; border-radius: 12px; padding: 8px 10px; font-size: 13px"><span style="width: 16px; font-weight: 700">1</span><span style="width: 26px; height: 26px; border-radius: 999px; background: #FDEAF5; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">NK</span>Nour<span style="margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums">2 140</span></div>
+<div style="display: flex; align-items: center; gap: 10px; background: #F6F1FF; border-radius: 12px; padding: 8px 10px; font-size: 13px"><span style="width: 16px; font-weight: 700">2</span><span style="width: 26px; height: 26px; border-radius: 999px; background: #FDEAF5; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">LB</span>Léo<span style="margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums">1 980</span></div>
+<div style="display: flex; align-items: center; gap: 10px; background: #7B2FF7; color: #FFFFFF; border-radius: 12px; padding: 8px 10px; font-size: 13px; box-shadow: 0 6px 16px rgba(123,47,247,0.3)"><span style="width: 16px; font-weight: 700">3</span><span style="width: 26px; height: 26px; border-radius: 999px; background: #FFFFFF; color: #7B2FF7; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">IN</span>Toi<span style="font-size: 10px; font-weight: 700; background: #C6F432; color: #1A1030; border-radius: 999px; padding: 2px 6px">▲ 2</span><span style="margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums">1 920</span></div>
+<div style="display: flex; align-items: center; gap: 10px; background: #F6F1FF; border-radius: 12px; padding: 8px 10px; font-size: 13px"><span style="width: 16px; font-weight: 700">4</span><span style="width: 26px; height: 26px; border-radius: 999px; background: #EBDDFF; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700">SA</span>Sarah<span style="margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums">1 860</span></div>
+<span style="font-size: 12px; color: #6B6280; margin-top: 4px">Le top 5 passe en ligue Argent lundi</span>
+</section>
+
+<section aria-label="Activité en direct" style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px">En direct</h2>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px"><span style="width: 10px; height: 10px; border-radius: 999px; background: #E11D8F; box-shadow: 0 0 0 4px #FDEAF5; flex-shrink: 0"></span><span style="flex-grow: 1"><strong>Malo</strong> a rejoint la salle Anglais</span><span style="font-size: 11px; color: #6B6280">1 min</span></div>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px"><span style="width: 10px; height: 10px; border-radius: 999px; background: #7B2FF7; flex-shrink: 0"></span><span style="flex-grow: 1"><strong>Nour</strong> est à 1 jour de son record</span><span style="font-size: 11px; color: #6B6280">6 min</span></div>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px"><span style="width: 10px; height: 10px; border-radius: 999px; background: #CDB8F5; flex-shrink: 0"></span><span style="flex-grow: 1; color: #6B6280">Prépa bac SES : 6 h 20 sur 10 h</span><span style="font-size: 11px; color: #6B6280">12 min</span></div>
+</section>
+
+</aside>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

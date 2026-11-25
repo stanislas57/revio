@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Revio — Fil social</title>
+<script src="./_runtime/react.js"></script>
+<script src="./_runtime/react-dom.js"></script>
+<script src="./_runtime/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#7B2FF7}a:hover{color:#5B1BC4}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; padding: 24px 20px 110px; background: #F6F1FF; font-family: Inter, system-ui, sans-serif; color: #1A1030; display: flex; flex-direction: column; gap: 14px">
+
+<header style="display: flex; align-items: center; justify-content: space-between">
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px; letter-spacing: -0.02em">Fil</h1>
+<button type="button" aria-label="Rechercher" style="width: 44px; height: 44px; border-radius: 999px; border: 1px solid #E7DDFB; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1030" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></button>
+</header>
+
+<div role="tablist" aria-label="Filtrer le fil" style="background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 999px; padding: 4px; display: flex">
+<button type="button" role="tab" aria-selected="true" style="flex: 1; height: 38px; border-radius: 999px; border: none; background: #1A1030; color: #FFFFFF; font-family: Inter, sans-serif; font-weight: 600; font-size: 13px; cursor: pointer">Amis</button>
+<button type="button" role="tab" aria-selected="false" style="flex: 1; height: 38px; border-radius: 999px; border: none; background: transparent; color: #6B6280; font-family: Inter, sans-serif; font-weight: 600; font-size: 13px; cursor: pointer">Ma classe</button>
+<button type="button" role="tab" aria-selected="false" style="flex: 1; height: 38px; border-radius: 999px; border: none; background: transparent; color: #6B6280; font-family: Inter, sans-serif; font-weight: 600; font-size: 13px; cursor: pointer">Groupes</button>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; background: #1A1030; color: #FFFFFF; border-radius: 16px; padding: 10px 12px">
+<span style="display: flex"><span style="width: 26px; height: 26px; border-radius: 999px; background: #FDEAF5; color: #1A1030; border: 2px solid #E11D8F; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center">LB</span><span style="width: 26px; height: 26px; border-radius: 999px; background: #EBDDFF; color: #1A1030; border: 2px solid #E11D8F; margin-left: -8px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center">SA</span></span>
+<span style="font-size: 12px; flex-grow: 1"><strong>2 amis</strong> révisent la SVT en direct</span>
+<a href="Fusion-03-Focus.dc.html" style="height: 32px; padding: 0 12px; border-radius: 999px; background: #FFFFFF; color: #1A1030; display: flex; align-items: center; font-weight: 600; font-size: 12px; text-decoration: none">Rejoindre</a>
+</div>
+
+<article style="position: relative; background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 38px; height: 38px; border-radius: 999px; background: #7B2FF7; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">CM</span>
+<div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Camille</strong><span style="font-size: 12px; color: #6B6280">a partagé une fiche · il y a 2 h</span></div>
+<span style="margin-left: auto; font-size: 11px; font-weight: 700; background: #C6F432; border-radius: 999px; padding: 3px 8px">+40 XP</span>
+</div>
+<div style="border-radius: 14px; padding: 14px; background-color: #F6F1FF; background-image: linear-gradient(#EBE2FC 1px, transparent 1px), linear-gradient(90deg, #EBE2FC 1px, transparent 1px); background-size: 16px 16px; display: flex; flex-direction: column; gap: 6px">
+<strong style="font-family: 'Space Grotesk', sans-serif; font-size: 18px">Les fonctions dérivées</strong>
+<span style="font-size: 12px; color: #6B6280">Maths · Terminale · 18 cartes · 9 min</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #6B6280"><span style="width: 22px; height: 22px; border-radius: 999px; background: linear-gradient(135deg, #7B2FF7, #E11D8F); display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></span>Révisée par 7 amis</span>
+<button type="button" style="margin-left: auto; height: 40px; padding: 0 16px; border-radius: 999px; border: none; background: #7B2FF7; color: #FFFFFF; font-family: Inter, sans-serif; font-weight: 600; font-size: 14px; cursor: pointer">Réviser</button>
+</div>
+<div style="position: absolute; left: 14px; bottom: -26px; background: #1A1030; border-radius: 999px; padding: 5px; display: flex; gap: 2px; box-shadow: 0 10px 24px rgba(123,47,247,0.35)">
+<button type="button" aria-label="Réagir : en feu" style="width: 40px; height: 40px; border-radius: 999px; border: none; background: linear-gradient(135deg, #7B2FF7, #E11D8F); display: flex; align-items: center; justify-content: center; cursor: pointer; transform: translateY(-5px) scale(1.12)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></button>
+<button type="button" aria-label="Réagir : éclair" style="width: 40px; height: 40px; border-radius: 999px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg></button>
+<button type="button" aria-label="Réagir : cœur" style="width: 40px; height: 40px; border-radius: 999px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></button>
+<button type="button" aria-label="Réagir : bravo" style="width: 40px; height: 40px; border-radius: 999px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg></button>
+</div>
+</article>
+
+<article style="margin-top: 22px; position: relative; background: #FFFFFF; border: 1px solid #E7DDFB; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px">
+<div style="position: relative; width: 44px; height: 44px"><svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><defs><linearGradient id="filR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B2FF7"></stop><stop offset="1" stop-color="#E11D8F"></stop></linearGradient></defs><circle cx="22" cy="22" r="20" fill="none" stroke="url(#filR)" stroke-width="3"></circle></svg><span style="position: absolute; inset: 5px; border-radius: 999px; background: #FDEAF5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px">LB</span></div>
+<div style="display: flex; flex-direction: column"><strong style="font-size: 14px">Léo a atteint 23 jours de série</strong><span style="font-size: 12px; color: #6B6280">Nouveau record perso · à l'instant</span></div>
+</div>
+<div style="position: relative; display: flex; justify-content: center; padding: 10px 0">
+<span style="position: absolute; left: 70px; top: 0; width: 9px; height: 9px; border-radius: 999px; background: #E11D8F"></span>
+<span style="position: absolute; left: 100px; top: 34px; width: 7px; height: 12px; border-radius: 2px; background: #7B2FF7; transform: rotate(30deg)"></span>
+<span style="position: absolute; right: 78px; top: 4px; width: 10px; height: 10px; border-radius: 3px; background: #B024D6; transform: rotate(-20deg)"></span>
+<span style="position: absolute; right: 64px; top: 40px; width: 7px; height: 7px; border-radius: 999px; background: #C6F432"></span>
+<span style="position: absolute; left: 120px; bottom: -2px; width: 6px; height: 6px; border-radius: 999px; background: #E11D8F"></span>
+<button type="button" style="height: 52px; padding: 0 22px; border-radius: 999px; border: none; background: linear-gradient(90deg, #7B2FF7, #E11D8F); color: #FFFFFF; display: flex; align-items: center; gap: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; cursor: pointer; box-shadow: 0 0 0 6px rgba(225,29,143,0.15)"><svg width="18" height="18" viewBox="0 0 24 24" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Bravo Léo !</button>
+</div>
+<span style="font-size: 12px; color: #6B6280; text-align: center">Tes kudos de la semaine : 8 · visibles par toi seul·e</span>
+</article>
+
+<nav aria-label="Navigation principale" style="position: absolute; left: 16px; right: 16px; bottom: 20px; background: #1A1030; border-radius: 26px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 12px 30px rgba(26,16,48,0.3)">
+<a href="Fusion-01-Accueil.dc.html" aria-label="Accueil" style="width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFC6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg></a>
+<a href="Fusion-02-Fil.dc.html" aria-label="Fil social" aria-current="page" style="height: 48px; padding: 0 14px; border-radius: 16px; background: #3A2D55; display: flex; align-items: center; gap: 8px; color: #FFFFFF; text-decoration: none; font-size: 13px; font-weight: 600"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>Fil</a>
+<a href="Fusion-03-Focus.dc.html" aria-label="Réviser" style="width: 60px; height: 60px; border-radius: 20px; background: linear-gradient(135deg, #7B2FF7, #E11D8F); display: flex; align-items: center; justify-content: center; margin-top: -28px; box-shadow: 0 10px 22px rgba(225,29,143,0.4)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg></a>
+<a href="Fusion-04-Progression.dc.html" aria-label="Progression" style="width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFC6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg></a>
+<a href="Fusion-05-Fiches.dc.html" aria-label="Fiches" style="width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFC6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
