@@ -1,5 +1,6 @@
 "use client";
 
+import { Eye, EyeOff } from "lucide-react";
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { signIn, signUp } from "@/modules/profile/server/auth-actions";
 
 export function AuthForm({ next }: { next?: string }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [showPassword, setShowPassword] = useState(false);
   const [signInState, signInAction, signInPending] = useActionState(signIn, undefined);
   const [signUpState, signUpAction, signUpPending] = useActionState(signUp, undefined);
   const isSignIn = mode === "signin";
@@ -30,14 +32,31 @@ export function AuthForm({ next }: { next?: string }) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Mot de passe</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete={isSignIn ? "current-password" : "new-password"}
-              minLength={8}
-              required
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete={isSignIn ? "current-password" : "new-password"}
+                minLength={8}
+                required
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Masquer la saisie" : "Afficher la saisie"}
+                aria-controls="password"
+                aria-pressed={showPassword}
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? (
+                  <EyeOff className="size-4" aria-hidden />
+                ) : (
+                  <Eye className="size-4" aria-hidden />
+                )}
+              </button>
+            </div>
           </div>
           {state?.error && (
             <p role="alert" className="text-sm text-destructive">
