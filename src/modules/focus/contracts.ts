@@ -57,7 +57,7 @@ export type SessionResult = {
   alreadyFinalized: boolean;
 };
 
-/** Draft (P1): not implemented server-side yet. */
+/** Study statistics over the last 30 days, from `my_study_stats()` (S-20). */
 export type StudyStats = {
   todayMinutes: number;
   weekMinutes: number;
