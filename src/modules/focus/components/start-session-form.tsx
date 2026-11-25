@@ -89,7 +89,7 @@ export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
             </div>
           </fieldset>
 
-          <label className="flex items-start gap-3 text-sm">
+          <label className="flex min-h-11 items-start gap-3 text-sm">
             <input type="checkbox" name="share" defaultChecked className="mt-0.5 size-4 accent-primary" />
             <span>
               Partager avec mes amis
