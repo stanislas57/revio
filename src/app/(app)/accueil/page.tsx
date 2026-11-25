@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardSummary } from "@/modules/academic/components/dashboard-summary";
 import { ExamsCard } from "@/modules/academic/components/exams-card";
@@ -41,13 +43,17 @@ export default async function AccueilPage() {
                 icon={GraduationCap}
                 title="Aucune matière pour l'instant"
                 description="Ajoute ta première matière ci-dessous, ou pars d'un exemple. Tes notes restent privées."
-              />
+              >
+                <Button asChild className="min-h-11">
+                  <Link href="#ajouter-matiere">Ajouter ma première matière</Link>
+                </Button>
+              </EmptyState>
               {snapshot.subjects.length === 0 && <TemplateImport />}
             </>
           ) : (
             dashboard.activeSubjects.map((s) => <SubjectCard key={s.id} subject={s} />)
           )}
-          <Card>
+          <Card id="ajouter-matiere" className="scroll-mt-20">
             <CardHeader>
               <CardTitle>Ajouter une matière</CardTitle>
               <CardDescription>Le coefficient sert à pondérer ta moyenne générale.</CardDescription>

@@ -17,8 +17,8 @@
 //
 // Usage: node scripts/fake-supabase.mjs [--port 54321] [--data .fake-supabase]
 //   --data persists the database in a folder (omit for a fresh in-memory DB).
-//   --test-clock enables POST /__test/advance-clock {"minutes": n}: it moves the start of every running
-//   study session n minutes into the past, so a test can finish a "long" session without waiting.
+//   --test-clock enables POST /__test/advance-clock {"minutes": n, "username"?: "…"}: it moves the start of the
+//   running study sessions (of that user only, when given) n minutes into the past, so a test can finish a "long" session without waiting.
 //   Off by default; it exists only in this fake server (the app has no test hook at all).
 // Then in .env.local: NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:<port>
 //                     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=local-fake-key
@@ -427,11 +427,14 @@ const server = createServer(async (req, res) => {
       const minutes = Number(body?.minutes);
       if (!Number.isFinite(minutes) || minutes <= 0 || minutes > 600)
         throw new RestError(400, "FAKE001", "minutes must be a number between 0 and 600");
+      // Optional: only the running session of this user (tests run in parallel on one server).
+      const username = typeof body?.username === "string" ? body.username : null;
       // Superuser connection: the app's roles cannot change these columns, this endpoint can.
       const moved = await db.query(
         `update public.study_sessions set started_at = started_at - make_interval(mins => $1::int)
-          where status = 'in_progress'`,
-        [Math.round(minutes)],
+          where status = 'in_progress'
+            and ($2::text is null or user_id = (select id from public.profiles where username = $2::text))`,
+        [Math.round(minutes), username],
       );
       return send(res, 200, { shifted: moved.affectedRows ?? 0 });
     }

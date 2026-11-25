@@ -25,7 +25,7 @@ export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
   const [pending, startTransition] = useTransition();
 
   return (
-    <Card>
+    <Card id="nouvelle-seance" className="scroll-mt-20">
       <CardHeader>
         <CardTitle>Nouvelle séance</CardTitle>
         <CardDescription>Choisis la durée et lance le chrono. 1 minute = 1 XP.</CardDescription>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Timer } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
+import { Button } from "@/components/ui/button";
 import { ActiveSessionPanel } from "@/modules/focus/components/active-session";
 import { RecentSessions } from "@/modules/focus/components/recent-sessions";
 import { StartSessionForm } from "@/modules/focus/components/start-session-form";
@@ -29,9 +31,15 @@ export default async function FocusPage() {
           ) : (
             <EmptyState
               icon={Timer}
-              title="Aucune séance"
-              description="Tes séances terminées apparaîtront ici."
-            />
+              title="Aucune séance pour l'instant"
+              description="Chaque minute de révision rapporte 1 XP, dès 5 minutes de séance. Tes séances terminées apparaîtront ici."
+            >
+              {!active && (
+                <Button asChild className="min-h-11">
+                  <Link href="#nouvelle-seance">Lance ta première séance</Link>
+                </Button>
+              )}
+            </EmptyState>
           )}
         </section>
       </div>

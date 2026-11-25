@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Medal, UserRound, Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
+import { Button } from "@/components/ui/button";
+import { getMyProfile } from "@/modules/profile/server/queries";
 import { AutoRefresh } from "@/modules/social/components/auto-refresh";
 import { FeedCard } from "@/modules/social/components/feed-card";
 import { FriendList } from "@/modules/social/components/friend-list";
 import { FriendRequests } from "@/modules/social/components/friend-requests";
 import { FriendSearch } from "@/modules/social/components/friend-search";
+import { InviteButton } from "@/modules/social/components/invite-button";
 import { SectionLinks } from "@/modules/social/components/section-links";
 import { FIXTURE_PROFILE_FRIEND } from "@/modules/social/fixtures-profiles";
 import { FriendsStudying } from "@/modules/social/components/friends-studying";
@@ -15,7 +19,8 @@ import { getFeed, getLiveFriends, listFriendRequests, listFriends } from "@/modu
 export const metadata: Metadata = { title: "Social" };
 
 export default async function SocialPage() {
-  const [feed, live, friends, requests] = await Promise.all([
+  const [profile, feed, live, friends, requests] = await Promise.all([
+    getMyProfile(),
     getFeed(),
     getLiveFriends(),
     listFriends(),
@@ -71,7 +76,17 @@ export default async function SocialPage() {
                   ? "Ajoute des amis ci-dessous. Le fil ne montre que les séances qu'ils choisissent de partager. Jamais leurs notes."
                   : "Termine une séance Focus : elle apparaîtra ici, ainsi que celles de tes amis."
               }
-            />
+            >
+              {friends.length === 0 ? (
+                <Button asChild className="min-h-11">
+                  <Link href="#ajouter-ami">Ajoute ton premier ami</Link>
+                </Button>
+              ) : (
+                <Button asChild className="min-h-11">
+                  <Link href="/focus">Lance une séance</Link>
+                </Button>
+              )}
+            </EmptyState>
           )}
         </section>
 
@@ -95,11 +110,12 @@ export default async function SocialPage() {
           )}
         </section>
 
-        <section className="space-y-3" aria-labelledby="add-title">
+        <section id="ajouter-ami" className="scroll-mt-20 space-y-3" aria-labelledby="add-title">
           <h2 id="add-title" className="text-lg font-semibold">
             Ajouter un ami
           </h2>
           <FriendSearch />
+          {profile.username && <InviteButton username={profile.username} />}
           {outgoing.length > 0 && (
             <div className="space-y-2 pt-2">
               <h3 className="text-sm font-medium text-muted-foreground">Demandes envoyées</h3>

@@ -15,11 +15,11 @@ const rand = () => Math.random().toString(36).slice(2, 9);
  * server, started with --test-clock, moves the start of the running sessions into the past. The app has
  * no test hook, and the real Supabase has no such endpoint: nothing here can exist in production.
  */
-async function advanceClock(minutes: number) {
+async function advanceClock(minutes: number, username: string) {
   const res = await fetch(`${FAKE_URL}/__test/advance-clock`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ minutes }),
+    body: JSON.stringify({ minutes, username }),
   });
   expect(res.ok, "the fake server must be started with --test-clock").toBe(true);
   expect(((await res.json()) as { shifted: number }).shifted).toBeGreaterThan(0);
@@ -70,7 +70,7 @@ test("two accounts: friends, shared session with XP, feed, bravo, profile", asyn
   });
 
   await test.step(`${SESSION_MINUTES} minutes pass (simulated), Alice finishes`, async () => {
-    await advanceClock(SESSION_MINUTES);
+    await advanceClock(SESSION_MINUTES, alice);
     await a.reload();
     await a.getByRole("button", { name: "Terminer" }).click();
     await expect(a).toHaveURL(/\/focus\/seance\//);
