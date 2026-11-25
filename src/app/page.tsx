@@ -1,17 +1,31 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+import { CtaBand } from "@/modules/landing/components/cta-band";
+import { Faq } from "@/modules/landing/components/faq";
+import { Hero } from "@/modules/landing/components/hero";
+import { Offer } from "@/modules/landing/components/offer";
+import { Pillars } from "@/modules/landing/components/pillars";
+import { Preview } from "@/modules/landing/components/preview";
+import { SiteFooter } from "@/modules/landing/components/site-footer";
+import { SiteHeader } from "@/modules/landing/components/site-header";
+
+export const metadata: Metadata = {
+  description:
+    "Revio aide les étudiants à suivre leurs notes, organiser leurs révisions et rester motivés avec leurs amis. Version de démonstration.",
+};
 
 export default function LandingPage() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center gap-6 px-4 text-center">
-      <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Revio</h1>
-      <p className="text-lg text-muted-foreground">
-        Suis tes notes, organise tes révisions et progresse avec tes amis.
-      </p>
-      <Button asChild size="lg">
-        <Link href="/connexion">Se connecter ou créer un compte</Link>
-      </Button>
-      <p className="text-xs text-muted-foreground">Version de démonstration, en cours de construction.</p>
-    </main>
+    <div id="top">
+      <SiteHeader />
+      <main>
+        <Hero />
+        <Pillars />
+        <Preview />
+        <Offer />
+        <Faq />
+        <CtaBand />
+      </main>
+      <SiteFooter />
+    </div>
   );
 }
