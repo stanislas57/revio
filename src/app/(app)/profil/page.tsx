@@ -7,12 +7,17 @@ import { StatTiles } from "@/modules/gamification/components/stat-tiles";
 import { StreakCard } from "@/modules/gamification/components/streak-card";
 import { getMyGamification } from "@/modules/gamification/server/queries";
 import { ProfileForm } from "@/modules/profile/components/profile-form";
-import { getMyProfile } from "@/modules/profile/server/queries";
+import { SettingsForm } from "@/modules/profile/components/settings-form";
+import { getMyProfile, getMySettings } from "@/modules/profile/server/queries";
 
 export const metadata: Metadata = { title: "Profil" };
 
 export default async function ProfilPage() {
-  const [profile, stats] = await Promise.all([getMyProfile(), getMyGamification()]);
+  const [profile, stats, settings] = await Promise.all([
+    getMyProfile(),
+    getMyGamification(),
+    getMySettings(),
+  ]);
 
   return (
     <>
@@ -43,6 +48,19 @@ export default async function ProfilPage() {
           </CardHeader>
           <CardContent>
             <ProfileForm username={profile.username ?? ""} displayName={profile.displayName} />
+          </CardContent>
+        </Card>
+
+        <Card id="reglages" className="scroll-mt-20">
+          <CardHeader>
+            <CardTitle>Réglages</CardTitle>
+            <CardDescription>
+              Privés : seuls toi et le serveur y avez accès. Ta matière n&apos;est jamais partagée sans ton
+              accord.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SettingsForm settings={settings} />
           </CardContent>
         </Card>
       </div>
