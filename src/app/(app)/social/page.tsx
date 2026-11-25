@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Users } from "lucide-react";
+import { Medal, UserRound, Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
 import { AutoRefresh } from "@/modules/social/components/auto-refresh";
@@ -7,6 +7,8 @@ import { FeedCard } from "@/modules/social/components/feed-card";
 import { FriendList } from "@/modules/social/components/friend-list";
 import { FriendRequests } from "@/modules/social/components/friend-requests";
 import { FriendSearch } from "@/modules/social/components/friend-search";
+import { SectionLinks } from "@/modules/social/components/section-links";
+import { FIXTURE_PROFILE_FRIEND } from "@/modules/social/fixtures-profiles";
 import { FriendsStudying } from "@/modules/social/components/friends-studying";
 import { getFeed, getLiveFriends, listFriendRequests, listFriends } from "@/modules/social/server/queries";
 
@@ -27,6 +29,27 @@ export default async function SocialPage() {
       <AutoRefresh seconds={30} />
       <PageHeader title="Social" description="Tes amis et le fil de leurs séances." />
       <div className="space-y-8">
+        <SectionLinks
+          label="Classement et profil d'un ami"
+          links={[
+            {
+              href: "/social/classement",
+              title: "Classement",
+              description: "Tes XP de la semaine, comparés à ceux de tes amis.",
+              icon: Medal,
+              mock: true,
+            },
+            {
+              // Real friends cannot be linked yet: getSocialProfile does not exist (S-09), so only the sample ids resolve.
+              href: `/social/amis/${FIXTURE_PROFILE_FRIEND.id}`,
+              title: "Exemple de profil d'ami",
+              description: "Ce qu'un ami voit de toi : niveau, série, séances partagées.",
+              icon: UserRound,
+              mock: true,
+            },
+          ]}
+        />
+
         <FriendsStudying friends={live} />
 
         <section className="space-y-3" aria-labelledby="feed-title">

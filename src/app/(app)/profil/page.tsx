@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BarChart3, Trophy } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LevelCard } from "@/modules/gamification/components/level-card";
@@ -12,6 +13,7 @@ import { SettingsForm } from "@/modules/profile/components/settings-form";
 import { SETTINGS_MESSAGES } from "@/modules/profile/domain/settings-messages";
 import { getLocale } from "@/modules/profile/server/locale";
 import { getMyProfile, getMySettings } from "@/modules/profile/server/queries";
+import { SectionLinks } from "@/modules/social/components/section-links";
 
 export const metadata: Metadata = { title: "Profil" };
 
@@ -34,6 +36,26 @@ export default async function ProfilPage() {
         </div>
         <StatTiles totalMinutes={stats.totalMinutes} sessions={stats.sessionsCount} />
 
+        <SectionLinks
+          label="Trophées et statistiques"
+          links={[
+            {
+              href: "/profil/trophees",
+              title: "Trophées",
+              description: "Tes succès, en cours et à débloquer.",
+              icon: Trophy,
+              mock: true,
+            },
+            {
+              href: "/profil/statistiques",
+              title: "Statistiques",
+              description: "Temps par jour, par matière, régularité.",
+              icon: BarChart3,
+              mock: true,
+            },
+          ]}
+        />
+
         <Card>
           <CardHeader>
             <CardTitle>Niveaux</CardTitle>
@@ -48,7 +70,8 @@ export default async function ProfilPage() {
           <CardHeader>
             <CardTitle>Mon compte</CardTitle>
             <CardDescription>
-              {profile.email}. Tes notes et matières ne sont jamais visibles par tes amis.
+              <span className="break-all">{profile.email}</span>. Tes notes et matières ne sont jamais
+              visibles par tes amis.
             </CardDescription>
           </CardHeader>
           <CardContent>
