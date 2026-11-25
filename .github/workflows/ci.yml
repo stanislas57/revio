@@ -44,3 +44,5 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - name: Connected journeys (fake Supabase started by Playwright)
+        run: npm run test:e2e:connected

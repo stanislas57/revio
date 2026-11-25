@@ -12,7 +12,7 @@ export function FriendList({ friends }: { friends: Friend[] }) {
         <li key={f.friendshipId} className="flex items-center gap-3 rounded-lg border px-3 py-2">
           <UserAvatar user={f.user} live={f.studyingNow} />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">{userLabel(f.user)}</p>
+            <p className="text-sm font-medium break-words">{userLabel(f.user)}</p>
             <p className="flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <Sparkles className="size-3 text-brand-text" aria-hidden /> {f.level.name}

@@ -75,5 +75,6 @@ npm run check        # lint + types + format + tests + RLS + build (à lancer av
 npm run test         # Vitest
 npm run test:db      # migrations + RLS sur PGlite (sans Docker)
 npm run test:e2e     # Playwright (macOS 13 : PLAYWRIGHT_CHANNEL=chrome npm run test:e2e)
+npm run test:e2e:connected # Playwright avec comptes : démarre le faux serveur seul (docs/E2E.md)
 npm run db:new <nom> # nouvelle migration Supabase
 ```
