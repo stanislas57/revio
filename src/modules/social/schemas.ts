@@ -60,3 +60,15 @@ export const feedInputSchema = z.object({
   cursor: z.string().max(40).optional(),
   limit: z.number().int().min(1).max(20).optional(),
 });
+
+/** One row of `weekly_leaderboard()` (XP only: the function exposes no grade). */
+export const leaderboardRowSchema = z.object({
+  user_id: z.string(),
+  username: z.string().nullable(),
+  display_name: z.string(),
+  avatar_url: z.string().nullable(),
+  weekly_xp: z.number().int(),
+  rank: z.number().int(),
+  is_me: z.boolean(),
+});
+export type LeaderboardRow = z.infer<typeof leaderboardRowSchema>;

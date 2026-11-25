@@ -43,7 +43,7 @@ export type Achievement = {
   progress: { current: number; target: number } | null;
 };
 
-/** Draft (P1): not implemented server-side yet. */
+/** Weekly XP of a friend (S-19). XP only: never a grade. */
 export type LeaderboardEntry = {
   rank: number;
   user: PublicUser;

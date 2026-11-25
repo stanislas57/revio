@@ -575,13 +575,62 @@ ok(
     (await as(E, `select * from user_settings where user_id='${D}'`)).rows.length === 0,
   );
 
-  // achievements (S-18): automatic, non-repeatable, owner-only, no client write
+  // weekly leaderboard (S-19): XP only, friends only, opt-out enforced by the database
+  await db.exec(
+    `insert into xp_transactions (user_id, amount, reason, idempotency_key) values
+       ('${D}', 120, 'session_completed', 'lb:d1'),
+       ('${E}', 80, 'session_completed', 'lb:e1');
+     insert into xp_transactions (user_id, amount, reason, idempotency_key, created_at) values
+       ('${E}', 5000, 'session_completed', 'lb:e-old', now() - interval '30 days');`,
+  );
+  const board = (await as(D, `select * from weekly_leaderboard() order by rank`)).rows ?? [];
+  ok("board has me and my friend only", board.length === 2);
+  ok(
+    "board ranks by XP of the week (old XP ignored)",
+    board[0]?.user_id === D && board[0]?.weekly_xp === 120 && board[1]?.weekly_xp === 80,
+  );
+  ok("board flags me", board[0]?.is_me === true && board[1]?.is_me === false);
+  ok(
+    "board exposes no grade or subject column",
+    !Object.keys(board[0] ?? {}).some((k) => /grade|subject|average|note/.test(k)),
+  );
+  ok("anon cannot read the board", !!(await as(null, `select * from weekly_leaderboard()`)).error);
+  ok(
+    "a non-friend sees only themselves",
+    ((await as(C, `select * from weekly_leaderboard()`)).rows ?? []).length === 1,
+  );
+  await as(E, `insert into user_settings (show_in_leaderboard) values (false)`);
+  ok(
+    "a friend who left disappears from my board",
+    ((await as(D, `select * from weekly_leaderboard()`)).rows ?? []).every((r) => r.user_id !== E),
+  );
+  ok(
+    "someone who left sees no board",
+    ((await as(E, `select * from weekly_leaderboard()`)).rows ?? []).length === 0,
+  );
+  await as(E, `update user_settings set show_in_leaderboard = true`);
+  ok(
+    "rejoining brings them back",
+    ((await as(D, `select * from weekly_leaderboard()`)).rows ?? []).length === 2,
+  );
+  // study stats (S-20): own completed sessions only, one call
   await db.exec(
     `update study_sessions set started_at = now() - interval '45 minutes', paused_seconds = 0
        where user_id='${D}' and status='in_progress'`,
   );
-  const achSid = (await as(D, `select id from study_sessions where status='in_progress'`)).rows?.[0]?.id;
-  ok("D finishes a session", !(await as(D, `select finish_study_session($1)`, [achSid])).error);
+  const sid = (await as(D, `select id from study_sessions where status='in_progress'`)).rows?.[0]?.id;
+  ok("D finishes a 45 min session", !(await as(D, `select finish_study_session($1)`, [sid])).error);
+  const st = (await as(D, `select my_study_stats(30) as s`)).rows?.[0]?.s;
+  ok("stats count my completed session", st?.sessionsCount === 1 && st?.totalMinutes >= 44);
+  ok("stats daily series covers 30 days", st?.daily?.length === 30);
+  ok("stats today minutes match", st?.todayMinutes >= 44 && st?.weekMinutes >= 44);
+  ok(
+    "a friend's stats never include my shared session",
+    (await as(E, `select my_study_stats(30) as s`)).rows?.[0]?.s?.sessionsCount === 0,
+  );
+  ok("stats refuse anon", !!(await as(null, `select my_study_stats(30)`)).error);
+  ok("stats refuse absurd windows", !!(await as(D, `select my_study_stats(5000)`)).error);
+  // achievements (S-18): automatic, non-repeatable, owner-only, no client write
   const ach = (await as(D, `select my_achievements() as a`)).rows?.[0]?.a ?? [];
   const byId = Object.fromEntries(ach.map((a) => [a.id, a]));
   ok("catalogue is returned in full", ach.length === 11);
