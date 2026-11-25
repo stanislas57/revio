@@ -134,7 +134,7 @@ Polices : Space Grotesk (titres, chiffres) et Inter (texte), SIL OFL, auto-hébe
 - **Périmètre** : les écrans branchés gardent leurs routes et leurs données ; les fonctions du design qui
   n'existent pas dans le produit (fiches, quêtes, jokers, binôme, ligue, classe, salles d'étude) sont des pages de
   démonstration marquées `MockBadge`.
-- `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : **à confirmer par Stan** (fichier partagé).
+- `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : la refonte a été mise en production sur décision de Charles, **sans attendre la confirmation de Stan** (PR #43, #44 et #45). Stan peut la contester ou la modifier : tout est dans ces trois PR.
 
 ## Ouvertes
 
