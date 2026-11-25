@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { UserRound, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProfileForm } from "@/modules/profile/components/profile-form";
 import { getMyProfile } from "@/modules/profile/server/queries";
 import { AutoRefresh } from "@/modules/social/components/auto-refresh";
 import { FeedCard } from "@/modules/social/components/feed-card";
@@ -23,6 +23,25 @@ export default async function SocialPage() {
     listFriends(),
     listFriendRequests(),
   ]);
+  if (profile.needsUsername) {
+    return (
+      <>
+        <PageHeader title="Social" description="Tes amis et le fil de leurs séances." />
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle>Choisis ton pseudo</CardTitle>
+            <CardDescription>
+              Tes amis te trouvent grâce à ton pseudo : il est nécessaire pour accéder à Social. Il est
+              visible par les autres utilisateurs, ta note ne l&apos;est jamais.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProfileForm username="" displayName={profile.displayName} />
+          </CardContent>
+        </Card>
+      </>
+    );
+  }
   const incoming = requests.filter((r) => r.direction === "incoming");
   const outgoing = requests.filter((r) => r.direction === "outgoing");
 
@@ -31,18 +50,6 @@ export default async function SocialPage() {
       <AutoRefresh seconds={30} />
       <PageHeader title="Social" description="Tes amis et le fil de leurs séances." />
       <div className="space-y-8">
-        {profile.needsUsername && (
-          <EmptyState
-            icon={UserRound}
-            title="Choisis ton pseudo"
-            description="Tes amis te trouvent grâce à ton pseudo. Il est nécessaire pour ajouter des amis."
-          >
-            <Button asChild>
-              <Link href="/profil">Choisir mon pseudo</Link>
-            </Button>
-          </EmptyState>
-        )}
-
         <FriendsStudying friends={live} />
 
         <section className="space-y-3" aria-labelledby="feed-title">
@@ -88,20 +95,18 @@ export default async function SocialPage() {
           )}
         </section>
 
-        {!profile.needsUsername && (
-          <section className="space-y-3" aria-labelledby="add-title">
-            <h2 id="add-title" className="text-lg font-semibold">
-              Ajouter un ami
-            </h2>
-            <FriendSearch />
-            {outgoing.length > 0 && (
-              <div className="space-y-2 pt-2">
-                <h3 className="text-sm font-medium text-muted-foreground">Demandes envoyées</h3>
-                <FriendRequests requests={outgoing} />
-              </div>
-            )}
-          </section>
-        )}
+        <section className="space-y-3" aria-labelledby="add-title">
+          <h2 id="add-title" className="text-lg font-semibold">
+            Ajouter un ami
+          </h2>
+          <FriendSearch />
+          {outgoing.length > 0 && (
+            <div className="space-y-2 pt-2">
+              <h3 className="text-sm font-medium text-muted-foreground">Demandes envoyées</h3>
+              <FriendRequests requests={outgoing} />
+            </div>
+          )}
+        </section>
       </div>
     </>
   );
