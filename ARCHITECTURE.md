@@ -53,14 +53,14 @@ d'un autre module ; s'il en a besoin, exposer une fonction dans `domain/` ou `se
 
 ## Base de données (migration initiale)
 
-| Table             | Contenu                                                        | Lecture                         | Écriture client                                           |
-| ----------------- | -------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------- |
-| `profiles`        | pseudo, nom affiché, avatar (créé à l'inscription par trigger) | utilisateurs connectés          | propriétaire (update)                                     |
-| `subjects`        | matières, coefficient                                          | propriétaire                    | propriétaire                                              |
-| `grades`          | notes, barème, coefficient                                     | propriétaire                    | propriétaire                                              |
-| `study_sessions`  | séances Focus, visibilité `private`/`friends`                  | propriétaire, amis si `friends` | propriétaire                                              |
-| `xp_transactions` | journal d'XP, `unique(user_id, idempotency_key)`               | propriétaire                    | **aucune** (serveur uniquement)                           |
-| `friendships`     | demandes et amitiés                                            | les deux participants           | demandeur crée, destinataire accepte, les deux suppriment |
+| Table             | Contenu                                                          | Lecture                         | Écriture client                                                                                                                                        |
+| ----------------- | ---------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `profiles`        | pseudo, nom affiché, avatar (créé à l'inscription par trigger)   | utilisateurs connectés          | propriétaire (update)                                                                                                                                  |
+| `subjects`        | matières, coefficient                                            | propriétaire                    | propriétaire                                                                                                                                           |
+| `grades`          | notes, barème, coefficient                                       | propriétaire                    | propriétaire                                                                                                                                           |
+| `study_sessions`  | séances Focus, visibilité `private`/`friends`, pauses, heartbeat | propriétaire, amis si `friends` | **aucune écriture directe** : fonctions `start/pause/resume/heartbeat/cancel/finish_study_session` (horloge serveur) ; suppression par le propriétaire |
+| `xp_transactions` | journal d'XP, `unique(user_id, idempotency_key)`                 | propriétaire                    | **aucune** (serveur uniquement)                                                                                                                        |
+| `friendships`     | demandes et amitiés                                              | les deux participants           | demandeur crée, destinataire accepte, les deux suppriment                                                                                              |
 
 Garde-fous en base : une note ne peut référencer qu'une matière du même utilisateur (clé étrangère
 composite), note ≤ barème, une seule séance en cours par utilisateur, une seule relation d'amitié par
