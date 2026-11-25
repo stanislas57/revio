@@ -32,7 +32,7 @@ Durée visée : 5 à 6 minutes. Deux navigateurs (ou un navigateur + une fenêtr
 ## À dire honnêtement
 
 - Les XP ne se « seed » pas : les durées sont verrouillées côté serveur. Pour montrer des XP, faire une vraie séance de 5 minutes ou plus.
-- Trophées et profil ami sont des **écrans sur données d'exemple** (badge « Exemple »). Le classement (XP de la semaine entre amis) et les statistiques (30 derniers jours) sont réels. Agenda et planning ne sont pas faits.
+- Le profil ami est un **écran sur données d'exemple** (badge « Exemple »). Le classement (XP de la semaine entre amis), les statistiques (30 derniers jours) et les trophées (11, attribués automatiquement) sont réels. Agenda et planning ne sont pas faits.
 - Les moyennes suivent la convention Revio, pas la règle officielle d'un établissement.
 - Le parcours est testé automatiquement sur un faux serveur local (`e2e/demo-journey.spec.ts`), pas encore sur un vrai Supabase.
 
