@@ -30,7 +30,7 @@ export function ReactionButton({
       size="sm"
       aria-pressed={state.reacted}
       disabled={pending}
-      className={cn(state.reacted && "text-pink-600 dark:text-pink-400")}
+      className={cn(state.reacted && "text-pink-600 dark:text-pink-400", "min-h-11")}
       onClick={() =>
         startTransition(async () => {
           const next = !state.reacted;

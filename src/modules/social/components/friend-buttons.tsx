@@ -27,6 +27,7 @@ export function AddFriendButton({ userId, onDone }: { userId: string; onDone?: (
   const { pending, run } = useRun();
   return (
     <Button
+      className="min-h-11"
       size="sm"
       disabled={pending}
       onClick={() =>
@@ -47,6 +48,7 @@ export function IncomingRequestButtons({ requestId }: { requestId: string }) {
   return (
     <div className="flex gap-2">
       <Button
+        className="min-h-11"
         size="sm"
         disabled={pending}
         onClick={() => run(() => respondFriendRequest(requestId, "accept"), "Vous êtes amis !")}
@@ -54,6 +56,7 @@ export function IncomingRequestButtons({ requestId }: { requestId: string }) {
         <Check aria-hidden /> Accepter
       </Button>
       <Button
+        className="min-h-11"
         size="sm"
         variant="outline"
         disabled={pending}
@@ -69,6 +72,7 @@ export function CancelRequestButton({ requestId }: { requestId: string }) {
   const { pending, run } = useRun();
   return (
     <Button
+      className="min-h-11"
       size="sm"
       variant="outline"
       disabled={pending}
@@ -83,6 +87,7 @@ export function RemoveFriendButton({ friendshipId, name }: { friendshipId: strin
   const { pending, run } = useRun();
   return (
     <Button
+      className="size-11"
       size="icon-sm"
       variant="ghost"
       disabled={pending}

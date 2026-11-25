@@ -54,7 +54,7 @@ export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
           {subjects.length > 0 && (
             <div className="space-y-2">
               <Label htmlFor="subjectId">Matière</Label>
-              <NativeSelect id="subjectId" name="subjectId" className="w-full" defaultValue="">
+              <NativeSelect id="subjectId" name="subjectId" className="h-11 w-full" defaultValue="">
                 <option value="">Aucune matière</option>
                 {subjects.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -104,7 +104,7 @@ export function StartSessionForm({ subjects }: { subjects: SubjectRef[] }) {
               {error}
             </p>
           )}
-          <Button type="submit" size="lg" className="w-full" disabled={pending}>
+          <Button type="submit" size="lg" className="min-h-11 w-full" disabled={pending}>
             <Play aria-hidden />
             {pending ? "Démarrage…" : "Démarrer"}
           </Button>

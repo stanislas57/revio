@@ -39,6 +39,7 @@ export function FriendSearch() {
         <div className="flex-1 space-y-2">
           <Label htmlFor="friend-q">Pseudo de ton ami</Label>
           <Input
+            className="h-11"
             id="friend-q"
             name="q"
             minLength={3}
@@ -47,7 +48,7 @@ export function FriendSearch() {
             autoComplete="off"
           />
         </div>
-        <Button type="submit" disabled={pending} aria-label="Rechercher">
+        <Button className="min-h-11 min-w-11" type="submit" disabled={pending} aria-label="Rechercher">
           <Search aria-hidden />
           <span className="hidden sm:inline">Rechercher</span>
         </Button>
@@ -68,8 +69,8 @@ export function FriendSearch() {
             <li key={u.id} className="flex items-center gap-3 px-3 py-2">
               <UserAvatar user={u} className="size-9" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{userLabel(u)}</p>
-                {u.username && <p className="truncate text-xs text-muted-foreground">@{u.username}</p>}
+                <p className="text-sm font-medium break-words">{userLabel(u)}</p>
+                {u.username && <p className="text-xs break-words text-muted-foreground">@{u.username}</p>}
               </div>
               {u.relation === "none" ? (
                 <AddFriendButton

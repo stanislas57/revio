@@ -29,6 +29,7 @@ export function ProfileForm({ username, displayName }: { username: string; displ
       <div className="space-y-2">
         <Label htmlFor="username">Pseudo</Label>
         <Input
+          className="h-11"
           id="username"
           name="username"
           defaultValue={username}
@@ -45,6 +46,7 @@ export function ProfileForm({ username, displayName }: { username: string; displ
       <div className="space-y-2">
         <Label htmlFor="displayName">Nom affiché</Label>
         <Input
+          className="h-11"
           id="displayName"
           name="displayName"
           defaultValue={displayName}
@@ -60,7 +62,7 @@ export function ProfileForm({ username, displayName }: { username: string; displ
           {message.text}
         </p>
       )}
-      <Button type="submit" disabled={pending}>
+      <Button className="min-h-11" type="submit" disabled={pending}>
         {pending ? "Enregistrement…" : "Enregistrer"}
       </Button>
     </form>
