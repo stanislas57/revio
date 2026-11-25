@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/page-header";
-import { NotImplemented } from "@/components/states/not-implemented";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgendaDay } from "@/modules/agenda/components/agenda-day";
 import { AgendaToolbar } from "@/modules/agenda/components/agenda-toolbar";
@@ -9,6 +8,7 @@ import { MonthGrid } from "@/modules/agenda/components/month-grid";
 import { startOfMonth } from "@/modules/agenda/domain/dates";
 import { expandRange, findConflicts } from "@/modules/agenda/domain/occurrences";
 import { viewRange } from "@/modules/agenda/domain/range";
+import { PlanCard } from "@/modules/planning/components/plan-card";
 import { getAgendaData } from "@/modules/agenda/server/queries";
 import { viewParamsSchema } from "@/modules/agenda/schemas";
 import { requireUser } from "@/lib/auth";
@@ -42,7 +42,7 @@ export default async function AgendaPage({
     <>
       <PageHeader title="Agenda" description="Tes examens, cours, indisponibilités et séances de révision." />
       <div className="space-y-6">
-        <NotImplemented feature="Génération automatique du planning de révision (l'agenda est pour l'instant rempli à la main)." />
+        <PlanCard hasRecommended={data.events.some((e) => e.planStatus === "recommended")} />
         <AgendaToolbar view={params.vue} date={date} today={today} from={from} to={to} />
 
         {params.vue === "mois" ? (
