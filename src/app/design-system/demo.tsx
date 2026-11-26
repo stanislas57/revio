@@ -14,6 +14,7 @@ import { KudosButton } from "@/components/revio/kudos-button";
 import { LeagueTable } from "@/components/revio/league-table";
 import { LiveActivityFeed, type LiveItem } from "@/components/revio/live-activity-feed";
 import { RevioLogo } from "@/components/revio/logo";
+import { RewardButton } from "@/components/revio/reward-button";
 import { OrganicCard } from "@/components/revio/organic-card";
 import {
   addXp,
@@ -164,9 +165,7 @@ export function DesignSystemDemo() {
           </div>
           <Row>
             <Button className="min-h-11">Commencer une session</Button>
-            <Button className="min-h-11 bg-revio-lime text-revio-midnight hover:bg-revio-lime/85">
-              Récupérer ma récompense
-            </Button>
+            <RewardButton />
             <Button variant="secondary" className="min-h-11">
               Voir mes statistiques
             </Button>
@@ -192,7 +191,7 @@ export function DesignSystemDemo() {
             <ChunkyButton>Commencer une session</ChunkyButton>
             <ChunkyButton variant="secondary">Voir mes statistiques</ChunkyButton>
             <ChunkyButton variant="outline">Annuler</ChunkyButton>
-            <ChunkyButton variant="reward">Récupérer ma récompense</ChunkyButton>
+            <RewardButton />
           </Row>
           <div className="grid gap-6 sm:grid-cols-2">
             <OrganicCard halo>
