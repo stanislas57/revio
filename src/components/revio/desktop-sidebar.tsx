@@ -41,7 +41,7 @@ export function DesktopSidebar({
     >
       <Link
         href={homeHref}
-        className="flex min-h-11 items-center rounded-md px-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="flex min-h-11 items-center justify-center rounded-md px-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <RevioLogo className="text-[1.75rem]" />
       </Link>
@@ -55,14 +55,14 @@ export function DesktopSidebar({
                   href={href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex min-h-11 items-center gap-3 rounded-md px-3 text-sm transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none",
+                    "flex min-h-11 items-center justify-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none",
                     active
                       ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
                   <Icon className="size-5" aria-hidden />
-                  <span className="flex-1">{label}</span>
+                  <span>{label}</span>
                   {badge ? (
                     <span className="rounded-pill bg-revio-social px-2 py-0.5 text-xs font-bold text-revio-midnight">
                       {badge}
@@ -78,12 +78,12 @@ export function DesktopSidebar({
       <Link
         href={reviseHref}
         aria-current={reviseActive ? "page" : undefined}
-        className="flex min-h-12 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors duration-150 outline-none hover:bg-revio-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none"
+        className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground shadow-[0_4px_0_var(--edge-primary)] transition-[transform,box-shadow,background-color] duration-100 outline-none hover:bg-revio-primary-hover focus-visible:ring-[3px] focus-visible:ring-ring/50 active:translate-y-1 active:shadow-none motion-reduce:transition-none"
       >
         <Zap className="size-4" aria-hidden /> Réviser maintenant
       </Link>
-      <div className="mt-auto space-y-3 rounded-lg border bg-card p-3">
-        <div className="flex items-center gap-3">
+      <div className="mt-auto space-y-3 rounded-2xl border bg-card p-3 text-center">
+        <div className="flex flex-col items-center gap-2">
           <span
             aria-hidden
             className="flex size-10 items-center justify-center rounded-full bg-brand-soft text-sm font-bold text-brand-soft-foreground"

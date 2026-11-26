@@ -108,6 +108,12 @@
   --revio-streak-text: #b45309; /* 5.02:1 on white */
   --revio-social-text: #c2185b; /* 5.87:1 on white */
   --revio-primary-on-dark: #a99bff; /* violet TEXT on the dark surfaces: 6.76:1 on #20202C */
+  /* ---- "Chunky" edges: the darker bottom of 3D buttons and choice tiles (decorative, never carry text) ---- */
+  --edge-primary: #4c37c9;
+  --edge-neutral: #d9d7e3;
+  --edge-soft: #d6cffc;
+  --edge-lime: #a9cc45;
+  --edge-danger: #9f1d1d;
   /* ---- Motion (charter: 150-300 ms) ---- */
   --dur-micro: 150ms;
   --dur-base: 250ms;
@@ -158,6 +164,9 @@
 /* Dark theme: the charter's values (page 6), plus a lighter violet and lighter signals for TEXT. */
 .dark {
   --revio-landing: #14141e; /* the landing follows the dark background */
+  --edge-primary: #3a2b9e;
+  --edge-neutral: #0d0d14;
+  --edge-soft: #241c3d;
   --revio-primary-light: #332952;
   --revio-border: #303041;
   --revio-text: #f4f2fb;
@@ -224,4 +233,112 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/*
+ * ORGANIC STYLE (Duolingo-like, Revio colours). Only shapes, shadows and colours "breathe": no element ever
+ * moves or changes size, so reading is never disturbed. Every continuous animation stops with
+ * `prefers-reduced-motion: reduce` or with the "Réduire les animations" setting (html[data-motion="reduce"]).
+ */
+@keyframes revio-breathe {
+  0%,
+  100% {
+    border-radius: 28px 40px 32px 44px / 40px 30px 44px 32px;
+  }
+  33% {
+    border-radius: 40px 30px 44px 32px / 30px 44px 32px 40px;
+  }
+  66% {
+    border-radius: 34px 44px 28px 38px / 44px 34px 38px 28px;
+  }
+}
+@keyframes revio-halo {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+@keyframes revio-gradient-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/*
+ * A blob card: generous irregular corners that slowly change, and an optional soft gradient halo. The card is
+ * its own stacking context; its background is a layer (`.organic-surface`) painted above the halo layer
+ * (`.organic-halo`), both under the content.
+ */
+.organic-card {
+  position: relative;
+  isolation: isolate;
+  border-radius: 28px 40px 32px 44px / 40px 30px 44px 32px;
+  animation: revio-breathe 14s ease-in-out infinite;
+}
+.organic-halo,
+.organic-surface {
+  position: absolute;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.organic-halo {
+  inset: -6px;
+  background: linear-gradient(135deg, var(--revio-primary), var(--revio-social), var(--revio-lime));
+  filter: blur(14px);
+  opacity: 0.35;
+  animation: revio-halo 6s ease-in-out infinite;
+}
+.organic-surface {
+  inset: 0;
+}
+
+/* The Revio gradient that slowly drifts (colours move, the element does not). */
+.revio-gradient-drift {
+  background-size: 200% 200%;
+  animation: revio-gradient-drift 18s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .organic-card,
+  .organic-halo,
+  .revio-gradient-drift {
+    animation: none;
+  }
+}
+html[data-motion="reduce"] .organic-card,
+html[data-motion="reduce"] .organic-halo,
+html[data-motion="reduce"] .revio-gradient-drift {
+  animation: none;
+}
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  /* The setting also shortens every other transition and one-off animation, like the media query does. */
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/*
+ * CENTRING (asked for every page): inside a form, rows of fields and buttons centre themselves. `:where()` keeps
+ * the rule at zero specificity, so an explicit utility (`justify-between`…) still wins. Date, time and file
+ * fields centre their value too.
+ */
+form :where(.flex) {
+  justify-content: center;
+}
+input:where([type="date"], [type="time"], [type="datetime-local"], [type="file"]) {
+  text-align: center;
+}
+input:where([type="date"], [type="time"], [type="datetime-local"])::-webkit-datetime-edit {
+  display: inline-block;
+  text-align: center;
 }

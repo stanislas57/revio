@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { MOTION_INIT_SCRIPT } from "@/components/layout/motion-script";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -25,6 +26,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fr" suppressHydrationWarning className={`${inter.variable} h-full antialiased`}>
+      <head>
+        {/* Applies "Réduire les animations" before the first paint (static, no user data). */}
+        <script dangerouslySetInnerHTML={{ __html: MOTION_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-full bg-background font-sans text-foreground">
         <ThemeProvider>
           {children}

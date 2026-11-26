@@ -8,7 +8,7 @@ Ce fichier reproduit le texte complet des licences des composants, icônes et po
 
 À chaque nouvelle source, ajouter ici sa licence complète.
 
-**Composants inspirés, aucun code copié** : les composants de `src/components/revio/` sont des implémentations originales avec Motion ; leur en-tête cite la bibliothèque dont l'idée s'inspire (Magic UI, Motion Primitives, Animate UI, shadcn/ui, toutes MIT). Si du code est un jour copié, ajouter ici la licence complète de sa source.
+**Composants inspirés, aucun code copié** : les composants de `src/components/revio/` sont des implémentations originales (Motion ou CSS) ; leur en-tête cite la bibliothèque dont l'idée s'inspire (Magic UI, Motion Primitives, Animate UI, Uiverse, shadcn/ui, toutes MIT). Le style « Duolingo » (`ChunkyButton`, `ChoiceGrid`, `OrganicCard`) reprend seulement des principes d'interface (formes arrondies, bord « 3D », grandes cases) : aucun élément de la marque Duolingo (mascotte, vert, police, illustrations). Si du code est un jour copié, ajouter ici la licence complète de sa source.
 
 ## Sommaire
 

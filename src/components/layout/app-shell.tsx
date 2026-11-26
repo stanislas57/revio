@@ -43,10 +43,10 @@ export function AppShell({
           profile={profile}
           footer={
             <div className="space-y-1 border-t pt-3">
-              <p className="truncate px-2 text-xs text-muted-foreground" title={email}>
+              <p className="truncate px-2 text-center text-xs text-muted-foreground" title={email}>
                 {email}
               </p>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-center gap-2">
                 <SignOutButton />
                 <ThemeToggle />
               </div>
@@ -68,7 +68,9 @@ export function AppShell({
             <SignOutButton compact />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-28 md:px-8 md:py-8">{children}</main>
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 pb-28 text-center md:px-8 md:py-8">
+          {children}
+        </main>
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 md:hidden">

@@ -31,12 +31,12 @@ export function AchievementCard({
       onClick={() => onOpen(achievement)}
       aria-haspopup="dialog"
       className={cn(
-        "flex min-h-11 w-full flex-col gap-3 rounded-xl border p-4 text-left transition-colors outline-none",
+        "flex min-h-11 w-full flex-col items-center gap-3 rounded-xl border p-4 text-center transition-colors outline-none",
         "hover:bg-muted/50 focus-visible:ring-[3px] focus-visible:ring-ring/50",
         state === "unlocked" && "border-brand/50 bg-brand-soft",
       )}
     >
-      <span className="flex items-start gap-3">
+      <span className="flex flex-col items-center gap-2">
         <span
           aria-hidden
           className={cn(

@@ -66,7 +66,7 @@ export function QuestList({
                 aria-label={q.label}
                 disabled={!onToggle}
                 onClick={() => onToggle?.(q.id)}
-                className="flex min-h-11 w-full items-start gap-3 rounded-sm text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-default"
+                className="flex min-h-11 w-full items-start justify-center gap-3 rounded-sm text-center outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-default"
               >
                 <motion.span
                   aria-hidden

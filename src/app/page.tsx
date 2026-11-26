@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
   return (
-    <div id="top" className={`landing-root`}>
+    <div id="top" className="landing-root text-center">
       <SiteHeader />
       <main>
         <div className="landing-hero-bg">

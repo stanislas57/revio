@@ -128,7 +128,7 @@ export function SchoolPicker({
                   type="button"
                   onClick={() => setSelected(s)}
                   aria-pressed={selected?.id === s.id}
-                  className="flex min-h-11 w-full flex-col items-start px-3 py-2 text-left text-sm outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-pressed:bg-muted"
+                  className="flex min-h-11 w-full flex-col items-center px-3 py-2 text-center text-sm outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-pressed:bg-muted"
                 >
                   <span className="font-medium">{s.name}</span>
                   <span className="text-xs text-muted-foreground">

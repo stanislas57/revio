@@ -37,7 +37,7 @@ export function Faq() {
         <div className="mt-10 divide-y rounded-2xl border bg-card">
           {QUESTIONS.map(({ q, a }) => (
             <details key={q} className="group px-5 py-4">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-md font-medium outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center justify-center gap-4 rounded-md font-medium outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
                 {q}
                 <span
                   aria-hidden
@@ -46,7 +46,7 @@ export function Faq() {
                   +
                 </span>
               </summary>
-              <p className="pt-2 pr-8 text-sm text-muted-foreground">{a}</p>
+              <p className="px-4 pt-2 text-sm text-muted-foreground">{a}</p>
             </details>
           ))}
         </div>

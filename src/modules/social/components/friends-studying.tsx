@@ -13,7 +13,7 @@ export function FriendsStudying({ friends }: { friends: LiveFriend[] }) {
 
   if (friends.length === 0) {
     return (
-      <p className="flex items-center gap-2 rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
+      <p className="flex items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-3 text-center text-sm text-muted-foreground">
         <BookOpen className="size-4" aria-hidden /> Aucun ami ne révise en ce moment.
       </p>
     );

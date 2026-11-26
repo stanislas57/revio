@@ -14,7 +14,7 @@ export function LevelLadder({ currentLevel }: { currentLevel: number }) {
           <li
             key={l.number}
             className={cn(
-              "flex items-center gap-3 rounded-lg border px-3 py-2 text-sm",
+              "flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm",
               l.number === currentLevel && "border-brand/60 bg-brand-soft",
               !unlocked && "text-muted-foreground",
             )}
@@ -27,7 +27,7 @@ export function LevelLadder({ currentLevel }: { currentLevel: number }) {
             <span className="font-medium">
               {l.number}. {l.name}
             </span>
-            <span className="ml-auto tabular-nums">{nf.format(l.minXp)} XP</span>
+            <span className="tabular-nums">· {nf.format(l.minXp)} XP</span>
           </li>
         );
       })}

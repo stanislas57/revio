@@ -27,12 +27,12 @@ function Tile({
     <article
       aria-labelledby={`bento-${pillarId}-${subtitle ?? "main"}`}
       className={cn(
-        "flex flex-col gap-4 rounded-2xl border bg-card p-5 shadow-sm transition-[transform,box-shadow] duration-200 hover:shadow-md motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none",
+        "flex flex-col gap-4 rounded-2xl border bg-card p-5 text-center shadow-sm transition-[transform,box-shadow] duration-200 hover:shadow-md motion-safe:hover:-translate-y-0.5 motion-reduce:transition-none",
         className,
       )}
     >
       <header className="space-y-2">
-        <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-col items-center gap-2">
           <span
             aria-hidden
             className="flex size-10 items-center justify-center rounded-xl bg-brand-soft text-brand-text"

@@ -47,7 +47,7 @@ export function DataTable({
   rows: readonly (readonly (string | number)[])[];
 }) {
   return (
-    <table className="w-full text-left text-sm">
+    <table className="w-full text-center text-sm">
       <caption className="sr-only">{caption}</caption>
       <thead className="sticky top-0 bg-muted">
         <tr>
