@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Sprout } from "lucide-react";
 import { BarChart3, Trophy } from "lucide-react";
+import { LinkCard } from "@/components/revio/link-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
 import { Button } from "@/components/ui/button";
@@ -37,8 +38,12 @@ export default async function ProfilPage() {
       <PageHeader title="Profil" description="Ta progression et ton identité visible par tes amis." />
       <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
-          <LevelCard level={stats.level} />
-          <StreakPanel streak={stats.streak} days={stats.days} />
+          <LinkCard href="#niveaux" label="Voir tous les niveaux">
+            <LevelCard level={stats.level} />
+          </LinkCard>
+          <LinkCard href="/profil/statistiques" label="Voir mes statistiques" className="self-start">
+            <StreakPanel streak={stats.streak} days={stats.days} />
+          </LinkCard>
         </div>
         {stats.sessionsCount === 0 && (
           <EmptyState
@@ -56,7 +61,9 @@ export default async function ProfilPage() {
             </div>
           </EmptyState>
         )}
-        <StatTiles totalMinutes={stats.totalMinutes} sessions={stats.sessionsCount} />
+        <LinkCard href="/profil/statistiques" label="Voir mes statistiques détaillées">
+          <StatTiles totalMinutes={stats.totalMinutes} sessions={stats.sessionsCount} />
+        </LinkCard>
 
         <SectionLinks
           label="Trophées et statistiques"
@@ -78,7 +85,7 @@ export default async function ProfilPage() {
           ]}
         />
 
-        <Card>
+        <Card id="niveaux" className="scroll-mt-20">
           <CardHeader>
             <CardTitle>Niveaux</CardTitle>
             <CardDescription>Seuils provisoires, susceptibles d&apos;évoluer.</CardDescription>
