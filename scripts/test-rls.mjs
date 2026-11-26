@@ -814,8 +814,12 @@ ok(
   // study level and gender (20261126130000_education_details): owner-only like the rest of the row
   ok(
     "owner saves a study level and a gender",
-    !(await as(D, `update user_education set study_level = 'terminale', gender = 'prefer_not' where user_id = '${D}'`))
-      .error,
+    !(
+      await as(
+        D,
+        `update user_education set study_level = 'terminale', gender = 'prefer_not' where user_id = '${D}'`,
+      )
+    ).error,
   );
   ok(
     "owner reads back the study level and the gender",
@@ -839,9 +843,8 @@ ok(
   );
   ok(
     "another user cannot change the study level",
-    (
-      await as(E, `update user_education set study_level = 'bac1' where user_id = '${D}' returning user_id`)
-    ).rows.length === 0,
+    (await as(E, `update user_education set study_level = 'bac1' where user_id = '${D}' returning user_id`))
+      .rows.length === 0,
   );
 
   // account deletion: everything of D goes, E stays
