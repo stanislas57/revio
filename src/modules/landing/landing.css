@@ -13,19 +13,9 @@
 }
 /* The charter's hero: cream at the top, a soft purple wash towards the bottom. */
 .landing-hero-bg {
-  background: linear-gradient(180deg, var(--revio-landing) 0%, var(--revio-primary-light) 100%);
+  background: var(--revio-hero-gradient);
 }
-
-/* Display headings of the charter: Inter 900, very tight. The accented part of a title is set in the brand
-   colour, not in italic. */
-.landing-display {
-  font-family: var(--font-heading), system-ui, sans-serif;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-}
-.landing-display em {
-  font-style: normal;
-}
+/* `.landing-display` (the hero title's typography) lives in globals.css: the home page uses it too. */
 
 /* ---- Soft appearance on scroll (the component only hides what is below the fold) ---- */
 .landing-reveal {

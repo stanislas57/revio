@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GraduationCap } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,8 +15,17 @@ import { TargetForm } from "@/modules/academic/components/target-form";
 import { TemplateImport } from "@/modules/academic/components/template-import";
 import { TimePlanner } from "@/modules/academic/components/time-planner";
 import { buildDashboard } from "@/modules/academic/domain/dashboard";
-import { FirstRunCard } from "@/modules/profile/components/first-run-card";
-import { loadMyEducation } from "@/modules/profile/server/school";
+import { HomeUpcomingCard } from "@/modules/agenda/components/home-upcoming-card";
+import { expandRange } from "@/modules/agenda/domain/occurrences";
+import { upcomingItems, upcomingWindowEnd } from "@/modules/agenda/domain/upcoming";
+import { getAgendaData } from "@/modules/agenda/server/queries";
+import { todayIso } from "@/modules/academic/domain/dates";
+import { HomeSessionsCard } from "@/modules/focus/components/home-sessions-card";
+import { HomeLevelCard, HomeStreakCard } from "@/modules/gamification/components/home-cards";
+import { getMyGamification } from "@/modules/gamification/server/queries";
+import { getMyProfile, loadSettings } from "@/modules/profile/server/queries";
+import { HomeFriendsCard } from "@/modules/social/components/home-friends-card";
+import { getLiveFriends, listFriends } from "@/modules/social/server/queries";
 import { requireUser } from "@/lib/auth";
 import { getAcademicSnapshot } from "@/modules/academic/server/queries";
 import { deleteScenario, saveScenario } from "@/modules/academic/server/scenario-actions";
@@ -25,25 +33,69 @@ import { listScenarios } from "@/modules/academic/server/scenarios";
 
 export const metadata: Metadata = { title: "Accueil" };
 
+/** Current wall-clock time "HH:MM" in the user's time zone (to skip today's agenda items that are over). */
+function nowTime(timeZone: string): string {
+  return new Intl.DateTimeFormat("fr-FR", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(new Date());
+}
+
 export default async function AccueilPage() {
   const { supabase, user } = await requireUser();
-  const [snapshot, scenarios, education] = await Promise.all([
+  const settings = await loadSettings(supabase, user.id);
+  const today = todayIso(settings.timezone);
+  const [snapshot, scenarios, profile, stats, friends, live, agenda] = await Promise.all([
     getAcademicSnapshot(),
     listScenarios(),
-    loadMyEducation(supabase, user.id),
+    getMyProfile(),
+    getMyGamification(),
+    listFriends(),
+    getLiveFriends(),
+    getAgendaData(today, upcomingWindowEnd(today)),
   ]);
+  const upcoming = upcomingItems(
+    expandRange(agenda.events, agenda.exams, today, upcomingWindowEnd(today)),
+    today,
+    nowTime(settings.timezone),
+  );
+  // An empty display name falls back to the username.
+  const name = profile.displayName || profile.username;
   const dashboard = buildDashboard(snapshot);
   const names = new Map(snapshot.subjects.map((s) => [s.id, s.name]));
   const archived = snapshot.subjects.filter((s) => s.archived);
 
   return (
-    <>
-      <PageHeader
-        title="Accueil"
-        description="Ton tableau de bord : moyennes, objectifs et matières prioritaires."
-      />
+    <div data-page-background="landing" className="space-y-10">
+      {/* The landing's first slogan, same words and same typography (charter bêta 01). */}
+      <section aria-labelledby="home-title" className="space-y-4 pt-6 pb-2 text-center sm:pt-10">
+        <p className="inline-flex items-center rounded-pill bg-brand-soft px-3 py-1 text-xs font-bold tracking-wide text-brand-soft-foreground uppercase">
+          Accueil{name ? ` · Salut, ${name} !` : ""}
+        </p>
+        <h1
+          id="home-title"
+          className="landing-display text-[2.625rem] leading-[0.98] text-balance sm:text-[4rem] lg:text-[5.5rem]"
+        >
+          Moins de stress.
+          <br />
+          <em className="text-brand-text">Plus de progrès.</em>
+        </h1>
+      </section>
+
+      <section aria-label="Ton tableau de bord" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="sm:col-span-2">
+          <HomeLevelCard level={stats.level} />
+        </div>
+        <HomeStreakCard streak={stats.streak} />
+        <HomeSessionsCard sessions={stats.sessionsCount} totalMinutes={stats.totalMinutes} />
+        <HomeFriendsCard friends={friends.length} studyingNow={live.length} />
+        <HomeUpcomingCard items={upcoming} today={today} />
+      </section>
+
       <div className="space-y-6">
-        {!education.onboardingDone && <FirstRunCard />}
+        <h2 className="text-2xl font-extrabold">Mes notes</h2>
         <DashboardSummary dashboard={dashboard} subjectNames={names} />
         <TargetForm target={snapshot.targetAverage} />
 
@@ -105,6 +157,6 @@ export default async function AccueilPage() {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -1,4 +1,5 @@
 import { LinkCard } from "@/components/revio/link-card";
+import { OrganicCard } from "@/components/revio/organic-card";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Dashboard } from "../domain/dashboard";
@@ -17,53 +18,47 @@ export function DashboardSummary({
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-3">
-        <LinkCard href="#matieres" label="Voir mes matières et mes notes">
-          <Card>
-            <CardHeader>
-              <CardDescription>Moyenne générale</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">
-                {overall === null ? "—" : formatAverage(overall)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-xs text-muted-foreground">
+        <LinkCard href="#matieres" label="Voir mes matières et mes notes" className="h-full">
+          <OrganicCard className="h-full justify-center">
+            <p className="text-sm text-muted-foreground">Moyenne générale</p>
+            <p className="font-heading text-3xl font-extrabold tabular-nums">
+              {overall === null ? "—" : formatAverage(overall)}
+            </p>
+            <p className="text-xs text-muted-foreground">
               {gradeCount === 0
                 ? "Ajoute une première note."
                 : `${gradeCount} note${gradeCount > 1 ? "s" : ""} prises en compte`}
-            </CardContent>
-          </Card>
+            </p>
+          </OrganicCard>
         </LinkCard>
-        <LinkCard href="#target" label="Modifier mon objectif">
-          <Card>
-            <CardHeader>
-              <CardDescription>Objectif</CardDescription>
-              <CardTitle className="text-3xl tabular-nums">
-                {target === null ? "—" : formatAverage(target)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-xs text-muted-foreground">
+        <LinkCard href="#target" label="Modifier mon objectif" className="h-full">
+          <OrganicCard className="h-full justify-center">
+            <p className="text-sm text-muted-foreground">Objectif</p>
+            <p className="font-heading text-3xl font-extrabold tabular-nums">
+              {target === null ? "—" : formatAverage(target)}
+            </p>
+            <p className="text-xs text-muted-foreground">
               {gap === null
                 ? "Définis un objectif pour voir l'écart."
                 : gap >= 0
                   ? `Atteint, avec ${formatAverage(gap)} point${gap >= 2 ? "s" : ""} d'avance.`
                   : `Il manque ${formatAverage(-gap)} point${-gap >= 2 ? "s" : ""}.`}
-            </CardContent>
-          </Card>
+            </p>
+          </OrganicCard>
         </LinkCard>
-        <LinkCard href="#matieres" label="Voir mes matières par semestre">
-          <Card>
-            <CardHeader>
-              <CardDescription>Par semestre</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-1 text-sm">
+        <LinkCard href="#matieres" label="Voir mes matières par semestre" className="h-full">
+          <OrganicCard className="h-full justify-center">
+            <p className="text-sm text-muted-foreground">Par semestre</p>
+            <div className="w-full space-y-1 text-sm">
               {semesters.length === 0 && <p className="text-muted-foreground">—</p>}
               {semesters.map((s) => (
-                <p key={s.key ?? "none"} className="flex justify-between gap-2">
+                <p key={s.key ?? "none"} className="flex justify-center gap-2">
                   <span className="truncate">{s.key ?? "Sans semestre"}</span>
                   <span className="tabular-nums">{s.average === null ? "—" : formatAverage(s.average)}</span>
                 </p>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </OrganicCard>
         </LinkCard>
       </div>
 
@@ -102,7 +97,7 @@ export function DashboardSummary({
           )}
         </CardContent>
       </Card>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-center text-xs text-muted-foreground">
         Moyennes calculées selon la convention Revio (moyenne pondérée sur 20). Ce n&apos;est pas la règle
         officielle de ton établissement. Tes notes restent privées.
       </p>

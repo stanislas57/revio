@@ -4,14 +4,12 @@ import { newAccount } from "./support/new-account";
 // Connected scenario (fake Supabase with the real migrations, schools included): `npm run test:e2e:connected`.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
 
-test("first-run card: search a school by kind and words, save it, find it again in the profile", async ({
+test("school in the profile: search by kind and words, save it, find it again, remove it", async ({
   page,
 }) => {
   await newAccount(page, "ecole");
-  await page.goto("/accueil");
-  const card = page
-    .getByRole("region", { name: "Personnalise Revio" })
-    .or(page.locator("[aria-labelledby=first-run-title]"));
+  await page.goto("/profil");
+  const card = page.locator("#ecole");
   await expect(card).toBeVisible();
 
   await card.getByLabel("Type d'établissement").selectOption({ label: "Université" });
@@ -22,32 +20,21 @@ test("first-run card: search a school by kind and words, save it, find it again 
 
   await card.getByRole("button", { name: /Avignon Université/ }).click();
   await card.getByRole("button", { name: "Enregistrer" }).click();
-  await expect(card).toBeHidden();
-
-  await page.goto("/profil");
   await expect(page.getByText("École choisie :")).toContainText("Avignon Université");
   await page.reload();
   await expect(page.getByText("École choisie :")).toContainText("Avignon Université");
 
-  // Another visit to the home screen: the first-run card is gone for good.
-  await page.goto("/accueil");
-  await expect(page.locator("[aria-labelledby=first-run-title]")).toHaveCount(0);
-
   // Remove the choice in the settings.
-  await page.goto("/profil");
   await page.getByRole("button", { name: "Retirer mon école" }).click();
   await expect(page.getByText("École retirée.")).toBeVisible();
 });
 
-test("'Plus tard' hides the first-run card and nothing is saved", async ({ page }) => {
-  await newAccount(page, "later");
+test("the home screen shows no personal information block", async ({ page }) => {
+  await newAccount(page, "accueil");
   await page.goto("/accueil");
-  await page.getByRole("button", { name: "Plus tard" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: /Moins de stress/ })).toBeVisible();
   await expect(page.locator("[aria-labelledby=first-run-title]")).toHaveCount(0);
-  await page.reload();
-  await expect(page.locator("[aria-labelledby=first-run-title]")).toHaveCount(0);
-  await page.goto("/profil");
-  await expect(page.getByText("Aucune école choisie.")).toBeVisible();
+  await expect(page.getByText("Type d'établissement")).toHaveCount(0);
 });
 
 test("a too short search asks for more letters, a nonsense one finds nothing", async ({ page }) => {
