@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import type { requireUser } from "@/lib/auth";
+import { GENDERS, STUDY_LEVELS, type Gender, type StudyLevel } from "../domain/education";
 import type { School } from "../domain/schools";
 import { SCHOOL_KINDS } from "../domain/schools";
 
@@ -28,16 +29,24 @@ export function toSchool(row: z.infer<typeof schoolRowSchema>): School {
   };
 }
 
-export type MyEducation = { school: School | null; onboardingDone: boolean };
+export type MyEducation = {
+  school: School | null;
+  studyLevel: StudyLevel | null;
+  gender: Gender | null;
+  onboardingDone: boolean;
+};
 
-/** The caller's school and whether the first-run card is done (owner-only table). */
+const studyLevelSchema = z.enum(STUDY_LEVELS).nullable().catch(null);
+const genderSchema = z.enum(GENDERS).nullable().catch(null);
+
+/** The caller's school, study level, gender and whether the onboarding is done (owner-only table). */
 export async function loadMyEducation(supabase: Client, userId: string): Promise<MyEducation> {
   const { data } = await supabase
     .from("user_education")
-    .select("school_id, onboarding_done")
+    .select("school_id, study_level, gender, onboarding_done")
     .eq("user_id", userId)
     .maybeSingle();
-  if (!data) return { school: null, onboardingDone: false };
+  if (!data) return { school: null, studyLevel: null, gender: null, onboardingDone: false };
   let school: School | null = null;
   if (typeof data.school_id === "string") {
     const { data: row } = await supabase
@@ -48,5 +57,10 @@ export async function loadMyEducation(supabase: Client, userId: string): Promise
     const parsed = schoolRowSchema.safeParse(row);
     school = parsed.success ? toSchool(parsed.data) : null;
   }
-  return { school, onboardingDone: data.onboarding_done === true };
+  return {
+    school,
+    studyLevel: studyLevelSchema.parse(data.study_level ?? null),
+    gender: genderSchema.parse(data.gender ?? null),
+    onboardingDone: data.onboarding_done === true,
+  };
 }

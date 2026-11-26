@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // Connected scenario (fake Supabase server): see docs/E2E.md. Skipped without E2E_CONNECTED.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
@@ -13,6 +14,7 @@ test("planning: propose, accept, lock, replan keeps the locked session", async (
   await page.getByRole("button", { name: "Créer mon compte" }).click();
   await page.getByLabel("Pseudo").fill(`pl_${Math.random().toString(36).slice(2, 10)}`);
   await page.getByRole("button", { name: "Continuer" }).click();
+  await skipOnboarding(page);
 
   // One subject without any grade: it has a priority, so it gets sessions.
   await page.getByLabel("Matière", { exact: true }).fill("Maths");

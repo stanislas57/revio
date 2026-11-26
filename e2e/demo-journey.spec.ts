@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // Main demo journey (docs/DEMO.md) on the local fake Supabase. Skipped otherwise.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
@@ -14,6 +15,7 @@ async function signUpWithUsername(page: Page, username: string) {
   // The username screen replaces the app until a username is chosen.
   await page.getByLabel("Pseudo").fill(username);
   await page.getByRole("button", { name: "Continuer" }).click();
+  await skipOnboarding(page);
   await page.goto("/social");
   await expect(page.getByText("Ajouter un ami")).toBeVisible();
 }

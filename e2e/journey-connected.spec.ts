@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // Full two-account journey on the local fake Supabase: sign-up, username, friends, a shared Focus
 // session that earns XP, the feed, a "Bravo" and the profile. Run with `npm run test:e2e:connected`,
@@ -36,6 +37,7 @@ async function signUpWithUsername(page: Page, username: string) {
   await page.goto("/social");
   await page.getByLabel("Pseudo", { exact: true }).fill(username);
   await page.getByRole("button", { name: /^(Enregistrer|Continuer)$/ }).click();
+  await skipOnboarding(page);
   await page.goto("/social");
   await expect(page.getByText("Ajouter un ami")).toBeVisible();
 }

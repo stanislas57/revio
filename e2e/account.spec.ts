@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // Connected scenario (fake Supabase server): see docs/E2E.md. Skipped without E2E_CONNECTED.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
@@ -13,6 +14,7 @@ async function signUp(page: import("@playwright/test").Page, tag: string) {
   await page.getByRole("button", { name: "Créer mon compte" }).click();
   await page.getByLabel("Pseudo").fill(`${tag}_${Math.random().toString(36).slice(2, 10)}`);
   await page.getByRole("button", { name: "Continuer" }).click();
+  await skipOnboarding(page);
   await expect(page.getByRole("heading", { name: "Choisis ton pseudo" })).toHaveCount(0);
   return email;
 }

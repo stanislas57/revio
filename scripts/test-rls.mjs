@@ -811,6 +811,38 @@ ok(
     !!(await as(E, `insert into user_education (user_id, school_id) values ('${D}', '0920894X')`)).error,
   );
   ok("anon cannot read user_education", !!(await as(null, `select * from user_education`)).error);
+  // study level and gender (20261126130000_education_details): owner-only like the rest of the row
+  ok(
+    "owner saves a study level and a gender",
+    !(await as(D, `update user_education set study_level = 'terminale', gender = 'prefer_not' where user_id = '${D}'`))
+      .error,
+  );
+  ok(
+    "owner reads back the study level and the gender",
+    (await as(D, `select study_level, gender from user_education`)).rows[0]?.study_level === "terminale",
+  );
+  ok(
+    "an unknown study level is refused",
+    !!(await as(D, `update user_education set study_level = 'doctorat' where user_id = '${D}'`)).error,
+  );
+  ok(
+    "an unknown gender value is refused",
+    !!(await as(D, `update user_education set gender = 'x' where user_id = '${D}'`)).error,
+  );
+  ok(
+    "the gender can be erased (null = not answered)",
+    !(await as(D, `update user_education set gender = null where user_id = '${D}'`)).error,
+  );
+  ok(
+    "another user cannot read the study level or the gender",
+    (await as(E, `select study_level, gender from user_education where user_id = '${D}'`)).rows.length === 0,
+  );
+  ok(
+    "another user cannot change the study level",
+    (
+      await as(E, `update user_education set study_level = 'bac1' where user_id = '${D}' returning user_id`)
+    ).rows.length === 0,
+  );
 
   // account deletion: everything of D goes, E stays
   await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);

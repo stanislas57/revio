@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // A brand-new account (just after choosing a username) has no data: each tab explains what to do and
 // offers one clear action. Connected scenario: `npm run test:e2e:connected`.
@@ -14,6 +15,7 @@ async function newAccount(page: Page) {
   await page.getByRole("button", { name: "Créer mon compte" }).click();
   await page.getByLabel("Pseudo").fill(`first_${Math.random().toString(36).slice(2, 10)}`);
   await page.getByRole("button", { name: "Continuer" }).click();
+  await skipOnboarding(page);
   await expect(page.getByRole("heading", { name: "Choisis ton pseudo" })).toHaveCount(0);
 }
 

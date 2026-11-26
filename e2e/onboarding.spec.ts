@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 const PROTECTED = ["/accueil", "/agenda", "/focus", "/social", "/profil"];
 
@@ -48,6 +49,7 @@ test.describe("onboarding after sign-up", () => {
     await page.getByLabel("Pseudo").fill(pseudo.toUpperCase());
     await page.getByRole("button", { name: "Continuer" }).click();
     await expect(page.getByRole("heading", { name: "Choisis ton pseudo" })).toHaveCount(0);
+    await skipOnboarding(page);
     await page.goto("/accueil");
     await expect(page.getByRole("heading", { name: "Accueil" })).toBeVisible();
     await page.goto("/social");
@@ -63,6 +65,7 @@ test.describe("onboarding after sign-up", () => {
     await first.getByLabel("Pseudo").fill(pseudo);
     await first.getByRole("button", { name: "Continuer" }).click();
     await expect(first.getByRole("heading", { name: "Choisis ton pseudo" })).toHaveCount(0);
+    await skipOnboarding(first);
 
     const second = await (await browser.newContext()).newPage();
     await signUp(second);

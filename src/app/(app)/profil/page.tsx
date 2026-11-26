@@ -17,6 +17,7 @@ import { RemindersMock } from "@/modules/profile/components/reminders-mock";
 import { MyData } from "@/modules/profile/components/my-data";
 import { ProfileForm } from "@/modules/profile/components/profile-form";
 import { LanguageSelector } from "@/modules/profile/components/language-selector";
+import { EducationDetailsForm } from "@/modules/profile/components/education-details-form";
 import { SchoolPicker } from "@/modules/profile/components/school-picker";
 import { loadMyEducation } from "@/modules/profile/server/school";
 import { requireUser } from "@/lib/auth";
@@ -112,13 +113,22 @@ export default async function ProfilPage() {
           </CardContent>
         </Card>
 
-        <Card id="ecole" className="scroll-mt-20">
+        <Card id="mes-informations" className="scroll-mt-20">
           <CardHeader>
-            <CardTitle>Mon école</CardTitle>
-            <CardDescription>Lycée, université ou école : elle sert à personnaliser Revio.</CardDescription>
+            <CardTitle>Mes informations</CardTitle>
+            <CardDescription>
+              École, niveau d&apos;études et, si tu le souhaites, ton sexe : demandés à l&apos;inscription,
+              modifiables ici. Visibles par toi seul, jamais par tes amis.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <SchoolPicker current={education.school} />
+          <CardContent className="space-y-10">
+            <section id="ecole" aria-labelledby="ecole-title" className="scroll-mt-20 space-y-4">
+              <h3 id="ecole-title" className="text-xl font-extrabold">
+                Mon école
+              </h3>
+              <SchoolPicker current={education.school} />
+            </section>
+            <EducationDetailsForm studyLevel={education.studyLevel} gender={education.gender} />
           </CardContent>
         </Card>
 
