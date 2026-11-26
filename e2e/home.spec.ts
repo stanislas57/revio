@@ -39,6 +39,7 @@ test("home: the landing's slogan, then organic cards that lead to their pages", 
 test("home: the next agenda item appears in « Prochains événements »", async ({ page }) => {
   await newAccount(page, "homeagenda");
   await page.goto("/agenda");
+  await page.getByText("Saisie détaillée").click();
   await page.getByLabel("Titre").fill("Révision de chimie");
   await page.getByLabel("Date").fill(tomorrowInParis());
   await page.getByLabel("Début").fill("18:00");
