@@ -32,7 +32,10 @@ export function SubjectCard({ subject }: { subject: Subject }) {
   }
 
   return (
-    <Card className={subject.archived ? "opacity-70" : undefined}>
+    <Card
+      id={`matiere-${subject.id}`}
+      className={subject.archived ? "scroll-mt-20 opacity-70" : "scroll-mt-20"}
+    >
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 space-y-1">
           <CardTitle className="flex flex-wrap items-center gap-2 break-words">

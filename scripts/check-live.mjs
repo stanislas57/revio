@@ -1,5 +1,5 @@
 // Live checks of the newest migrations on a REAL Supabase project (agenda, planning, privacy settings,
-// account deletion), through the public API only: publishable key, no secret.
+// leaderboard, statistics, achievements, notifications, simulator scenarios, account deletion), through the public API only: publishable key, no secret.
 //
 //   node scripts/check-live.mjs --url https://<ref>.supabase.co --key <publishable key>
 //   (or NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in the environment)
@@ -187,6 +187,120 @@ try {
       })
     ).ok,
   );
+
+  // --- weekly leaderboard (S-19) ----------------------------------------------------------
+  const board = async (user) => (await rpc(user, "weekly_leaderboard")).json;
+  const boardA = await board(A);
+  ok("A's board has A and B, XP only", Array.isArray(boardA) && boardA.length === 2);
+  ok(
+    "board exposes no grade or subject column",
+    !Object.keys(boardA?.[0] ?? {}).some((k) => /grade|subject|average|note/.test(k)),
+  );
+  ok("anonymous cannot read a board", !(await rpc(null, "weekly_leaderboard")).ok);
+  await must(
+    rest(B, "user_settings?on_conflict=user_id", {
+      method: "POST",
+      prefer: "resolution=merge-duplicates",
+      body: { user_id: B.id, show_in_leaderboard: false },
+    }),
+    "B leaves the board",
+  );
+  ok(
+    "a friend who left disappears from the board",
+    (await board(A))?.every((r) => r.user_id !== B.id),
+  );
+  ok("someone who left sees no board", (await board(B))?.length === 0);
+  await must(
+    rest(B, `user_settings?user_id=eq.${B.id}`, { method: "PATCH", body: { show_in_leaderboard: true } }),
+    "B rejoins",
+  );
+
+  // --- statistics (S-20) and achievements (S-18) -----------------------------------------
+  const statsBefore = (await rpc(A, "my_study_stats", { p_days: 30 })).json;
+  ok(
+    "stats: 30-day series, no session yet",
+    statsBefore?.daily?.length === 30 && statsBefore?.sessionsCount === 0,
+  );
+  ok("stats refuse an absurd window", !(await rpc(A, "my_study_stats", { p_days: 5000 })).ok);
+  const catalogue = (await rpc(A, "my_achievements")).json;
+  ok(
+    "achievements: full catalogue, first session locked",
+    catalogue?.length === 11 && !catalogue.find((a) => a.id === "first_session")?.unlockedAt,
+  );
+  ok(
+    "achievements: accepted friendship unlocks 'Premier ami'",
+    !!catalogue?.find((a) => a.id === "first_friend")?.unlockedAt,
+  );
+  const quick = await rpc(A, "start_study_session", { p_mode: "free" });
+  await must(rpc(A, "finish_study_session", { p_session_id: quick.json?.id }), "finish a session");
+  const statsAfter = (await rpc(A, "my_study_stats", { p_days: 30 })).json;
+  ok("stats count the finished session", statsAfter?.sessionsCount === 1);
+  ok(
+    "finishing a session unlocks 'Premier pas' (trigger)",
+    !!(await rpc(A, "my_achievements")).json?.find((a) => a.id === "first_session")?.unlockedAt,
+  );
+  ok(
+    "B's stats never include A's session",
+    (await rpc(B, "my_study_stats", { p_days: 30 })).json?.sessionsCount === 0,
+  );
+  ok(
+    "client cannot grant itself an achievement",
+    !(
+      await rest(A, "user_achievements", {
+        method: "POST",
+        body: { user_id: A.id, achievement_id: "streak_100" },
+      })
+    ).ok,
+  );
+  ok(
+    "B cannot read A's awards",
+    (await rows(B, `user_achievements?select=achievement_id&user_id=eq.${A.id}`))?.length === 0,
+  );
+
+  // --- notifications (S-21) --------------------------------------------------------------
+  const notesA = await rows(A, "notifications?select=id,kind,read_at");
+  ok(
+    "A is notified once that the request was accepted",
+    notesA?.filter((n) => n.kind === "friend_accepted").length === 1,
+  );
+  ok(
+    "client cannot create a notification",
+    !(
+      await rest(A, "notifications", {
+        method: "POST",
+        body: { user_id: B.id, kind: "post_reaction", actor_id: A.id, dedupe_key: "x" },
+      })
+    ).ok,
+  );
+  ok(
+    "B cannot read A's notifications",
+    (await rows(B, "notifications?select=id&kind=eq.friend_accepted"))?.length === 0,
+  );
+  ok(
+    "A can mark a notification read",
+    (
+      await rest(A, "notifications?read_at=is.null", {
+        method: "PATCH",
+        prefer: "return=representation",
+        body: { read_at: new Date().toISOString() },
+      })
+    ).json?.length >= 1,
+  );
+
+  // --- simulator scenarios (S-22) --------------------------------------------------------
+  const hypothesis = [{ subjectId: subjA, value: 15, maxValue: 20, coefficient: 1 }];
+  const scenario = (user, extra) =>
+    rest(user, "simulation_scenarios?select=id", {
+      method: "POST",
+      prefer: "return=representation",
+      body: { name: "Plan A", hypotheses: hypothesis, ...extra },
+    });
+  ok("A saves a scenario", (await scenario(A, {})).ok);
+  ok("blank name rejected", !(await scenario(A, { name: "   " })).ok);
+  ok("empty hypotheses rejected", !(await scenario(A, { hypotheses: [] })).ok);
+  ok("B cannot read A's scenarios", (await rows(B, "simulation_scenarios?select=id"))?.length === 0);
+  ok("A cannot save a scenario for B", !(await scenario(A, { user_id: B.id })).ok);
+  ok("A reads own scenario", (await rows(A, "simulation_scenarios?select=id"))?.length === 1);
 
   // --- account deletion -----------------------------------------------------------------
   ok("anonymous cannot delete an account", !(await rpc(null, "delete_my_account")).ok);
