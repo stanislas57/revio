@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/states/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardSummary } from "@/modules/academic/components/dashboard-summary";
+import { DocumentImport } from "@/modules/academic/components/document-import";
 import { ExamsCard } from "@/modules/academic/components/exams-card";
 import { Simulator } from "@/modules/academic/components/simulator";
 import { ScenarioSimulator } from "@/modules/academic/components/scenario-simulator";
@@ -15,6 +16,9 @@ import { TargetForm } from "@/modules/academic/components/target-form";
 import { TemplateImport } from "@/modules/academic/components/template-import";
 import { TimePlanner } from "@/modules/academic/components/time-planner";
 import { buildDashboard } from "@/modules/academic/domain/dashboard";
+import { FirstRunCard } from "@/modules/profile/components/first-run-card";
+import { loadMyEducation } from "@/modules/profile/server/school";
+import { requireUser } from "@/lib/auth";
 import { getAcademicSnapshot } from "@/modules/academic/server/queries";
 import { deleteScenario, saveScenario } from "@/modules/academic/server/scenario-actions";
 import { listScenarios } from "@/modules/academic/server/scenarios";
@@ -22,7 +26,12 @@ import { listScenarios } from "@/modules/academic/server/scenarios";
 export const metadata: Metadata = { title: "Accueil" };
 
 export default async function AccueilPage() {
-  const [snapshot, scenarios] = await Promise.all([getAcademicSnapshot(), listScenarios()]);
+  const { supabase, user } = await requireUser();
+  const [snapshot, scenarios, education] = await Promise.all([
+    getAcademicSnapshot(),
+    listScenarios(),
+    loadMyEducation(supabase, user.id),
+  ]);
   const dashboard = buildDashboard(snapshot);
   const names = new Map(snapshot.subjects.map((s) => [s.id, s.name]));
   const archived = snapshot.subjects.filter((s) => s.archived);
@@ -34,6 +43,7 @@ export default async function AccueilPage() {
         description="Ton tableau de bord : moyennes, objectifs et matières prioritaires."
       />
       <div className="space-y-6">
+        {!education.onboardingDone && <FirstRunCard />}
         <DashboardSummary dashboard={dashboard} subjectNames={names} />
         <TargetForm target={snapshot.targetAverage} />
 
@@ -57,6 +67,7 @@ export default async function AccueilPage() {
           ) : (
             dashboard.activeSubjects.map((s) => <SubjectCard key={s.id} subject={s} />)
           )}
+          <DocumentImport />
           <Card id="ajouter-matiere" className="scroll-mt-20">
             <CardHeader>
               <CardTitle>Ajouter une matière</CardTitle>

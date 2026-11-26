@@ -55,7 +55,10 @@ test("academic flow: subject, grade, exam, simulator, delete", async ({ page }) 
 
   // Overall target and dashboard gap.
   await page.getByLabel("Objectif de moyenne (/20)").fill("14");
-  await page.getByRole("button", { name: "Enregistrer" }).first().click();
+  await page
+    .locator("form", { has: page.locator("#target") })
+    .getByRole("button", { name: "Enregistrer" })
+    .click();
   await expect(page.getByText(/Il manque 2,00 points/)).toBeVisible();
 
   // Exam.
