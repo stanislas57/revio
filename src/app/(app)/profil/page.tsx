@@ -16,6 +16,9 @@ import { RemindersMock } from "@/modules/profile/components/reminders-mock";
 import { MyData } from "@/modules/profile/components/my-data";
 import { ProfileForm } from "@/modules/profile/components/profile-form";
 import { LanguageSelector } from "@/modules/profile/components/language-selector";
+import { SchoolPicker } from "@/modules/profile/components/school-picker";
+import { loadMyEducation } from "@/modules/profile/server/school";
+import { requireUser } from "@/lib/auth";
 import { SettingsForm } from "@/modules/profile/components/settings-form";
 import { SETTINGS_MESSAGES } from "@/modules/profile/domain/settings-messages";
 import { getLocale } from "@/modules/profile/server/locale";
@@ -25,11 +28,13 @@ import { SectionLinks } from "@/modules/social/components/section-links";
 export const metadata: Metadata = { title: "Profil" };
 
 export default async function ProfilPage() {
-  const [profile, stats, settings, locale] = await Promise.all([
+  const { supabase, user } = await requireUser();
+  const [profile, stats, settings, locale, education] = await Promise.all([
     getMyProfile(),
     getMyGamification(),
     getMySettings(),
     getLocale(),
+    loadMyEducation(supabase, user.id),
   ]);
   const m = SETTINGS_MESSAGES[locale];
 
@@ -105,6 +110,16 @@ export default async function ProfilPage() {
           </CardHeader>
           <CardContent>
             <ProfileForm username={profile.username ?? ""} displayName={profile.displayName} />
+          </CardContent>
+        </Card>
+
+        <Card id="ecole" className="scroll-mt-20">
+          <CardHeader>
+            <CardTitle>Mon école</CardTitle>
+            <CardDescription>Lycée, université ou école : elle sert à personnaliser Revio.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SchoolPicker current={education.school} />
           </CardContent>
         </Card>
 
