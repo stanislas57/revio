@@ -17,22 +17,25 @@ Durée visée : 5 à 6 minutes. Deux navigateurs (ou un navigateur + une fenêtr
 
 ## Déroulé
 
-| Étape | Qui   | Action                                             | À montrer                                                                                |
-| ----- | ----- | -------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| 1     | Alice | Accueil : moyenne, objectif, matières prioritaires | Les priorités sont expliquées (pas d'IA). Mention « convention Revio » sous les moyennes |
-| 2     | Alice | Ajouter une note, regarder la moyenne bouger       | Validation (note > barème refusée)                                                       |
-| 3     | Alice | Simulateur : « quelle note me faut-il ? »          | Résultat présenté comme une hypothèse, rien n'est enregistré                             |
-| 4     | Alice | Focus : choisir une durée, **Démarrer**            | Le chrono survit à un rafraîchissement de la page                                        |
-| 5     | Bob   | Social : « 1 ami révise en ce moment »             | Visible sans recharger sous 30 s                                                         |
-| 6     | Alice | **Terminer** la séance                             | Écran de fin : XP détaillés, ou « séance trop courte » (< 5 min = 0 XP, c'est normal)    |
-| 7     | Bob   | Social : l'ami n'est plus « en révision »          |                                                                                          |
-| 8     | Bob   | Profil : niveau, streak, temps total               |                                                                                          |
-| 9     | Bob   | Vérifier que les notes d'Alice sont invisibles     | Aucune note, aucune matière côté Bob (RLS, pas seulement masquage)                       |
+| Étape | Qui   | Action                                             | À montrer                                                                                        |
+| ----- | ----- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1     | Alice | Accueil : moyenne, objectif, matières prioritaires | Les priorités sont expliquées (pas d'IA). Mention « convention Revio » sous les moyennes         |
+| 1 bis | Alice | Carte « Personnalise Revio » : chercher une école  | Filtre par type, choix facultatif, visible d'elle seule. Les cartes de l'Accueil sont cliquables |
+| 2     | Alice | Ajouter une note, regarder la moyenne bouger       | Validation (note > barème refusée)                                                               |
+| 3     | Alice | Simulateur : « quelle note me faut-il ? »          | Résultat présenté comme une hypothèse, rien n'est enregistré                                     |
+| 4     | Alice | Focus : choisir une durée, **Démarrer**            | Le chrono survit à un rafraîchissement de la page                                                |
+| 5     | Bob   | Social : « 1 ami révise en ce moment »             | Visible sans recharger sous 30 s                                                                 |
+| 6     | Alice | **Terminer** la séance                             | Écran de fin : XP détaillés, ou « séance trop courte » (< 5 min = 0 XP, c'est normal)            |
+| 7     | Bob   | Social : l'ami n'est plus « en révision »          |                                                                                                  |
+| 8     | Bob   | Profil : niveau, streak, temps total               |                                                                                                  |
+| 9     | Bob   | Vérifier que les notes d'Alice sont invisibles     | Aucune note, aucune matière côté Bob (RLS, pas seulement masquage)                               |
 
 ## À dire honnêtement
 
 - Les XP ne se « seed » pas : les durées sont verrouillées côté serveur. Pour montrer des XP, faire une vraie séance de 5 minutes ou plus.
-- Le profil ami est un **écran sur données d'exemple** (badge « Exemple »). Le classement (XP de la semaine entre amis), les statistiques (30 derniers jours) et les trophées (11, attribués automatiquement) sont réels. Agenda et planning ne sont pas faits.
+- Le profil ami est un **écran sur données d'exemple** (badge « Exemple »). Le classement (XP de la semaine entre amis), les statistiques (30 derniers jours) et les trophées (11, attribués automatiquement) sont réels. L'agenda (événements, vues jour/semaine/mois) et le planning (séances proposées, acceptées ou verrouillées) sont réels, mais testés seulement sur un faux serveur et le script `npm run test:live`.
+- L'import de relevé (PDF avec texte, CSV ou texte collé) est lu sans IA et sans être stocké : c'est une **proposition** que l'utilisateur corrige avant d'importer. Les scans et photos ne sont pas lus. À montrer avec un PDF préparé à l'avance.
+- La liste d'écoles vient de données ouvertes (lycées et principaux établissements supérieurs) : elle ne couvre ni les CFA ni les petites écoles privées.
 - Les moyennes suivent la convention Revio, pas la règle officielle d'un établissement.
 - Le parcours est testé automatiquement sur un faux serveur local (`e2e/demo-journey.spec.ts`), pas encore sur un vrai Supabase.
 
