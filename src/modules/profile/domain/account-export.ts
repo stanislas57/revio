@@ -15,6 +15,7 @@ export const EXPORT_TABLES = [
   { key: "grades", table: "grades", column: "user_id" },
   { key: "exams", table: "exams", column: "user_id" },
   { key: "simulationScenarios", table: "simulation_scenarios", column: "user_id" },
+  { key: "education", table: "user_education", column: "user_id" },
   { key: "calendarEvents", table: "calendar_events", column: "user_id" },
   { key: "studySessions", table: "study_sessions", column: "user_id" },
   { key: "xpTransactions", table: "xp_transactions", column: "user_id" },

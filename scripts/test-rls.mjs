@@ -755,6 +755,63 @@ ok(
   ok("anon cannot read scenarios", !!(await as(null, `select * from simulation_scenarios`)).error);
   ok("owner deletes a scenario", !(await as(D, `delete from simulation_scenarios where name='S0'`)).error);
 
+  // schools + user_education
+  ok(
+    "schools are loaded (lycées and higher education)",
+    (await as(D, `select count(*)::int n from schools`)).rows[0].n > 5000,
+  );
+  ok("anon cannot read schools", !!(await as(null, `select * from schools`)).error);
+  ok(
+    "client cannot add a school",
+    !!(await as(D, `insert into schools (id, name, kind, search) values ('ZZZ9999Z', 'x', 'lycee', 'x')`))
+      .error,
+  );
+  ok(
+    "client cannot rename a school",
+    !!(await as(D, `update schools set name = 'x' where id = '0920894X'`)).error,
+  );
+  const found = (await as(D, `select * from search_schools('saint gabriel bagneux', 'lycee')`)).rows;
+  ok(
+    "search finds a lycée by words",
+    found.some((r) => r.id === "0920894X"),
+  );
+  ok(
+    "search by kind excludes the other kinds",
+    (await as(D, `select * from search_schools('universite paris', 'lycee')`)).rows.every(
+      (r) => r.kind === "lycee",
+    ),
+  );
+  ok(
+    "search returns 20 rows at most",
+    (await as(D, `select * from search_schools('lycee', null, 500)`)).rows.length <= 30,
+  );
+  ok(
+    "search treats % and _ as plain characters",
+    (await as(D, `select * from search_schools('%', null)`)).rows.length === 0,
+  );
+  ok(
+    "owner saves a school",
+    !(await as(D, `insert into user_education (school_id, onboarding_done) values ('0920894X', true)`)).error,
+  );
+  ok(
+    "an unknown school is refused",
+    !!(await as(E, `insert into user_education (school_id) values ('NOPE0000')`)).error,
+  );
+  ok(
+    "another user cannot read the school choice",
+    (await as(E, `select * from user_education`)).rows.length === 0,
+  );
+  ok(
+    "another user cannot change it",
+    (await as(E, `update user_education set school_id = null where user_id = '${D}' returning user_id`)).rows
+      .length === 0,
+  );
+  ok(
+    "another user cannot create one for D",
+    !!(await as(E, `insert into user_education (user_id, school_id) values ('${D}', '0920894X')`)).error,
+  );
+  ok("anon cannot read user_education", !!(await as(null, `select * from user_education`)).error);
+
   // account deletion: everything of D goes, E stays
   await as(D, `insert into subjects (name, coefficient) values ('Maths', 2)`);
   await as(D, `insert into exams (title, exam_on) values ('Partiel', '2026-12-10')`);

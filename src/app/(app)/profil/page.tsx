@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Sprout } from "lucide-react";
 import { BarChart3, Trophy } from "lucide-react";
+import { LinkCard } from "@/components/revio/link-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,9 @@ import { RemindersMock } from "@/modules/profile/components/reminders-mock";
 import { MyData } from "@/modules/profile/components/my-data";
 import { ProfileForm } from "@/modules/profile/components/profile-form";
 import { LanguageSelector } from "@/modules/profile/components/language-selector";
+import { SchoolPicker } from "@/modules/profile/components/school-picker";
+import { loadMyEducation } from "@/modules/profile/server/school";
+import { requireUser } from "@/lib/auth";
 import { SettingsForm } from "@/modules/profile/components/settings-form";
 import { SETTINGS_MESSAGES } from "@/modules/profile/domain/settings-messages";
 import { getLocale } from "@/modules/profile/server/locale";
@@ -24,11 +28,13 @@ import { SectionLinks } from "@/modules/social/components/section-links";
 export const metadata: Metadata = { title: "Profil" };
 
 export default async function ProfilPage() {
-  const [profile, stats, settings, locale] = await Promise.all([
+  const { supabase, user } = await requireUser();
+  const [profile, stats, settings, locale, education] = await Promise.all([
     getMyProfile(),
     getMyGamification(),
     getMySettings(),
     getLocale(),
+    loadMyEducation(supabase, user.id),
   ]);
   const m = SETTINGS_MESSAGES[locale];
 
@@ -37,8 +43,12 @@ export default async function ProfilPage() {
       <PageHeader title="Profil" description="Ta progression et ton identité visible par tes amis." />
       <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
-          <LevelCard level={stats.level} />
-          <StreakPanel streak={stats.streak} days={stats.days} />
+          <LinkCard href="#niveaux" label="Voir tous les niveaux">
+            <LevelCard level={stats.level} />
+          </LinkCard>
+          <LinkCard href="/profil/statistiques" label="Voir mes statistiques" className="self-start">
+            <StreakPanel streak={stats.streak} days={stats.days} />
+          </LinkCard>
         </div>
         {stats.sessionsCount === 0 && (
           <EmptyState
@@ -56,7 +66,9 @@ export default async function ProfilPage() {
             </div>
           </EmptyState>
         )}
-        <StatTiles totalMinutes={stats.totalMinutes} sessions={stats.sessionsCount} />
+        <LinkCard href="/profil/statistiques" label="Voir mes statistiques détaillées">
+          <StatTiles totalMinutes={stats.totalMinutes} sessions={stats.sessionsCount} />
+        </LinkCard>
 
         <SectionLinks
           label="Trophées et statistiques"
@@ -76,7 +88,7 @@ export default async function ProfilPage() {
           ]}
         />
 
-        <Card>
+        <Card id="niveaux" className="scroll-mt-20">
           <CardHeader>
             <CardTitle>Niveaux</CardTitle>
             <CardDescription>Seuils provisoires, susceptibles d&apos;évoluer.</CardDescription>
@@ -96,6 +108,16 @@ export default async function ProfilPage() {
           </CardHeader>
           <CardContent>
             <ProfileForm username={profile.username ?? ""} displayName={profile.displayName} />
+          </CardContent>
+        </Card>
+
+        <Card id="ecole" className="scroll-mt-20">
+          <CardHeader>
+            <CardTitle>Mon école</CardTitle>
+            <CardDescription>Lycée, université ou école : elle sert à personnaliser Revio.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SchoolPicker current={education.school} />
           </CardContent>
         </Card>
 

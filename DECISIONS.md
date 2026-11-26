@@ -159,6 +159,22 @@ est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#30304
 - `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : cette mise à jour est faite sur décision
   de Charles, **sans attendre la confirmation de Stan**. Stan peut la contester dans la PR.
 
+### D-24 — École choisie et import de documents (proposé par Stan le 26/11/2026, à valider par Charles)
+
+- **Base d'écoles** : table publique `schools` (5 853 établissements) chargée par migration depuis deux jeux de
+  données ouverts, Licence Ouverte Etalab : annuaire de l'éducation (lycées) et principaux établissements
+  d'enseignement supérieur (65 universités, 180 écoles et grands établissements). Elle ne couvre pas tous les
+  établissements privés, CFA ni BTS hors lycée : dit dans l'interface. Régénération : `docs/SCHOOLS.md`.
+- **Confidentialité** : l'école choisie est dans `user_education` (propriétaire seul, jamais visible des amis,
+  supprimée avec le compte, incluse dans l'export). Aucune donnée supplémentaire n'est exigée : tout est facultatif.
+- **Import de documents sans IA** : PDF avec texte, CSV ou texte collé, lu **en mémoire** sur le serveur puis
+  jeté (jamais stocké). Règles de lecture pures et testées (`document-parser.ts`). Le résultat est une
+  **proposition** que l'utilisateur corrige ligne par ligne avant tout enregistrement. Les scans et photos ne
+  sont pas lus (pas d'OCR) ; une API d'IA payante reste exclue sans l'accord des deux fondateurs.
+- **Dépendance ajoutée** : `unpdf` (MIT, gratuit) pour extraire le texte d'un PDF. Réglage partagé :
+  `serverActions.bodySizeLimit = 5mb` dans `next.config.ts` (fichier de 4 Mo maximum, revérifié côté serveur).
+- **Pas de nouvelle porte d'entrée** : la carte « Personnalise Revio » de l'Accueil est facultative et ne bloque rien.
+
 ## Ouvertes
 
 - Confirmation d'e-mail activée ou non pour la démo.
