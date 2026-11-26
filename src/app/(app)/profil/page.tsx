@@ -78,14 +78,12 @@ export default async function ProfilPage() {
               title: "Trophées",
               description: "Tes succès, en cours et à débloquer.",
               icon: Trophy,
-              mock: true,
             },
             {
               href: "/profil/statistiques",
               title: "Statistiques",
               description: "Temps par jour, par matière, régularité.",
               icon: BarChart3,
-              mock: true,
             },
           ]}
         />
