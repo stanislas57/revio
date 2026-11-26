@@ -34,7 +34,7 @@ function Toggle({
   return (
     <label
       htmlFor={id}
-      className="flex min-h-11 cursor-pointer items-start gap-3 rounded-md py-1 text-sm has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50"
+      className="mx-auto flex min-h-11 max-w-md cursor-pointer items-start justify-center gap-3 rounded-md py-1 text-center text-sm has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50"
     >
       <input
         id={id}

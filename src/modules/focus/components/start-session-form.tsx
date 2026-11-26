@@ -96,7 +96,7 @@ export function StartSessionForm({
             </div>
           </fieldset>
 
-          <label className="flex min-h-11 items-start gap-3 text-sm">
+          <label className="mx-auto flex min-h-11 max-w-md items-start justify-center gap-3 text-center text-sm">
             <input
               type="checkbox"
               name="share"

@@ -5,6 +5,8 @@ import { Award, BookOpen, Flame } from "lucide-react";
 import { AvatarPresence, PresenceRow } from "@/components/revio/avatar-presence";
 import { BadgeCard } from "@/components/revio/badge-card";
 import { BuddyBeam } from "@/components/revio/buddy-beam";
+import { ChoiceGrid } from "@/components/revio/choice-grid";
+import { ChunkyButton } from "@/components/revio/chunky-button";
 import { DesktopSidebar } from "@/components/revio/desktop-sidebar";
 import { FlashcardStack } from "@/components/revio/flashcard-stack";
 import { FocusTimer } from "@/components/revio/focus-timer";
@@ -12,6 +14,7 @@ import { KudosButton } from "@/components/revio/kudos-button";
 import { LeagueTable } from "@/components/revio/league-table";
 import { LiveActivityFeed, type LiveItem } from "@/components/revio/live-activity-feed";
 import { RevioLogo } from "@/components/revio/logo";
+import { OrganicCard } from "@/components/revio/organic-card";
 import {
   addXp,
   canSendKudos,
@@ -103,6 +106,7 @@ export function DesignSystemDemo() {
   const [paused, setPaused] = useState(false);
   const [verdicts, setVerdicts] = useState<Verdict[]>([]);
   const [gain, setGain] = useState(40);
+  const [kind, setKind] = useState<"revision" | "cours" | "examen" | null>("revision");
   const today = dayKey();
 
   const toggleQuest = (id: string) =>
@@ -175,6 +179,43 @@ export function DesignSystemDemo() {
             <StatCard label="XP cumulés" value="2 450" />
             <StatCard label="Ligue argent" value="3e" />
           </dl>
+        </div>
+      </Showcase>
+
+      <Showcase
+        id="organique"
+        title="Style organique"
+        note="Boutons « 3D » qui s'enfoncent au clic, cartes aux coins irréguliers qui respirent, grande grille de choix. Seules les formes et les couleurs bougent ; tout s'arrête avec la réduction des animations."
+      >
+        <div className="space-y-8">
+          <Row>
+            <ChunkyButton>Commencer une session</ChunkyButton>
+            <ChunkyButton variant="secondary">Voir mes statistiques</ChunkyButton>
+            <ChunkyButton variant="outline">Annuler</ChunkyButton>
+            <ChunkyButton variant="reward">Récupérer ma récompense</ChunkyButton>
+          </Row>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <OrganicCard halo>
+              <p className="text-sm text-muted-foreground">Série en cours</p>
+              <p className="text-3xl font-extrabold">12 jours</p>
+            </OrganicCard>
+            <OrganicCard tone="primary">
+              <p className="text-sm">Niveau 8</p>
+              <p className="text-3xl font-extrabold">2 450 XP</p>
+            </OrganicCard>
+          </div>
+          <ChoiceGrid
+            label="Qu'ajoutes-tu ?"
+            description="Une question par écran, de grosses cases, au clavier aussi (flèches)."
+            columns={3}
+            value={kind}
+            onChange={setKind}
+            choices={[
+              { value: "revision", label: "Révision" },
+              { value: "cours", label: "Cours" },
+              { value: "examen", label: "Examen" },
+            ]}
+          />
         </div>
       </Showcase>
 

@@ -77,6 +77,22 @@ Fond `#14141E`, surfaces `#20202C`, bordures `#303041`, texte `#F4F2FB`, texte s
 Les boutons restent Revio Purple avec du texte blanc ; le violet **en texte** devient `#A99BFF` ; le point du logo devient
 citron, comme sur la maquette sombre de la charte. La landing suit le fond sombre (`--revio-landing` vaut `#14141E`).
 
+## Style organique (inspiration Duolingo, couleurs Revio)
+
+- **Boutons « 3D »** : tous les boutons (`components/ui/button.tsx`, `ChunkyButton` pour la grande taille `xl`) ont des
+  coins arrondis, un texte en gras et un bord bas plus foncé (`box-shadow`, jetons `--edge-*`) qui disparaît quand on
+  appuie : le bouton descend de 4 px. Variante `reward` (citron) réservée aux récompenses et à l'XP.
+- **Cartes organiques** (`OrganicCard`, classe `.organic-card`) : coins généreux et irréguliers qui changent lentement de
+  forme (14 s), halo en dégradé (violet, rose, citron) qui pulse (6 s). Seules la forme et les couleurs bougent ; le
+  contenu ne se déplace jamais.
+- **Grille de choix** (`ChoiceGrid`) : grandes cases de 56 px au moins, groupe de boutons radio (flèches, Début, Fin),
+  case choisie en violet avec une coche.
+- **Mouvement** : toute animation continue s'arrête avec `prefers-reduced-motion` **ou** avec le réglage « Réduire les
+  animations » (Profil > Apparence, enregistré sur l'appareil, appliqué avant le premier affichage), qui permet à chacun
+  d'arrêter un mouvement de plus de 5 secondes (WCAG 2.2.2).
+- **Centrage** : tout le texte est centré (en-têtes de page, cartes, formulaires, dialogues, barre latérale, landing).
+  Dans un formulaire, chaque ligne de champs et de boutons se centre (`form :where(.flex)` dans `globals.css`).
+
 ## Contrastes mesurés (WCAG 2.x, calcul à partir des valeurs de `globals.css`)
 
 Texte : 4,5:1 minimum. Éléments non textuels (bordure de champ, anneau de focus, barres) : 3:1. Audit axe-core (WCAG 2.2 AA)

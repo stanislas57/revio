@@ -29,7 +29,7 @@ export function FeedCard({
 
   return (
     <article className="space-y-3 rounded-xl border p-4">
-      <header className="flex items-start gap-3">
+      <header className="flex flex-col items-center gap-2 text-center">
         <UserAvatar user={post.author} />
         <div className="min-w-0 flex-1">
           <p className="text-sm leading-snug">

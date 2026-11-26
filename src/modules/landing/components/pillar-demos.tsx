@@ -58,7 +58,7 @@ export function GradeSimulator({ initialNext = 14 }: { initialNext?: number }) {
           </li>
         ))}
       </ul>
-      <div className="flex flex-wrap items-center gap-3 rounded-lg bg-muted p-3">
+      <div className="flex flex-wrap items-center justify-center gap-3 rounded-lg bg-muted p-3">
         <span className="text-sm font-medium" id="grade-sim-label">
           Prochaine note en Droit
         </span>
@@ -141,7 +141,7 @@ export function PlanDemo({ initialDone = 1 }: { initialDone?: number }) {
               aria-pressed={done[i]}
               onClick={() => setDone((d) => d.map((v, j) => (j === i ? !v : v)))}
               className={cn(
-                "flex min-h-11 w-full items-center gap-3 rounded-lg border bg-card px-3 py-2 text-left text-sm transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none",
+                "flex min-h-11 w-full items-center gap-3 rounded-lg border bg-card px-3 py-2 text-center text-sm transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none",
                 done[i] && "border-brand bg-brand-soft text-brand-soft-foreground",
               )}
             >
@@ -274,7 +274,7 @@ export function XpDemo({
   const levelledUp = level.current.number > startLevel.current.number;
   return (
     <div className="space-y-3">
-      <div className="flex items-baseline justify-between gap-2">
+      <div className="flex flex-col items-center gap-1">
         <p className="text-sm">
           <span className="font-semibold">{level.current.name}</span>
           <span className="text-muted-foreground"> · niveau {level.current.number}</span>
@@ -303,7 +303,7 @@ export function XpDemo({
           : "Niveau maximum."}
         {lastGain > 0 && ` Dernière séance : +${lastGain} XP.`}
       </p>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
           className={cn(button, "bg-primary text-primary-foreground hover:bg-revio-primary-hover")}
@@ -359,7 +359,7 @@ export function StreakDemo({ litDays = 6 }: { litDays?: number }) {
   const days = DEMO_STREAK_DAYS - 1 + (today ? 1 : 0);
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-center gap-3">
         <span
           aria-hidden
           className="flex size-11 items-center justify-center rounded-lg bg-revio-streak text-revio-midnight"

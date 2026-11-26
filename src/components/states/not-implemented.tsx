@@ -10,7 +10,7 @@ export function NotImplemented({ feature, owner }: { feature: string; owner?: "S
   return (
     <div
       role="note"
-      className="flex items-start gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm"
+      className="flex flex-col items-center gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-center text-sm"
     >
       <Construction className="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden />
       <div className="space-y-1">

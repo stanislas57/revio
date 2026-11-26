@@ -21,7 +21,7 @@ function List({ items }: { items: string[] }) {
   return (
     <ul className="space-y-2 text-sm">
       {items.map((item) => (
-        <li key={item} className="flex gap-2">
+        <li key={item} className="flex justify-center gap-2">
           <Check className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
           {item}
         </li>
@@ -44,14 +44,14 @@ export function Offer() {
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           <article className="space-y-4 rounded-2xl border bg-card p-6 shadow-[0_18px_50px_-30px_rgb(20_20_20/0.3)]">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <h3 className="text-lg font-semibold">Gratuit</h3>
               <Badge variant="secondary">Pendant la démonstration</Badge>
             </div>
             <List items={FREE} />
           </article>
           <article className="space-y-4 rounded-2xl border border-dashed bg-card p-6">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <h3 className="text-lg font-semibold">Premium</h3>
               <Badge variant="outline">Envisagé</Badge>
             </div>

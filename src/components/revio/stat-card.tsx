@@ -18,9 +18,14 @@ export function StatCard({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col-reverse gap-1 rounded-xl border bg-card p-4 shadow-sm", className)}>
+    <div
+      className={cn(
+        "flex flex-col-reverse gap-1 rounded-xl border bg-card p-4 text-center shadow-sm",
+        className,
+      )}
+    >
       <dt className="text-xs text-muted-foreground">{label}</dt>
-      <dd className="flex items-start justify-between gap-2 font-heading text-2xl font-extrabold tracking-[-0.02em] tabular-nums sm:text-[1.75rem]">
+      <dd className="flex items-start justify-center gap-2 font-heading text-2xl font-extrabold tracking-[-0.02em] tabular-nums sm:text-[1.75rem]">
         <span className="min-w-0 break-words">{value}</span>
         {icon}
       </dd>

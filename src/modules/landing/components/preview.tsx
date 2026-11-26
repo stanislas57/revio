@@ -16,8 +16,8 @@ const nf = new Intl.NumberFormat("fr-FR");
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <figure className="flex flex-col gap-4 rounded-2xl border bg-card p-6 shadow-[0_18px_50px_-30px_rgb(20_20_20/0.3)]">
-      <figcaption className="flex items-center justify-between gap-2 text-sm font-medium">
+    <figure className="flex flex-col items-center gap-4 rounded-2xl border bg-card p-6 shadow-[0_18px_50px_-30px_rgb(20_20_20/0.3)]">
+      <figcaption className="flex flex-wrap items-center justify-center gap-2 text-sm font-medium">
         {title}
         <MockBadge />
       </figcaption>
@@ -56,13 +56,13 @@ export function Preview() {
             </ul>
             <dl className="grid grid-cols-2 gap-2 text-sm">
               <div className="rounded-lg border p-3">
-                <dt className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <dt className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                   <Clock className="size-3.5" aria-hidden /> Durée
                 </dt>
                 <dd className="mt-1 font-semibold">1 h 05</dd>
               </div>
               <div className="rounded-lg border p-3">
-                <dt className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <dt className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                   <Flame className="size-3.5 text-orange-500" aria-hidden /> Série
                 </dt>
                 <dd className="mt-1 font-semibold">{DEMO_STREAK_DAYS} jours</dd>
@@ -71,7 +71,7 @@ export function Preview() {
           </Panel>
 
           <Panel title="Niveau">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <Sparkles className="size-4 text-brand-text" aria-hidden />
               <p className="font-semibold">
                 Niveau {DEMO_LEVEL.current.number} · {DEMO_LEVEL.current.name}
@@ -95,7 +95,7 @@ export function Preview() {
           <Panel title="Fil d'activité">
             <ul className="space-y-4">
               {DEMO_FEED.map((post) => (
-                <li key={post.name} className="flex items-start gap-3">
+                <li key={post.name} className="flex flex-col items-center gap-2 text-center">
                   <span
                     aria-hidden
                     className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-semibold text-brand-foreground"

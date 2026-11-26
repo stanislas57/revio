@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Sprout } from "lucide-react";
 import { BarChart3, Trophy } from "lucide-react";
+import { MotionToggle } from "@/components/layout/motion-preference";
 import { LinkCard } from "@/components/revio/link-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
@@ -118,6 +119,16 @@ export default async function ProfilPage() {
           </CardHeader>
           <CardContent>
             <SchoolPicker current={education.school} />
+          </CardContent>
+        </Card>
+
+        <Card id="apparence" className="scroll-mt-20">
+          <CardHeader>
+            <CardTitle>Apparence</CardTitle>
+            <CardDescription>Les animations de l&apos;interface, sur cet appareil.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MotionToggle />
           </CardContent>
         </Card>
 

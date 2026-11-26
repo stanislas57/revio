@@ -32,7 +32,7 @@ export function XpBar({
   const spring = reduced ? { duration: 0 } : { type: "spring" as const, stiffness: 300, damping: 24 };
   return (
     <div className={cn("space-y-1.5", className)}>
-      <div className="flex items-center justify-between gap-2 text-sm">
+      <div className="flex items-center justify-center gap-2 text-sm">
         <span className="font-heading font-bold">Niv. {level}</span>
         {gain > 0 && (
           <span className="rounded-pill bg-revio-lime px-2 py-0.5 text-xs font-bold text-revio-midnight">
@@ -64,7 +64,7 @@ export function XpBar({
           transition={spring}
         />
       </div>
-      <p className={cn("text-xs", tone === "primary" ? "text-white" : "text-muted-foreground")}>
+      <p className={cn("text-center text-xs", tone === "primary" ? "text-white" : "text-muted-foreground")}>
         <AnimatedNumber value={xp} /> / {new Intl.NumberFormat("fr-FR").format(xpMax)} XP
       </p>
     </div>
