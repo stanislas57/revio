@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/states/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardSummary } from "@/modules/academic/components/dashboard-summary";
+import { DocumentImport } from "@/modules/academic/components/document-import";
 import { ExamsCard } from "@/modules/academic/components/exams-card";
 import { Simulator } from "@/modules/academic/components/simulator";
 import { ScenarioSimulator } from "@/modules/academic/components/scenario-simulator";
@@ -66,6 +67,7 @@ export default async function AccueilPage() {
           ) : (
             dashboard.activeSubjects.map((s) => <SubjectCard key={s.id} subject={s} />)
           )}
+          <DocumentImport />
           <Card id="ajouter-matiere" className="scroll-mt-20">
             <CardHeader>
               <CardTitle>Ajouter une matière</CardTitle>

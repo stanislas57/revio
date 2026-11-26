@@ -26,7 +26,8 @@ const sql = (v) => (v === null ? "null" : `'${String(v).replace(/'/g, "''")}'`);
 const rows = new Map();
 for (const l of JSON.parse(readFileSync(lyceesPath, "utf8"))) {
   if (l.etat !== "OUVERT" || !l.identifiant_de_l_etablissement) continue;
-  const professional = l.voie_professionnelle === "1" && l.voie_generale !== "1" && l.voie_technologique !== "1";
+  const professional =
+    l.voie_professionnelle === "1" && l.voie_generale !== "1" && l.voie_technologique !== "1";
   rows.set(l.identifiant_de_l_etablissement, {
     id: l.identifiant_de_l_etablissement,
     name: clean(l.nom_etablissement),

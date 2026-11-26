@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +23,9 @@ export function FirstRunCard() {
       </CardHeader>
       <CardContent className="space-y-4">
         <SchoolPicker current={null} idPrefix="first-run" onSaved={() => setHidden(true)} />
+        <Button asChild variant="outline" className="h-11">
+          <Link href="#importer">Importer un relevé de notes</Link>
+        </Button>
         <Button
           type="button"
           variant="ghost"
