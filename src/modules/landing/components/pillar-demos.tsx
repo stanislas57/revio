@@ -38,16 +38,10 @@ function averageWith(next: number | null): number {
   return overallAverage(subjects)!;
 }
 
-export const DEMO_BASE_AVERAGE = averageWith(null);
+const DEMO_BASE_AVERAGE = averageWith(null);
 
 /** "Et si j'avais 14 en Droit ?" : the next grade moves the overall average (Revio convention). */
-export function GradeSimulator({
-  initialNext = 14,
-  showBars = false,
-}: {
-  initialNext?: number;
-  showBars?: boolean;
-}) {
+export function GradeSimulator({ initialNext = 14 }: { initialNext?: number }) {
   const [next, setNext] = useState(initialNext);
   const average = averageWith(next);
   const delta = average - DEMO_BASE_AVERAGE;
@@ -90,29 +84,27 @@ export function GradeSimulator({
           </button>
         </div>
       </div>
-      {showBars && (
-        <div aria-hidden className="flex h-44 gap-3 rounded-lg border bg-card p-3">
-          {SUBJECTS.map((s) => {
-            const value = s.id === "droit" ? droitAverage : s.grade;
-            return (
-              <div key={s.id} className="flex h-full flex-1 flex-col items-center gap-1">
-                <span className="text-xs font-semibold tabular-nums">{formatAverage(value)}</span>
-                {/* The track is the /20 scale: the bar height is the average, nothing else shares it. */}
-                <div className="flex w-full flex-1 items-end">
-                  <div
-                    className={cn(
-                      "w-full rounded-t-md transition-[height] duration-300 motion-reduce:transition-none",
-                      s.id === "droit" ? "bg-ring" : "bg-chart-2",
-                    )}
-                    style={{ height: `${(value / 20) * 100}%` }}
-                  />
-                </div>
-                <span className="text-[0.7rem] text-muted-foreground">{s.name}</span>
+      <div aria-hidden className="flex h-44 gap-3 rounded-lg border bg-card p-3">
+        {SUBJECTS.map((s) => {
+          const value = s.id === "droit" ? droitAverage : s.grade;
+          return (
+            <div key={s.id} className="flex h-full flex-1 flex-col items-center gap-1">
+              <span className="text-xs font-semibold tabular-nums">{formatAverage(value)}</span>
+              {/* The track is the /20 scale: the bar height is the average, nothing else shares it. */}
+              <div className="flex w-full flex-1 items-end">
+                <div
+                  className={cn(
+                    "w-full rounded-t-md transition-[height] duration-300 motion-reduce:transition-none",
+                    s.id === "droit" ? "bg-ring" : "bg-chart-2",
+                  )}
+                  style={{ height: `${(value / 20) * 100}%` }}
+                />
               </div>
-            );
-          })}
-        </div>
-      )}
+              <span className="text-[0.7rem] text-muted-foreground">{s.name}</span>
+            </div>
+          );
+        })}
+      </div>
       <p className="text-sm" aria-live="polite">
         Moyenne générale : <strong className="tabular-nums">{formatAverage(DEMO_BASE_AVERAGE)}</strong> →{" "}
         <strong className="text-lg tabular-nums">{formatAverage(average)}</strong>{" "}
@@ -120,11 +112,9 @@ export function GradeSimulator({
           ({delta >= 0 ? "+" : "−"}
           {formatAverage(Math.abs(delta))})
         </span>
-        {showBars && (
-          <span className="block text-muted-foreground">
-            Droit passe à {formatAverage(droitAverage)} : c&apos;est la matière à travailler en priorité.
-          </span>
-        )}
+        <span className="block text-muted-foreground">
+          Droit passe à {formatAverage(droitAverage)} : c&apos;est la matière à travailler en priorité.
+        </span>
       </p>
     </div>
   );

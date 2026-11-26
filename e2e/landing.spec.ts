@@ -52,7 +52,7 @@ test.describe("landing page", () => {
   });
 });
 
-// The hero of the charter (no orbiting cards, no demo views) and the pillar tabs.
+// The hero of the charter (no orbiting cards, no demo views) and the pillars grid.
 test.describe("landing hero", () => {
   for (const width of [375, 768, 1024, 1440]) {
     test(`does not scroll horizontally at ${width}px, light and dark`, async ({ browser }) => {
@@ -119,25 +119,97 @@ test.describe("landing hero", () => {
     expect(running).toBe(0);
   });
 
-  test("the four pillars are vertical tabs moved with the arrow keys, each with an example", async ({
+  test("the pillars are a grid of five tiles, each with its status, labelled as examples", async ({
     page,
   }) => {
     await page.goto("/");
-    await page.locator("#piliers").scrollIntoViewIfNeeded();
-    const tabs = page.getByRole("tab");
-    await expect(tabs).toHaveCount(4);
-    await expect(page.getByRole("tablist")).toHaveAttribute("aria-orientation", "vertical");
-    await expect(tabs.nth(0)).toHaveAttribute("aria-selected", "true");
-    await tabs.nth(0).focus();
-    await page.keyboard.press("ArrowDown");
-    await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
-    await expect(tabs.nth(1)).toBeFocused();
-    const panel = page.getByRole("tabpanel");
-    await expect(panel).toContainText("S'organiser");
-    await expect(panel.getByText("Données d'exemple")).toBeVisible();
-    await page.keyboard.press("End");
-    await expect(tabs.nth(3)).toHaveAttribute("aria-selected", "true");
-    await expect(panel).toContainText("Rester motivé");
+    const section = page.locator("#piliers");
+    await section.scrollIntoViewIfNeeded();
+    const tiles = section.getByRole("article");
+    await expect(tiles).toHaveCount(5);
+    for (const name of [
+      "Comprendre ses notes",
+      "Rester motivé · XP",
+      "Rester motivé · Série",
+      "Réviser avec ses amis",
+      "S'organiser",
+    ]) {
+      await expect(section.getByRole("article", { name })).toBeVisible();
+    }
+    await expect(section.getByText("En construction", { exact: true })).toHaveCount(4);
+    await expect(section.getByText("Bientôt", { exact: true })).toHaveCount(1);
+    await expect(section.getByText("Données d'exemple")).toBeVisible();
+    await expect(section).toContainText("convention Revio");
+  });
+
+  test("each tile reacts to its own buttons", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" }); // final states at once: no timing in this test
+    await page.goto("/");
+    const section = page.locator("#piliers");
+    await section.scrollIntoViewIfNeeded();
+
+    // Notes: the next grade in Droit moves the overall average (computed by the academic engine).
+    const notes = section.getByRole("article", { name: "Comprendre ses notes" });
+    await expect(notes).toContainText("13,72 → 14,06");
+    await notes.getByRole("button", { name: "Monter la note d'un point" }).click();
+    await expect(notes).toContainText("13,72 → 14,17");
+
+    // XP: a 25-minute session gives +25 XP, in lime.
+    const xp = section.getByRole("article", { name: "Rester motivé · XP" });
+    await xp.getByRole("button", { name: "Terminer une séance de 25 min" }).click();
+    await expect(xp.getByText("+25 XP", { exact: true })).toBeVisible();
+    await expect(xp).toContainText(/4\s305 XP/);
+
+    // Streak: validating today makes 15 days, once.
+    const streak = section.getByRole("article", { name: "Rester motivé · Série" });
+    await streak.getByRole("button", { name: /Valider aujourd'hui/ }).click();
+    await expect(streak).toContainText("15 jours");
+    await expect(streak.getByRole("button", { name: "Aujourd'hui validé" })).toBeDisabled();
+
+    // Friends: one bravo per friend, no counter.
+    const friends = section.getByRole("article", { name: "Réviser avec ses amis" });
+    await friends.getByRole("button", { name: "Bravo à Léa" }).click();
+    await expect(friends.getByRole("button", { name: "Envoyé à Léa" })).toBeDisabled();
+
+    // Organiser: a session is a toggle button.
+    const plan = section.getByRole("article", { name: "S'organiser" });
+    const wednesday = plan.getByRole("button", { name: /Mer/ });
+    await expect(wednesday).toHaveAttribute("aria-pressed", "false");
+    await wednesday.click();
+    await expect(wednesday).toHaveAttribute("aria-pressed", "true");
+    await expect(plan).toContainText("2 séances sur 3 cette semaine");
+  });
+
+  test("the grid comes alive once in view: the streak lights up and friends start studying", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const section = page.locator("#piliers");
+    await section.scrollIntoViewIfNeeded();
+    const streak = section.getByRole("article", { name: "Rester motivé · Série" });
+    await expect(streak.locator('li[aria-label$=": validé"]')).toHaveCount(6, { timeout: 5000 });
+    const friends = section.getByRole("article", { name: "Réviser avec ses amis" });
+    await expect(friends.getByText(/^En révision/)).toHaveCount(3, { timeout: 5000 });
+  });
+
+  test("with reduced motion the final state is shown at once and nothing loops", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    const section = page.locator("#piliers");
+    await section.scrollIntoViewIfNeeded();
+    const streak = section.getByRole("article", { name: "Rester motivé · Série" });
+    await expect(streak.locator('li[aria-label$=": validé"]')).toHaveCount(6, { timeout: 500 });
+    await expect(
+      section.getByRole("article", { name: "Réviser avec ses amis" }).getByText(/^En révision/),
+    ).toHaveCount(3, { timeout: 500 });
+    await expect(section.getByRole("article", { name: "Rester motivé · XP" })).toContainText(/4\s280 XP/);
+    const looping = await section.evaluate(
+      (node) =>
+        node
+          .getAnimations({ subtree: true })
+          .filter((a) => a.playState === "running" && a.effect?.getTiming().iterations === Infinity).length,
+    );
+    expect(looping).toBe(0);
   });
 
   test("the session preview ends on +115 XP (65 min + the daily goal) and the offer shows no price", async ({
