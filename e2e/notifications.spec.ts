@@ -38,6 +38,9 @@ test.describe("notifications (connected)", () => {
     // Bob accepts: Alice is told, and Bob's own request notification is gone.
     await b.goto("/social");
     await b.getByRole("button", { name: "Accepter" }).click();
+    // Wait for the server to confirm before looking from Alice's side (otherwise a race under parallel load).
+    await expect(b.getByText("Vous êtes amis !")).toBeVisible();
+    await expect(b.getByRole("button", { name: "Accepter" })).toHaveCount(0);
     await a.goto("/social/notifications");
     await expect(a.getByText("a accepté ta demande d'ami.")).toHaveCount(1);
     await b.goto("/social/notifications");
