@@ -51,7 +51,6 @@ export default async function SocialPage() {
               title: "Classement",
               description: "Tes XP de la semaine, comparés à ceux de tes amis.",
               icon: Medal,
-              mock: true,
             },
             {
               // Real friends cannot be linked yet: getSocialProfile does not exist (S-09), so only the sample ids resolve.

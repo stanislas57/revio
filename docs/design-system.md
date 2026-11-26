@@ -179,8 +179,8 @@ et `SubjectCard` (academic). La logique pure (géométrie des anneaux, classemen
   (`/profil/statistiques`), Mes amis (`/social`), Classement (`/social/classement`), Mon profil. L'entrée active est sur
   Soft Purple ; une sous-page appartient à l'entrée la plus précise (`activeNavHref`, testé). En dessous de 768 px :
   en-tête avec le logo et `MobileDock` en barre inférieure (Accueil, Agenda, « Réviser » au milieu, Amis, Profil).
-  **Écart assumé** : la charte écrit « Ma ligue » ; la page existante est un classement hebdomadaire entre amis
-  (données d'exemple), d'où le libellé « Classement ». Les ligues (divisions, podium) n'existent pas dans le produit.
+  **Écart assumé** : la charte écrit « Ma ligue » ; la page existante est un classement hebdomadaire entre amis,
+  d'où le libellé « Classement ». Les ligues (divisions, podium) n'existent pas dans le produit.
 - **Écrans réels restylés, données inchangées** : Profil (carte de niveau violette avec barre citron, carte de série
   blanche à flamme orange, `StatCard`), Statistiques (`StatCard`), Social (« Bravo » en Social Pink, présence en violet
   avec point vert), Focus (séance sur carte blanche, anneau violet, boutons de la charte).

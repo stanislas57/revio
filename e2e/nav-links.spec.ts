@@ -34,6 +34,7 @@ test.describe("links between the screens", () => {
     await page.getByRole("button", { name: /^(Enregistrer|Continuer)$/ }).click();
   }
 
+  // Trophées, Statistiques and Classement read real data (Stan's PRs #48 to #50); the friend profile is still a sample.
   const CASES = [
     {
       from: "/profil",
@@ -41,6 +42,7 @@ test.describe("links between the screens", () => {
       link: /^Trophées/,
       to: /\/profil\/trophees$/,
       title: "Trophées",
+      mock: false,
     },
     {
       from: "/profil",
@@ -48,6 +50,7 @@ test.describe("links between the screens", () => {
       link: /^Statistiques/,
       to: /\/profil\/statistiques$/,
       title: "Statistiques",
+      mock: false,
     },
     {
       from: "/social",
@@ -55,6 +58,7 @@ test.describe("links between the screens", () => {
       link: /^Classement/,
       to: /\/social\/classement$/,
       title: "Classement",
+      mock: false,
     },
     {
       from: "/social",
@@ -62,6 +66,7 @@ test.describe("links between the screens", () => {
       link: /^Exemple de profil d'ami/,
       to: /\/social\/amis\//,
       title: "Profil d'un ami",
+      mock: true,
     },
   ];
 
@@ -71,8 +76,9 @@ test.describe("links between the screens", () => {
       await page.goto(c.from);
       const link = page.getByRole("navigation", { name: c.nav }).getByRole("link", { name: c.link });
       await expect(link).toBeVisible();
-      // The destination shows sample data, and the link says so before it is followed.
-      await expect(link).toContainText("Données d'exemple");
+      // Only a destination that still shows sample data is labelled so, before the link is followed.
+      if (c.mock) await expect(link).toContainText("Données d'exemple");
+      else await expect(link).not.toContainText("Données d'exemple");
       const box = await link.boundingBox();
       expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
       await link.click();
