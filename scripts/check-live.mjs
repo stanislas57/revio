@@ -302,6 +302,34 @@ try {
   ok("A cannot save a scenario for B", !(await scenario(A, { user_id: B.id })).ok);
   ok("A reads own scenario", (await rows(A, "simulation_scenarios?select=id"))?.length === 1);
 
+  // --- schools and school choice -----------------------------------------------------------
+  const found = await rpc(A, "search_schools", {
+    p_query: "saint gabriel bagneux",
+    p_kind: "lycee",
+    p_limit: 20,
+  });
+  ok("schools are loaded and searchable", found.ok && found.json?.some((r) => r.id === "0920894X"));
+  ok("anonymous cannot search schools", !(await rpc(null, "search_schools", { p_query: "paris" })).ok);
+  ok(
+    "a client cannot add a school",
+    !(
+      await rest(A, "schools", {
+        method: "POST",
+        body: { id: "ZZZ9999Z", name: "x", kind: "lycee", search: "x" },
+      })
+    ).ok,
+  );
+  const education = (user, schoolId) =>
+    rest(user, "user_education?on_conflict=user_id", {
+      method: "POST",
+      prefer: "resolution=merge-duplicates,return=representation",
+      body: { user_id: user.id, school_id: schoolId, onboarding_done: true },
+    });
+  ok("A saves a school", (await education(A, "0920894X")).ok);
+  ok("an unknown school is refused", !(await education(B, "NOPE0000")).ok);
+  ok("B cannot read A's school", (await rows(B, "user_education?select=school_id"))?.length === 0);
+  ok("A reads own school", (await rows(A, "user_education?select=school_id"))?.[0]?.school_id === "0920894X");
+
   // --- account deletion -----------------------------------------------------------------
   ok("anonymous cannot delete an account", !(await rpc(null, "delete_my_account")).ok);
   ok("A deletes own account", (await rpc(A, "delete_my_account")).ok);
