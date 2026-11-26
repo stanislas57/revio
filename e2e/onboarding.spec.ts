@@ -49,7 +49,7 @@ test.describe("onboarding after sign-up", () => {
     await page.getByRole("button", { name: "Continuer" }).click();
     await expect(page.getByRole("heading", { name: "Choisis ton pseudo" })).toHaveCount(0);
     await page.goto("/accueil");
-    await expect(page.getByRole("heading", { name: "Accueil" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: /Moins de stress/ })).toBeVisible();
     await page.goto("/social");
     await expect(page.getByText("Ajouter un ami")).toBeVisible();
     await page.goto("/profil");

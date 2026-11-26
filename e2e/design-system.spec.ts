@@ -39,6 +39,24 @@ test.describe("design system page", () => {
     }
   });
 
+  test("the reward button is lime only while a reward waits, then looks like « Voir mes statistiques »", async ({
+    page,
+  }) => {
+    await page.goto("/design-system");
+    const section = page.locator("#organique");
+    const reward = section.getByRole("button", { name: "Récupérer ma récompense" });
+    const stats = section.getByRole("button", { name: "Voir mes statistiques" });
+    const bg = (l: typeof reward) => l.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(await bg(reward)).not.toBe(await bg(stats));
+    await reward.click();
+    const claimed = section.getByRole("button", { name: "Récompense récupérée" });
+    await expect(claimed).toBeDisabled();
+    // The colour changes with a 100 ms transition: wait for the final value.
+    const statsBg = await bg(stats);
+    await expect.poll(() => bg(claimed)).toBe(statsBg);
+    expect(await claimed.evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
+  });
+
   test("the rings expose their value to screen readers", async ({ page }) => {
     await page.goto("/design-system");
     const ring = page.locator("#anneau").getByRole("progressbar", { name: "Progression du chapitre" });

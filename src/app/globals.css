@@ -108,6 +108,8 @@
   --revio-streak-text: #b45309; /* 5.02:1 on white */
   --revio-social-text: #c2185b; /* 5.87:1 on white */
   --revio-primary-on-dark: #a99bff; /* violet TEXT on the dark surfaces: 6.76:1 on #20202C */
+  /* The first gradient of the landing (its hero): cream at the top, Soft Purple at the bottom. Also the home page. */
+  --revio-hero-gradient: linear-gradient(180deg, var(--revio-landing) 0%, var(--revio-primary-light) 100%);
   /* ---- "Chunky" edges: the darker bottom of 3D buttons and choice tiles (decorative, never carry text) ---- */
   --edge-primary: #4c37c9;
   --edge-neutral: #d9d7e3;
@@ -332,8 +334,16 @@ html[data-motion="reduce"] *::after {
  * the rule at zero specificity, so an explicit utility (`justify-between`…) still wins. Date, time and file
  * fields centre their value too.
  */
+form:where(.flex),
 form :where(.flex) {
   justify-content: center;
+}
+/* A file field cannot centre its own text: the whole control is centred instead. */
+input:where([type="file"]) {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
 }
 input:where([type="date"], [type="time"], [type="datetime-local"], [type="file"]) {
   text-align: center;
@@ -341,4 +351,22 @@ input:where([type="date"], [type="time"], [type="datetime-local"], [type="file"]
 input:where([type="date"], [type="time"], [type="datetime-local"])::-webkit-datetime-edit {
   display: inline-block;
   text-align: center;
+}
+
+/* Display headings of the charter (landing hero, home hero): Inter 900, very tight; the accent is not italic. */
+.landing-display {
+  font-family: var(--font-heading), system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+.landing-display em {
+  font-style: normal;
+}
+
+/*
+ * The home page takes the landing's first gradient (same values) as its background, over the whole page height.
+ * Set on the app column when the page carries `data-page-background="landing"`.
+ */
+.app-column:has([data-page-background="landing"]) {
+  background: var(--revio-hero-gradient);
 }
