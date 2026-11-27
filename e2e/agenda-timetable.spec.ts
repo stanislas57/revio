@@ -174,3 +174,14 @@ test("mobile: the week grid scrolls sideways inside its own region, the page doe
     .evaluateAll((els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
   expect(small).toBe(0);
 });
+
+test("« Planning de révision » sits under « Ajouter à l'agenda »", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await seededAccount(page);
+  await page.goto("/agenda?vue=semaine&date=2026-12-07");
+  const add = await page.getByText("Ajouter à l'agenda", { exact: true }).first().boundingBox();
+  const plan = await page.getByText("Planning de révision", { exact: true }).boundingBox();
+  expect(add).not.toBeNull();
+  expect(plan).not.toBeNull();
+  expect(plan!.y).toBeGreaterThan(add!.y);
+});

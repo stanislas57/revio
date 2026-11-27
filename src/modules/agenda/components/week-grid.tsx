@@ -69,7 +69,7 @@ export function WeekGrid({ from, today, nowMinutes, byDay, subjects }: Props) {
                   <span
                     className={cn(
                       "grid size-10 place-items-center rounded-full text-lg font-bold tabular-nums",
-                      isToday ? "bg-foreground text-background" : "bg-brand-soft text-brand-soft-foreground",
+                      isToday ? "bg-revio-deep text-white" : "bg-brand-soft text-brand-soft-foreground",
                     )}
                   >
                     {Number(d.slice(8))}

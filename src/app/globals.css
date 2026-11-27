@@ -31,6 +31,7 @@
   --color-revio-landing: var(--revio-landing);
   --color-revio-text: var(--revio-text);
   --color-revio-midnight: var(--revio-midnight);
+  --color-revio-deep: var(--revio-deep);
   --color-revio-text-readable: var(--revio-text-readable);
   --color-revio-text-secondary: var(--revio-text-secondary);
   --color-revio-border: var(--revio-border);
@@ -96,6 +97,10 @@
   --revio-surface: #ffffff; /* Pure White: cards and surfaces */
   --revio-text: #181921; /* Midnight Black: titles and main text */
   --revio-midnight: #181921; /* the same, in BOTH themes: text on lime, pink, orange and green fills */
+  /* Deep Violet (D-27): replaces black for every dark SURFACE (selected tab, today, revision slots). White text 11.24:1. */
+  --revio-deep: #332a8f;
+  /* Tests and exams: Revio Purple to a deep pink, white text 5.27:1 or better everywhere. */
+  --revio-exam-gradient: linear-gradient(135deg, #6950ee 0%, #c2185b 100%);
   --revio-text-secondary: #858391; /* Muted Grey: DECORATIVE only (3.72:1), also the form-field border */
   --revio-text-readable: #656371; /* small secondary text (5.87:1 on white) */
   --revio-border: #eae9f0; /* Border Grey: borders and separators */
@@ -168,6 +173,7 @@
 /* Dark theme: the charter's values (page 6), plus a lighter violet and lighter signals for TEXT. */
 .dark {
   --revio-landing: #14141e; /* the landing follows the dark background */
+  --revio-deep: #4a3dbb; /* lighter, so it stays visible on the dark surfaces: white text 7.85:1 */
   --edge-primary: #3a2b9e;
   --edge-neutral: #0d0d14;
   --edge-soft: #241c3d;

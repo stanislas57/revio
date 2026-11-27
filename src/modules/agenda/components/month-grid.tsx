@@ -54,7 +54,9 @@ export function MonthGrid({ from, to, month, today, byDay }: Props) {
               <span
                 className={cn(
                   "grid size-8 place-items-center rounded-full text-sm font-bold tabular-nums",
-                  isToday ? "bg-foreground text-background" : exam && "bg-revio-primary text-white",
+                  isToday
+                    ? "bg-revio-deep text-white"
+                    : exam && "bg-[image:var(--revio-exam-gradient)] text-white",
                 )}
               >
                 {Number(d.slice(8))}

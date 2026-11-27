@@ -21,7 +21,7 @@ export function UpcomingExams({ exams, today }: { exams: ExamItem[]; today: stri
               <li key={e.id} className="flex items-center gap-3 rounded-3xl border bg-card p-3 text-left">
                 <span
                   aria-hidden
-                  className="grid size-12 shrink-0 place-items-center rounded-full bg-revio-primary text-white"
+                  className="grid size-12 shrink-0 place-items-center rounded-full bg-[image:var(--revio-exam-gradient)] text-white"
                 >
                   <span className="text-center text-base leading-none font-extrabold">
                     {Number(e.examOn.slice(8))}

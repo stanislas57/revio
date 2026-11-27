@@ -216,3 +216,13 @@ En tête de chaque composant copié ou adapté : `// Source : <bibliothèque> �
 - `design/charte-beta-01.pdf` : la charte de référence (7 pages). Ses maquettes sont des reproductions statiques avec des
   données fictives ; les règles d'XP, de ligues et de confidentialité qu'elles montrent ne sont pas des règles du produit.
 - `design/revio-adn/` : les maquettes de l'ancienne direction, gardées pour l'historique (elles ne font plus référence).
+
+## Violet profond (D-27) : le noir n'est plus une surface
+
+| Jeton                   | Valeur claire            | Valeur sombre | Usage                                                      | Contraste du texte blanc                          |
+| ----------------------- | ------------------------ | ------------- | ---------------------------------------------------------- | ------------------------------------------------- |
+| `--revio-deep`          | `#332A8F`                | `#4A3DBB`     | onglet actif, pastille d'aujourd'hui, créneaux de révision | 11,24:1 (clair), 7,85:1 (sombre)                  |
+| `--revio-exam-gradient` | `#6950EE` vers `#C2185B` | idem          | contrôles, examens, décompte                               | 5,27:1 au minimum (le côté violet, le plus clair) |
+
+Le noir `--revio-midnight` reste la couleur du **texte** sur les remplissages citron, rose, orange et vert. Mesures faites
+avec la formule de luminance relative de WCAG 2.2.

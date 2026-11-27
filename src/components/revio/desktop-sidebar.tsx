@@ -57,7 +57,7 @@ export function DesktopSidebar({
                   className={cn(
                     "flex min-h-11 items-center justify-center gap-3 rounded-xl px-3 text-sm transition-colors duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none",
                     active
-                      ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
+                      ? "[border-radius:20px_14px_18px_12px/14px_20px_12px_18px] bg-sidebar-accent font-semibold text-sidebar-accent-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
