@@ -175,6 +175,14 @@ est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#30304
   `serverActions.bodySizeLimit = 5mb` dans `next.config.ts` (fichier de 4 Mo maximum, revérifié côté serveur).
 - **Pas de nouvelle porte d'entrée** : la carte « Personnalise Revio » de l'Accueil est facultative et ne bloque rien.
 
+### D-25 — Tout gratuit pour l'instant, publicité plus tard (proposé par Stan le 27/11/2026, à valider par Charles)
+
+- **Pas d'offre payante** : aucun Premium ni Stripe pour le moment. Tout Revio est en accès complet et gratuit.
+- **Publicité** : des pages ou emplacements de pub pourront être intégrés plus tard. Rien n'est branché aujourd'hui.
+- **À trancher avant d'intégrer de la pub** : régie choisie, consentement cookies (RGPD), et public potentiellement
+  mineur (pas de pub ciblée ni de traçage de mineurs). L'offre Vercel Hobby (usage non commercial) est à revoir
+  dès qu'une pub rapporte de l'argent.
+
 ## Ouvertes
 
 - Confirmation d'e-mail activée ou non pour la démo.
