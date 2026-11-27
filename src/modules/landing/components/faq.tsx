@@ -19,7 +19,7 @@ const QUESTIONS = [
   },
   {
     q: "C'est payant ?",
-    a: "Aujourd'hui, rien n'est à payer. Une offre Premium est envisagée plus tard, sans tarif défini à ce jour.",
+    a: "Aujourd'hui, rien n'est à payer.",
   },
   {
     q: "Existe-t-il une application mobile ?",
