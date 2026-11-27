@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // Connected scenario (fake Supabase server): see docs/E2E.md. Skipped without E2E_CONNECTED.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
@@ -13,6 +14,7 @@ test("agenda: add, repeat, conflict, edit, views, delete", async ({ page }) => {
   await page.getByRole("button", { name: "Créer mon compte" }).click();
   await page.getByLabel("Pseudo").fill(`ag_${Math.random().toString(36).slice(2, 10)}`);
   await page.getByRole("button", { name: "Continuer" }).click();
+  await skipOnboarding(page);
 
   // Work in a fixed week (Mon 7 Dec 2026 → Sun 13 Dec) so the test does not depend on today's date.
   await page.goto("/agenda?vue=semaine&date=2026-12-07");

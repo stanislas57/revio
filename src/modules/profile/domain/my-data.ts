@@ -60,6 +60,13 @@ export const MY_DATA: readonly DataItem[] = [
     audience: "me",
   },
   {
+    id: "education",
+    label: "Tes informations : école, niveau d'études et, si tu l'as indiqué, ton sexe",
+    detail:
+      "Facultatives, modifiables ou effaçables dans « Mes informations ». Jamais visibles par tes amis.",
+    audience: "me",
+  },
+  {
     id: "settings",
     label: "Tes réglages",
     detail:

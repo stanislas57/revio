@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // Connected scenario (local fake Supabase, see e2e/academic.spec.ts). Skipped otherwise.
 test.skip(!process.env.E2E_CONNECTED, "needs the local fake Supabase server");
@@ -24,6 +25,7 @@ test("Social requires a unique username", async ({ browser }) => {
   await expect(first.getByText("Ajouter un ami")).toHaveCount(0);
   await first.getByLabel("Pseudo").fill(pseudo);
   await first.getByRole("button", { name: "Continuer" }).click();
+  await skipOnboarding(first);
   await expect(first.getByText("Ajouter un ami")).toBeVisible();
 
   const second = await (await browser.newContext()).newPage();
