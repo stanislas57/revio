@@ -34,7 +34,7 @@ Durée visée : 5 à 6 minutes. Deux navigateurs (ou un navigateur + une fenêtr
 
 - Les XP ne se « seed » pas : les durées sont verrouillées côté serveur. Pour montrer des XP, faire une vraie séance de 5 minutes ou plus.
 - Le profil ami est un **écran sur données d'exemple** (badge « Exemple »). Le classement (XP de la semaine entre amis), les statistiques (30 derniers jours) et les trophées (11, attribués automatiquement) sont réels. L'agenda (événements, vues jour/semaine/mois) et le planning (séances proposées, acceptées ou verrouillées) sont réels, mais testés seulement sur un faux serveur et le script `npm run test:live`.
-- L'import de relevé (PDF avec texte, CSV ou texte collé) est lu sans IA et sans être stocké : c'est une **proposition** que l'utilisateur corrige avant d'importer. Les scans et photos ne sont pas lus. À montrer avec un PDF préparé à l'avance.
+- L'import de relevé (PDF avec texte, CSV ou texte collé) est lu sans IA et sans être stocké : c'est une **proposition** que l'utilisateur corrige avant d'importer. Les scans et photos ne sont pas lus. À montrer avec `docs/demo/releve-demo.pdf` (relevé inventé : 5 matières, 6 notes ; à régénérer avec `node scripts/make-demo-pdf.mjs`).
 - La liste d'écoles vient de données ouvertes (lycées et principaux établissements supérieurs) : elle ne couvre ni les CFA ni les petites écoles privées.
 - Les moyennes suivent la convention Revio, pas la règle officielle d'un établissement.
 - Le parcours est testé automatiquement sur un faux serveur local (`e2e/demo-journey.spec.ts`), pas encore sur un vrai Supabase.
