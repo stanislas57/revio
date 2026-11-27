@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { levelProgress } from "@/modules/gamification/domain/levels";
 import { OnboardingFlow } from "@/modules/profile/components/onboarding-flow";
 import { UsernameGate } from "@/modules/profile/components/username-gate";
-import { loadShellProfile } from "@/modules/profile/server/queries";
+import { loadNavLayout, loadShellProfile } from "@/modules/profile/server/queries";
 import { loadMyEducation } from "@/modules/profile/server/school";
 import { InviteAcceptor } from "@/modules/social/components/invite-acceptor";
 import { INVITE_COOKIE } from "@/modules/social/domain/invite";
@@ -21,11 +21,14 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
   // An invitation link opened before signing up: the friend request is sent now, once the app is open.
   const hasInvite = (await cookies()).has(INVITE_COOKIE);
 
+  const navLayout = await loadNavLayout(supabase, user.id);
+
   const level = levelProgress(me.totalXp);
   const name = me.displayName || me.username;
   return (
     <AppShell
       email={user.email ?? ""}
+      navLayout={navLayout}
       profile={{
         name,
         subtitle: `${level.current.name}`,

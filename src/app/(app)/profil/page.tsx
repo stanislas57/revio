@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Sprout } from "lucide-react";
 import { BarChart3, Trophy } from "lucide-react";
 import { MotionToggle } from "@/components/layout/motion-preference";
+import { NavLayoutSwitcher } from "@/components/layout/nav-layout-switcher";
 import { LinkCard } from "@/components/revio/link-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/states/empty-state";
@@ -135,9 +136,13 @@ export default async function ProfilPage() {
         <Card id="apparence" className="scroll-mt-20">
           <CardHeader>
             <CardTitle>Apparence</CardTitle>
-            <CardDescription>Les animations de l&apos;interface, sur cet appareil.</CardDescription>
+            <CardDescription>
+              Où se trouve le menu (enregistré sur ton compte), et les animations de l&apos;interface (sur cet
+              appareil).
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-8">
+            <NavLayoutSwitcher />
             <MotionToggle />
           </CardContent>
         </Card>

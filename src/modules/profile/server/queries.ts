@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
 import type { MyProfile } from "../contracts";
+import { isNavLayout, type NavLayout } from "@/components/layout/nav-layout";
 import { DEFAULT_SETTINGS, type UserSettings } from "../domain/settings";
 
 type Client = Awaited<ReturnType<typeof requireUser>>["supabase"];
@@ -38,6 +39,16 @@ export async function loadSettings(supabase: Client, userId: string): Promise<Us
     .maybeSingle();
   const parsed = settingsRowSchema.safeParse(data);
   return parsed.success ? toUserSettings(parsed.data) : { ...DEFAULT_SETTINGS };
+}
+
+/** The navigation layout the caller chose (`user_settings.nav_layout`), or null when never chosen or unreadable. */
+export async function loadNavLayout(supabase: Client, userId: string): Promise<NavLayout | null> {
+  const { data } = await supabase
+    .from("user_settings")
+    .select("nav_layout")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return isNavLayout(data?.nav_layout) ? data.nav_layout : null;
 }
 
 /** Whether the caller has not chosen a username yet (light query, used by the app layout). */
