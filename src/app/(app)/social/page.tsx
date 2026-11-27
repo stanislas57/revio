@@ -10,7 +10,7 @@ import { FeedCard } from "@/modules/social/components/feed-card";
 import { FriendList } from "@/modules/social/components/friend-list";
 import { FriendRequests } from "@/modules/social/components/friend-requests";
 import { FriendSearch } from "@/modules/social/components/friend-search";
-import { InviteButton } from "@/modules/social/components/invite-button";
+import { ShareInvite } from "@/modules/social/components/share-invite";
 import { SectionLinks } from "@/modules/social/components/section-links";
 import { FIXTURE_PROFILE_FRIEND } from "@/modules/social/fixtures-profiles";
 import { FriendsStudying } from "@/modules/social/components/friends-studying";
@@ -123,7 +123,7 @@ export default async function SocialPage() {
             Ajouter un ami
           </h2>
           <FriendSearch />
-          {profile.username && <InviteButton username={profile.username} />}
+          {profile.username && <ShareInvite username={profile.username} />}
           {outgoing.length > 0 && (
             <div className="space-y-2 pt-2">
               <h3 className="text-sm font-medium text-muted-foreground">Demandes envoyées</h3>
