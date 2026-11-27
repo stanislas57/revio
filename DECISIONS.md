@@ -159,7 +159,7 @@ est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#30304
 - `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : cette mise à jour est faite sur décision
   de Charles, **sans attendre la confirmation de Stan**. Stan peut la contester dans la PR.
 
-### D-26 — École choisie et import de documents (proposé par Stan le 26/11/2026, à valider par Charles)
+### D-26 — École choisie et import de documents (décidée par Stan le 26/11/2026, sans relecture de Charles)
 
 Numérotée D-24 par erreur jusqu'au 27/11/2026 (doublon avec la charte bêta), renumérotée lors de l'audit.
 
@@ -177,7 +177,7 @@ Numérotée D-24 par erreur jusqu'au 27/11/2026 (doublon avec la charte bêta), 
   `serverActions.bodySizeLimit = 5mb` dans `next.config.ts` (fichier de 4 Mo maximum, revérifié côté serveur).
 - **Pas de nouvelle porte d'entrée** : la carte « Personnalise Revio » de l'Accueil est facultative et ne bloque rien.
 
-### D-25 — Tout gratuit pour l'instant, publicité plus tard (proposé par Stan le 27/11/2026, à valider par Charles)
+### D-25 — Tout gratuit pour l'instant, publicité plus tard (décidée par Stan le 27/11/2026, sans relecture de Charles)
 
 - **Pas d'offre payante** : aucun Premium ni Stripe pour le moment. Tout Revio est en accès complet et gratuit.
 - **Publicité** : des pages ou emplacements de pub pourront être intégrés plus tard. Rien n'est branché aujourd'hui.
@@ -194,10 +194,10 @@ Revues lors de l'audit du 27/11/2026.
 - Visibilité par défaut des séances (point 6) : toujours `friends` par défaut ; le réglage existe depuis S-15
   (#41), le choix du défaut reste à valider (utilisateurs mineurs).
 - Offre Vercel Hobby réservée à un usage non commercial : à revoir avant toute publicité (D-25).
+- Confirmation d'e-mail : désactivée ou non sur le projet Supabase hébergé ? Non vérifié depuis le dépôt ;
+  à confirmer dans le tableau de bord Supabase.
+- Dépôt GitHub **public** (constaté le 27/11/2026 avec `gh repo view`) alors qu'il était prévu privé : à confirmer.
 
 ## Refermées lors de l'audit du 27/11/2026
 
-- Confirmation d'e-mail : **désactivée** sur le projet Supabase hébergé (choix de Stan, 25/11/2026).
-- Dépôt GitHub : **privé** depuis le 25/11/2026, à la demande de Stan. Conséquence : pas de protection de
-  `main` sur GitHub Free.
 - Pseudo obligatoire avant Social : **en place** (S-04, #21).

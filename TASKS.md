@@ -132,12 +132,12 @@ relancés pendant l'audit. Reste à faire, par ordre de priorité :
 
 **Après la démo**
 
-- [ ] Faire valider par Charles les décisions D-12 à D-26 de `DECISIONS.md`, puis mettre à jour la table de
-      propriété de `CLAUDE.md` (D-12 ; le module `planning` est maintenant développé par Stan).
+- [ ] Décisions D-12 à D-23 de `DECISIONS.md` encore « proposées » (D-24 à D-26 : décidées par Stan sans relecture
+      de Charles) ; mettre à jour la table de propriété de `CLAUDE.md` si D-12 est retenue (D-12 ; le module `planning` est maintenant développé par Stan).
 - [ ] Écrans encore factices (badge « Aperçu ») : `/apercu` (accueil de révision, fiches, focus à deux, fil,
       progression et ligue) et les rappels du profil (`reminders-mock.tsx`).
 - [ ] C-13 : centre de notifications au design de Charles.
 - [ ] Supprimer les branches déjà fusionnées ; confirmer avec Charles que `charles/settings-language` et
       `charles/focus-xp-social` sont remplacées.
-- [ ] Process : `main` sans protection (GitHub Free, dépôt privé) et plusieurs PR fusionnées sans relecture de
+- [ ] Process : `main` sans protection (GitHub Free, dépôt public) et plusieurs PR fusionnées sans relecture de
       Charles, contrairement à `CLAUDE.md`.
