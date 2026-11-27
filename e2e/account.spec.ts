@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { addSubject } from "./support/notes";
 import { skipOnboarding } from "./support/new-account";
 
 // Connected scenario (fake Supabase server): see docs/E2E.md. Skipped without E2E_CONNECTED.
@@ -41,10 +42,7 @@ test("privacy settings: sharing by default and live status are saved and applied
 
 test("export contains only my data, then deleting the account removes it", async ({ page }) => {
   const email = await signUp(page, "acct14");
-  await page.getByLabel("Matière", { exact: true }).fill("Maths");
-  await page.getByLabel("Coefficient").fill("3");
-  await page.getByRole("button", { name: "Ajouter la matière" }).click();
-  await expect(page.locator("[data-slot=card]", { hasText: "Maths" }).first()).toBeVisible();
+  await addSubject(page, "Maths", "3");
 
   await page.goto("/profil");
   const [download] = await Promise.all([

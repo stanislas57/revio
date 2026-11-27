@@ -22,16 +22,9 @@ test("the layout switches at once, is saved on the account and survives a reload
   await expect(page.getByText("Disposition enregistrée.")).toBeVisible();
   await expect(page.getByRole("complementary")).toHaveCount(0);
   const nav = page.getByRole("navigation", { name: "Navigation principale" });
-  await expect(nav.getByRole("link")).toHaveText([
-    "Accueil",
-    "Mon agenda",
-    "Focus",
-    "Statistiques",
-    "Mes amis",
-    "Classement",
-    "Mon profil",
-  ]);
-  await expect(nav.locator('a[aria-current="page"]')).toHaveText("Mon profil");
+  await expect(nav.getByRole("link")).toHaveText(["Accueil", "Social", "Notes", "Agenda", "Réviser"]);
+  // On the profile no entry is marked (it has none): on Notes, Notes is.
+  await expect(nav.locator('a[aria-current="page"]')).toHaveCount(0);
   // Icons and names, in one horizontal line (every entry on the same row).
   const tops = await nav
     .getByRole("link")
@@ -41,7 +34,7 @@ test("the layout switches at once, is saved on the account and survives a reload
   // Saved on the account: still there after a reload and on another page.
   await page.reload();
   await expect(page.getByRole("complementary")).toHaveCount(0);
-  await nav.getByRole("link", { name: "Mes amis" }).click();
+  await nav.getByRole("link", { name: "Social" }).click();
   await expect(page).toHaveURL(/\/social$/);
   await expect(page.getByRole("navigation", { name: "Navigation principale" })).toBeVisible();
 
@@ -73,13 +66,13 @@ test("on mobile the top bar scrolls sideways and replaces the bottom bar", async
   const nav = page.getByRole("navigation", { name: "Navigation principale" });
   await expect(nav).toHaveCount(1);
   await expect(nav.getByRole("link", { name: "Accueil" })).toBeVisible();
-  // Seven entries do not fit in 375 px: the strip scrolls, the page itself does not.
+  // Five entries do not fit in 375 px: the strip scrolls, the page itself does not.
   const strip = nav.getByRole("list");
   expect(await strip.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
   ).toBe(0);
-  await nav.getByRole("link", { name: "Mon profil" }).scrollIntoViewIfNeeded();
+  await nav.getByRole("link", { name: "Réviser" }).scrollIntoViewIfNeeded();
   // Targets stay at least 44 px high.
   const small = await nav
     .getByRole("link")

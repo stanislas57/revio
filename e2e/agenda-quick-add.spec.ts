@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { addSubject } from "./support/notes";
 import { newAccount } from "./support/new-account";
 
 // Connected scenario (fake Supabase server): `npm run test:e2e:connected`.
@@ -9,10 +10,7 @@ test("agenda: add a revision with buttons only, nothing typed", async ({ page })
   await page.goto("/agenda");
 
   // A subject to pick (created in the academic module).
-  await page.goto("/accueil");
-  await page.getByLabel("Matière", { exact: true }).fill("Droit");
-  await page.getByRole("button", { name: "Ajouter la matière" }).click();
-  await expect(page.getByText("Droit").first()).toBeVisible();
+  await addSubject(page, "Droit");
 
   await page.goto("/agenda");
   const quick = page.locator("#ajouter");

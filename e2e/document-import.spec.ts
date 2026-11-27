@@ -31,7 +31,7 @@ test("a transcript PDF is read, checked by the user, then imported without being
   page,
 }) => {
   await newAccount(page, "doc");
-  await page.goto("/accueil");
+  await page.goto("/notes/importer");
   await page.getByLabel(/^Document/).setInputFiles({
     name: "releve.pdf",
     mimeType: "application/pdf",
@@ -51,7 +51,7 @@ test("a transcript PDF is read, checked by the user, then imported without being
   await page.getByRole("button", { name: "Importer les lignes cochées" }).click();
   await expect(page.getByText("2 matières et 2 notes ajoutées.")).toBeVisible();
 
-  await page.reload();
+  await page.goto("/notes");
   await expect(page.getByText("Mathematiques").first()).toBeVisible();
   await expect(page.getByText("Anglais").first()).toBeVisible();
 });
@@ -60,7 +60,7 @@ test("pasted text and a CSV work; an unchecked line is not imported; a second im
   page,
 }) => {
   await newAccount(page, "csv");
-  await page.goto("/accueil");
+  await page.goto("/notes/importer");
   await page.getByLabel(/^Document/).setInputFiles({
     name: "matieres.csv",
     mimeType: "text/csv",
@@ -75,13 +75,13 @@ test("pasted text and a CSV work; an unchecked line is not imported; a second im
   await page.getByRole("button", { name: "Analyser le document" }).click();
   await page.getByRole("button", { name: "Importer les lignes cochées" }).click();
   await expect(page.getByText("0 matière et 1 note ajoutées.")).toBeVisible();
-  await page.reload();
+  await page.goto("/notes");
   await expect(page.locator("[data-slot=card-title]", { hasText: "Philosophie" })).toHaveCount(1);
 });
 
 test("a file that is not a document is refused with a clear message", async ({ page }) => {
   await newAccount(page, "bad");
-  await page.goto("/accueil");
+  await page.goto("/notes/importer");
   await page.getByLabel(/^Document/).setInputFiles({
     name: "photo.png",
     mimeType: "image/png",

@@ -1,31 +1,58 @@
 import { describe, expect, it } from "vitest";
-import { activeNavHref, NAV_ITEMS } from "./nav-items";
+import { activeNavHref, NAV_ITEMS, PROFILE_HREF } from "./nav-items";
+
+describe("the menu", () => {
+  it("has the four entries of the design, in order", () => {
+    expect(NAV_ITEMS.map((i) => [i.label, i.href])).toEqual([
+      ["Accueil", "/accueil"],
+      ["Social", "/social"],
+      ["Notes", "/notes"],
+      ["Agenda", "/agenda"],
+    ]);
+  });
+
+  it("gives Notes its four sub-pages, the first one being « Mes notes » itself", () => {
+    const notes = NAV_ITEMS.find((i) => i.href === "/notes");
+    expect(notes?.children?.map((c) => c.href)).toEqual([
+      "/notes",
+      "/notes/simulateur",
+      "/notes/temps",
+      "/notes/importer",
+    ]);
+  });
+
+  it("leads to the profile from the sidebar card and the avatar, not from an entry", () => {
+    expect(PROFILE_HREF).toBe("/profil");
+    expect(NAV_ITEMS.some((i) => i.href === PROFILE_HREF)).toBe(false);
+  });
+});
 
 describe("activeNavHref", () => {
   it("picks the exact entry", () => {
     expect(activeNavHref("/social", NAV_ITEMS)).toBe("/social");
-    expect(activeNavHref("/profil", NAV_ITEMS)).toBe("/profil");
+    expect(activeNavHref("/notes", NAV_ITEMS)).toBe("/notes");
   });
 
-  it("prefers the longest matching route for a sub-page", () => {
-    expect(activeNavHref("/profil/statistiques", NAV_ITEMS)).toBe("/profil/statistiques");
-    expect(activeNavHref("/social/classement", NAV_ITEMS)).toBe("/social/classement");
+  it("keeps a sub-page on its entry", () => {
+    expect(activeNavHref("/notes/simulateur", NAV_ITEMS)).toBe("/notes");
+    expect(activeNavHref("/social/classement", NAV_ITEMS)).toBe("/social");
     expect(activeNavHref("/social/amis/42", NAV_ITEMS)).toBe("/social");
-    expect(activeNavHref("/profil/trophees", NAV_ITEMS)).toBe("/profil");
   });
 
-  it("falls back to the parent when the sub-page has no entry in the list (mobile bar)", () => {
-    const mobile = NAV_ITEMS.filter((i) => i.mobileLabel);
-    expect(activeNavHref("/profil/statistiques", mobile)).toBe("/profil");
-    expect(activeNavHref("/social/classement", mobile)).toBe("/social");
+  it("finds the current sub-page of an entry by the longest route", () => {
+    const children = NAV_ITEMS.find((i) => i.href === "/notes")!.children!;
+    expect(activeNavHref("/notes", children)).toBe("/notes");
+    expect(activeNavHref("/notes/temps", children)).toBe("/notes/temps");
+    expect(activeNavHref("/notes/importer", children)).toBe("/notes/importer");
+  });
+
+  it("marks no entry on the pages that have none (profile, statistics, Focus)", () => {
+    for (const path of ["/profil", "/profil/statistiques", "/profil/trophees", "/focus", "/apercu"]) {
+      expect(activeNavHref(path, NAV_ITEMS)).toBe("");
+    }
   });
 
   it("does not match a route that only shares a prefix", () => {
-    expect(activeNavHref("/profilx", NAV_ITEMS)).toBe("");
-    expect(activeNavHref("/apercu", NAV_ITEMS)).toBe("");
-  });
-
-  it("keeps exactly four entries for the mobile bar", () => {
-    expect(NAV_ITEMS.filter((i) => i.mobileLabel)).toHaveLength(4);
+    expect(activeNavHref("/notesx", NAV_ITEMS)).toBe("");
   });
 });

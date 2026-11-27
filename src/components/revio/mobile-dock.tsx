@@ -6,7 +6,16 @@ import { Zap, type LucideIcon } from "lucide-react";
 import { LayoutGroup, motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
-export type NavItem = { href: string; label: string; Icon: LucideIcon; badge?: number };
+/** A sub-page shown under its entry in the desktop sidebar while the entry is the current one. */
+export type NavChild = { href: string; label: string };
+
+export type NavItem = {
+  href: string;
+  label: string;
+  Icon: LucideIcon;
+  badge?: number;
+  children?: NavChild[];
+};
 
 /**
  * Bottom bar of the charter (mobile): four tabs and, in the middle, the raised violet "Réviser" button. The

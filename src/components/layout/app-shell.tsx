@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { ShellProfile } from "./main-nav";
 import type { NavLayout } from "./nav-layout";
+import { PROFILE_HREF } from "./nav-items";
 import { NavLayoutProvider } from "./nav-layout-provider";
 import { ShellFrame } from "./shell-frame";
 import { ThemeToggle } from "./theme-toggle";
@@ -21,6 +23,24 @@ function SignOutButton({ compact = false }: { compact?: boolean }) {
         {!compact && "Se déconnecter"}
       </Button>
     </form>
+  );
+}
+
+/** The avatar of the headers: the profile has no entry in the menu, this is the way to it on a small screen. */
+function ProfileLink({ profile }: { profile: ShellProfile }) {
+  return (
+    <Link
+      href={PROFILE_HREF}
+      aria-label={`Mon profil : ${profile.name}`}
+      className="grid size-11 place-items-center rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+    >
+      <span
+        aria-hidden
+        className="grid size-9 place-items-center rounded-full bg-brand-soft text-xs font-bold text-brand-soft-foreground"
+      >
+        {profile.initials}
+      </span>
+    </Link>
   );
 }
 
@@ -57,12 +77,14 @@ export function AppShell({
         }
         headerActions={
           <>
+            <ProfileLink profile={profile} />
             <ThemeToggle />
             <SignOutButton compact />
           </>
         }
         mobileActions={
           <>
+            <ProfileLink profile={profile} />
             <ThemeToggle />
             <SignOutButton compact />
           </>

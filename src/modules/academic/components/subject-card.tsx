@@ -5,6 +5,7 @@ import { Archive, ArchiveRestore, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { formatShortDate } from "../domain/dates";
 import { formatAverage, formatCoefficient, formatGrade } from "../domain/format";
 import { GRADE_KIND_LABELS, type Subject } from "../domain/types";
@@ -14,7 +15,10 @@ import { FormMessage } from "./fields";
 import { GradeForm } from "./grade-form";
 import { SubjectForm } from "./subject-form";
 
-export function SubjectCard({ subject }: { subject: Subject }) {
+/** Two soft tints, one subject out of two, so neighbouring subjects are easy to tell apart (as in the timetable). */
+const TINTS = ["bg-brand-soft/60", "bg-revio-social/10"] as const;
+
+export function SubjectCard({ subject, tint = 0 }: { subject: Subject; tint?: number }) {
   const [editing, setEditing] = useState(false);
   const [editingGrade, setEditingGrade] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
@@ -34,7 +38,7 @@ export function SubjectCard({ subject }: { subject: Subject }) {
   return (
     <Card
       id={`matiere-${subject.id}`}
-      className={subject.archived ? "scroll-mt-20 opacity-70" : "scroll-mt-20"}
+      className={cn("scroll-mt-20", TINTS[tint % 2], subject.archived && "opacity-70")}
     >
       <CardHeader className="flex flex-col items-center gap-2 text-center">
         <div className="min-w-0 space-y-1">
@@ -60,7 +64,9 @@ export function SubjectCard({ subject }: { subject: Subject }) {
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold tabular-nums">{average === null ? "—" : formatAverage(average)}</p>
+          <p className="font-heading text-3xl font-extrabold tabular-nums">
+            {average === null ? "—" : formatAverage(average)}
+          </p>
           <p className="text-xs text-muted-foreground">
             /20 · {subject.grades.length} note{subject.grades.length > 1 ? "s" : ""}
           </p>

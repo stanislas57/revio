@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { addSubject } from "./support/notes";
 import { skipOnboarding } from "./support/new-account";
 
 // A brand-new account (just after choosing a username) has no data: each tab explains what to do and
@@ -20,12 +21,12 @@ async function newAccount(page: Page) {
 }
 
 test.describe("first run", () => {
-  test("Accueil: no subject yet, the button leads to the subject form", async ({ page }) => {
+  test("Notes: no subject yet, the button leads to the subject form", async ({ page }) => {
     await newAccount(page);
-    await page.goto("/accueil");
+    await page.goto("/notes");
     await expect(page.getByText("Aucune matière pour l'instant")).toBeVisible();
     await page.getByRole("link", { name: "Ajouter ma première matière" }).click();
-    await expect(page).toHaveURL(/\/accueil#ajouter-matiere$/);
+    await expect(page).toHaveURL(/\/notes\/importer#ajouter-matiere$/);
     await expect(page.locator("#ajouter-matiere")).toContainText("Ajouter une matière"); // the anchor exists
     await expect(page.getByText("Ajouter une matière", { exact: true })).toBeInViewport();
     await expect(page.getByLabel("Matière", { exact: true })).toBeVisible();
@@ -71,10 +72,7 @@ test.describe("first run", () => {
 
   test("the empty states disappear once there is data", async ({ page }) => {
     await newAccount(page);
-    await page.goto("/accueil");
-    await page.getByLabel("Matière", { exact: true }).fill("Droit");
-    await page.getByRole("button", { name: "Ajouter la matière" }).click();
-    await expect(page.getByText("Droit").first()).toBeVisible();
+    await addSubject(page, "Droit");
     await expect(page.getByText("Aucune matière pour l'instant")).toHaveCount(0);
 
     await page.goto("/focus");

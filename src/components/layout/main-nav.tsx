@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { DesktopSidebar } from "@/components/revio/desktop-sidebar";
 import { MobileDock, type NavItem as RevioNavItem } from "@/components/revio/mobile-dock";
 import { TopNav } from "@/components/revio/top-nav";
-import { activeNavHref, NAV_ITEMS } from "./nav-items";
+import { Zap } from "lucide-react";
+import { activeNavHref, NAV_ITEMS, PROFILE_HREF } from "./nav-items";
 
 export type ShellProfile = {
   name: string;
@@ -18,10 +19,15 @@ export type ShellProfile = {
 
 const FOCUS = "/focus";
 
-const SIDEBAR_ITEMS: RevioNavItem[] = NAV_ITEMS.map(({ href, label, icon }) => ({ href, label, Icon: icon }));
-const MOBILE_ITEMS = NAV_ITEMS.flatMap(({ href, mobileLabel, icon }) =>
-  mobileLabel ? [{ href, label: mobileLabel, Icon: icon }] : [],
-) as [RevioNavItem, RevioNavItem, RevioNavItem, RevioNavItem];
+const SIDEBAR_ITEMS: RevioNavItem[] = NAV_ITEMS.map(({ href, label, icon, children }) => ({
+  href,
+  label,
+  Icon: icon,
+  children,
+}));
+/** The top bar has no central "Réviser" button: Focus is an entry of its own there. */
+const TOP_ITEMS: RevioNavItem[] = [...SIDEBAR_ITEMS, { href: FOCUS, label: "Réviser", Icon: Zap }];
+const MOBILE_ITEMS = SIDEBAR_ITEMS as [RevioNavItem, RevioNavItem, RevioNavItem, RevioNavItem];
 
 /** Desktop (md+): the white sidebar with the "Réviser maintenant" button and the profile card. */
 export function ShellSidebar({ profile, footer }: { profile: ShellProfile; footer: ReactNode }) {
@@ -31,6 +37,11 @@ export function ShellSidebar({ profile, footer }: { profile: ShellProfile; foote
       className="h-full"
       items={SIDEBAR_ITEMS}
       activeHref={activeNavHref(pathname, SIDEBAR_ITEMS)}
+      activeChildHref={activeNavHref(
+        pathname,
+        SIDEBAR_ITEMS.find((i) => i.href === activeNavHref(pathname, SIDEBAR_ITEMS))?.children ?? [],
+      )}
+      profileHref={PROFILE_HREF}
       homeHref="/accueil"
       reviseHref={FOCUS}
       reviseActive={activeNavHref(pathname, [{ href: FOCUS }]) === FOCUS}
@@ -66,8 +77,8 @@ export function ShellTopNav({
   const pathname = usePathname();
   return (
     <TopNav
-      items={SIDEBAR_ITEMS}
-      activeHref={activeNavHref(pathname, SIDEBAR_ITEMS)}
+      items={TOP_ITEMS}
+      activeHref={activeNavHref(pathname, TOP_ITEMS)}
       homeHref="/accueil"
       level={{ number: profile.level, name: levelName }}
       actions={actions}
