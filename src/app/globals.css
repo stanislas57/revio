@@ -109,6 +109,8 @@
   --revio-social-text: #c2185b; /* 5.87:1 on white */
   --revio-primary-on-dark: #a99bff; /* violet TEXT on the dark surfaces: 6.76:1 on #20202C */
   /* The first gradient of the landing (its hero): cream at the top, Soft Purple at the bottom. Also the home page. */
+  /* The full-screen Focus background: Revio Purple, white text 5.27:1 or better everywhere. */
+  --revio-focus-gradient: linear-gradient(135deg, #3a2b9e 0%, #6950ee 50%, #4c37c9 100%);
   --revio-hero-gradient: linear-gradient(180deg, var(--revio-landing) 0%, var(--revio-primary-light) 100%);
   /* ---- "Chunky" edges: the darker bottom of 3D buttons and choice tiles (decorative, never carry text) ---- */
   --edge-primary: #4c37c9;
@@ -369,4 +371,35 @@ input:where([type="date"], [type="time"], [type="datetime-local"])::-webkit-date
  */
 .app-column:has([data-page-background="landing"]) {
   background: var(--revio-hero-gradient);
+}
+
+/* Full-screen Focus: the screen fades in, and a "+N XP" floats up once when the estimate grows. Motion only
+   when it is allowed: with reduced motion the screen simply appears and the gain is not drawn (the counter
+   and a live region carry it). */
+@keyframes focus-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes xp-float-up {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-3rem);
+  }
+}
+.xp-float {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .focus-enter {
+    animation: focus-fade-in 0.5s ease-out;
+  }
+  html:not([data-motion="reduce"]) .xp-float {
+    display: inline-block;
+    animation: xp-float-up 1.8s ease-out forwards;
+  }
 }
