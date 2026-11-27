@@ -24,15 +24,15 @@ async function startAndAdvance(page: Page) {
   await expect(page.getByRole("timer")).toBeVisible();
   await advanceClock(MINUTES, username);
   await page.reload();
-  await expect(page.getByRole("button", { name: "Plein écran" })).toBeVisible();
+  // The full-screen view opens by itself, as soon as the session runs.
+  await expect(page.getByRole("dialog", { name: "Séance en plein écran" })).toBeVisible();
 }
 
-test.describe("immersive session", () => {
-  test("big timer, Pause and Finish only; Escape leaves and gives the focus back", async ({ page }) => {
+test.describe("full-screen Focus", () => {
+  test("opens by itself: big timer, XP counter, Pause and Finish only; Escape leaves and gives the focus back", async ({
+    page,
+  }) => {
     await startAndAdvance(page);
-    const trigger = page.getByRole("button", { name: "Plein écran" });
-    await trigger.click();
-
     const dialog = page.getByRole("dialog", { name: "Séance en plein écran" });
     await expect(dialog).toBeVisible();
     // Sober: the timer and the two buttons (plus the small close button for touch screens), nothing else.
@@ -66,7 +66,7 @@ test.describe("immersive session", () => {
 
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
-    await expect(trigger).toBeFocused();
+    await expect(page.getByRole("button", { name: "Plein écran" })).toBeFocused();
     expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
   });
 
@@ -74,12 +74,11 @@ test.describe("immersive session", () => {
     page,
   }) => {
     await startAndAdvance(page);
-    await page.getByRole("button", { name: "Plein écran" }).click();
     const dialog = page.getByRole("dialog", { name: "Séance en plein écran" });
 
     await dialog.getByRole("button", { name: "Pause" }).click();
     await expect(dialog.getByRole("button", { name: "Reprendre" })).toBeVisible();
-    await expect(dialog.getByRole("status")).toHaveText("Séance en pause");
+    await expect(dialog.getByRole("status").filter({ hasText: /^Séance en/ })).toHaveText("Séance en pause");
     const frozen = await dialog.getByRole("timer").innerText();
     await page.waitForTimeout(2200);
     expect(await dialog.getByRole("timer").innerText()).toBe(frozen);
@@ -96,7 +95,6 @@ test.describe("immersive session", () => {
   test("no animation when the user prefers reduced motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await startAndAdvance(page);
-    await page.getByRole("button", { name: "Plein écran" }).click();
     const dialog = page.getByRole("dialog", { name: "Séance en plein écran" });
     // An element has no transition when its transition property is "none" or its durations are all 0.
     const offenders = await dialog.evaluate((root) =>
@@ -119,11 +117,40 @@ test.describe("immersive session", () => {
 
   test("the close button works with a pointer (touch screens have no Escape key)", async ({ page }) => {
     await startAndAdvance(page);
-    await page.getByRole("button", { name: "Plein écran" }).click();
     const close = page.getByRole("button", { name: /Quitter le plein écran/ });
     expect((await close.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
     await close.click();
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect(page.getByRole("timer")).toBeVisible();
+    // « Plein écran » brings it back.
+    await page.getByRole("button", { name: "Plein écran" }).click();
+    await expect(page.getByRole("dialog", { name: "Séance en plein écran" })).toBeVisible();
+  });
+
+  test("the XP counter shows the estimate of the real rules and the recap gives the official total", async ({
+    page,
+  }) => {
+    await startAndAdvance(page); // 12 minutes of study
+    const dialog = page.getByRole("dialog", { name: "Séance en plein écran" });
+    // 12 min = 12 XP (1 XP per minute from the 5th minute), read by screen readers too.
+    await expect(dialog.getByText(`${MINUTES} XP pour cette séance, estimée.`)).toBeAttached();
+    await expect(dialog.getByText("XP de la séance, estimée")).toBeVisible();
+    await dialog.getByRole("button", { name: "Terminer" }).click();
+    // The recap (the database's total) agrees with the estimate here: no goal or streak bonus below 30 min.
+    await expect(page).toHaveURL(/\/focus\/seance\//);
+    await expect(page.getByText(new RegExp(`\\+\\s*${MINUTES}\\s*XP`)).first()).toBeVisible();
+    // Back to the normal interface from the recap.
+    await page.goto("/focus");
+    await expect(page.getByRole("navigation", { name: "Navigation principale" }).first()).toBeVisible();
+  });
+
+  test("before the 5th minute the counter says when XP starts", async ({ page }) => {
+    const username = await newAccount(page, "immzero");
+    await page.goto("/focus");
+    await page.getByRole("button", { name: "Démarrer" }).click();
+    const dialog = page.getByRole("dialog", { name: "Séance en plein écran" });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText("L'XP commence à la 5e minute.")).toBeVisible();
+    expect(username).toBeTruthy();
   });
 });

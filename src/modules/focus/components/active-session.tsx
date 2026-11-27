@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Maximize2, Pause, Play, Square, X } from "lucide-react";
 import { toast } from "sonner";
@@ -18,7 +18,8 @@ import {
   pauseSession,
   resumeSession,
 } from "../server/actions";
-import { ImmersiveSession } from "./immersive-session";
+import { liveXpEstimate } from "../domain/live-xp";
+import { FocusFullscreen } from "./focus-fullscreen";
 import { useNow } from "./use-now";
 
 const HEARTBEAT_MS = 60_000;
@@ -32,8 +33,18 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
   const [pending, startTransition] = useTransition();
   const [offset] = useState(() => clockOffsetMs(session.serverNow, Date.now()));
   const localNow = useNow();
-  const [immersive, setImmersive] = useState(false);
-  const closeImmersive = useCallback(() => setImmersive(false), []);
+  // The full-screen view opens by itself as soon as a session runs; closing it shows the normal panel.
+  const [immersive, setImmersive] = useState(true);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const [leftFullscreen, setLeftFullscreen] = useState(false);
+  const closeImmersive = useCallback(() => {
+    setImmersive(false);
+    setLeftFullscreen(true);
+  }, []);
+  // After leaving it on purpose, the focus goes back to the button that opens it again.
+  useEffect(() => {
+    if (leftFullscreen && !immersive) trigger.current?.focus();
+  }, [leftFullscreen, immersive]);
   const paused = session.status === "paused";
 
   // Keeps the session "online" for friends while this tab is visible.
@@ -76,7 +87,8 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
   return (
     <>
       {immersive && (
-        <ImmersiveSession
+        <FocusFullscreen
+          xp={liveXpEstimate(elapsed ?? 0)}
           time={timeText}
           timerLabel={planned ? "Temps restant" : "Temps écoulé"}
           paused={paused}
@@ -170,7 +182,13 @@ export function ActiveSessionPanel({ session }: { session: ActiveSession }) {
         >
           <X aria-hidden /> Abandonner
         </Button>
-        <Button className="min-h-11" variant="outline" size="sm" onClick={() => setImmersive(true)}>
+        <Button
+          ref={trigger}
+          className="min-h-11"
+          variant="outline"
+          size="sm"
+          onClick={() => setImmersive(true)}
+        >
           <Maximize2 aria-hidden /> Plein écran
         </Button>
       </section>
