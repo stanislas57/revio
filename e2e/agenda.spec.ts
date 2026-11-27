@@ -18,7 +18,7 @@ test("agenda: add, repeat, conflict, edit, views, delete", async ({ page }) => {
 
   // Work in a fixed week (Mon 7 Dec 2026 → Sun 13 Dec) so the test does not depend on today's date.
   await page.goto("/agenda?vue=semaine&date=2026-12-07");
-  await expect(page.getByRole("heading", { name: "Agenda" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Emploi du temps" })).toBeVisible();
 
   // The detailed form is folded under the quick path: open it.
   await page.getByText("Saisie détaillée").click();
@@ -35,9 +35,9 @@ test("agenda: add, repeat, conflict, edit, views, delete", async ({ page }) => {
   await page.getByLabel("Répétition").selectOption("weekly");
   await page.getByLabel("Jusqu'au").fill("2026-12-21");
   await page.getByRole("button", { name: "Ajouter à l'agenda" }).click();
-  const monday = page.getByRole("region", { name: /lundi 7 décembre 2026/ });
-  await expect(monday.getByText("Révision maths")).toBeVisible();
-  await expect(monday.getByText("répété")).toBeVisible();
+  // The week grid has one list per day; each card is a link to the day.
+  const monday = page.getByRole("list", { name: "lundi 7 décembre 2026", exact: true });
+  await expect(monday.getByRole("link", { name: /Révision maths/ })).toBeVisible();
 
   // A class overlapping the slot is flagged as a conflict on both.
   await page.getByLabel("Titre").fill("Cours de droit");
@@ -51,16 +51,18 @@ test("agenda: add, repeat, conflict, edit, views, delete", async ({ page }) => {
 
   // Next week shows the repeated slot, without the one-off class.
   await page.getByRole("link", { name: "Période suivante" }).click();
-  const nextMonday = page.getByRole("region", { name: /lundi 14 décembre 2026/ });
-  await expect(nextMonday.getByText("Révision maths")).toBeVisible();
+  const nextMonday = page.getByRole("list", { name: "lundi 14 décembre 2026", exact: true });
+  await expect(nextMonday.getByRole("link", { name: /Révision maths/ })).toBeVisible();
   await expect(page.getByText("Cours de droit")).toHaveCount(0);
 
   // Month view lists the day, which links to the day view.
   await page.getByRole("link", { name: "Mois" }).click();
   await expect(page.getByRole("group", { name: "Mois" })).toBeVisible();
-  await page.getByRole("link", { name: /^lundi 14 décembre 2026, 1 élément$/ }).click();
+  await page.getByRole("link", { name: /^14 décembre 2026, 1 élément$/ }).click();
   await expect(page).toHaveURL(/vue=jour/);
   await expect(page.getByText("Révision maths")).toBeVisible();
+  // The day view says it repeats.
+  await expect(page.getByText("répété")).toBeVisible();
 
   // Edit the series, then delete it (the confirmation dialog is accepted).
   await page.getByRole("button", { name: "Modifier Révision maths" }).click();

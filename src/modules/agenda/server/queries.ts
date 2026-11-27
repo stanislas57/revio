@@ -77,3 +77,19 @@ export async function getAgendaData(from: string, to: string): Promise<AgendaDat
     subjects: z.array(subjectRow).parse(subjects.data ?? []),
   };
 }
+
+/** The next exams from `today` on (RLS: owner only), for the "Prochain contrôle" card and the month's "À venir". */
+export async function getUpcomingExams(today: string, limit = 3): Promise<ExamItem[]> {
+  const { supabase } = await requireUser();
+  const { data, error } = await supabase
+    .from("exams")
+    .select("id, subject_id, title, exam_on")
+    .gte("exam_on", today)
+    .order("exam_on", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error("Impossible de charger tes prochains contrôles.");
+  return z
+    .array(examRow)
+    .parse(data ?? [])
+    .map((r): ExamItem => ({ id: r.id, subjectId: r.subject_id, title: r.title, examOn: r.exam_on }));
+}
