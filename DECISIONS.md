@@ -159,7 +159,9 @@ est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#30304
 - `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : cette mise à jour est faite sur décision
   de Charles, **sans attendre la confirmation de Stan**. Stan peut la contester dans la PR.
 
-### D-24 — École choisie et import de documents (proposé par Stan le 26/11/2026, à valider par Charles)
+### D-26 — École choisie et import de documents (proposé par Stan le 26/11/2026, à valider par Charles)
+
+Numérotée D-24 par erreur jusqu'au 27/11/2026 (doublon avec la charte bêta), renumérotée lors de l'audit.
 
 - **Base d'écoles** : table publique `schools` (5 853 établissements) chargée par migration depuis deux jeux de
   données ouverts, Licence Ouverte Etalab : annuaire de l'éducation (lycées) et principaux établissements
@@ -185,9 +187,17 @@ est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#30304
 
 ## Ouvertes
 
-- Confirmation d'e-mail activée ou non pour la démo.
-- Région du projet Supabase (UE recommandée, RGPD).
-- Visibilité par défaut des séances (point 6).
-- Offre Vercel Hobby réservée à un usage non commercial : à revoir avant monétisation.
-- Dépôt GitHub **public** (constaté le 25/11/2026) alors qu'il était prévu privé : à confirmer.
-- Pseudo : obligatoire avant d'utiliser Social (proposé en S-04).
+Revues lors de l'audit du 27/11/2026.
+
+- Région du projet Supabase (UE recommandée, RGPD) : à confirmer dans le tableau de bord Supabase, non visible
+  depuis le dépôt.
+- Visibilité par défaut des séances (point 6) : toujours `friends` par défaut ; le réglage existe depuis S-15
+  (#41), le choix du défaut reste à valider (utilisateurs mineurs).
+- Offre Vercel Hobby réservée à un usage non commercial : à revoir avant toute publicité (D-25).
+
+## Refermées lors de l'audit du 27/11/2026
+
+- Confirmation d'e-mail : **désactivée** sur le projet Supabase hébergé (choix de Stan, 25/11/2026).
+- Dépôt GitHub : **privé** depuis le 25/11/2026, à la demande de Stan. Conséquence : pas de protection de
+  `main` sur GitHub Free.
+- Pseudo obligatoire avant Social : **en place** (S-04, #21).
