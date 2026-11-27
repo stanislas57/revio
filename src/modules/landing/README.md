@@ -5,7 +5,7 @@ Page d'accueil publique (`src/app/page.tsx`). Aucun appel serveur, aucun appel �
 ## Ce qui est statique et ce qui est interactif
 
 - **Statique (rendu serveur)** : en-tête, hero de la charte (pastille, titre, sous-titre, boutons « Rejoindre la bêta »
-  et « Explorer la démo », bandeau « Planifie ✦ Révise ✦ Gagne de l'XP ✦ Recommence »), offre, FAQ, bandeau final,
+  et « Explorer la démo », bandeau « Planifie ✦ Révise ✦ Gagne de l'XP ✦ Recommence »), FAQ, bandeau final,
   pied de page, aperçus (`preview.tsx`).
 - **Îlots interactifs (JavaScript client)** : `pillars.tsx` (grille « bento » des quatre piliers, ancre `#piliers`),
   `reveal.tsx` et `xp-count.tsx` (apparition au défilement, compteur). Le hero n'a plus de cartes en orbite ni de vues de démo plein écran
@@ -38,7 +38,7 @@ d'XP des piliers (`pillar-pop`), mouvement réduit. Les couleurs et la police (I
 ## Règles de contenu
 
 Aucun slogan officiel (le titre du hero est **provisoire**), aucun témoignage, aucun nombre d'utilisateurs, **aucun
-tarif** (l'offre Premium est « envisagée », sans prix) ; les fonctions non livrées portent « En construction » ou
+tarif** (aucune offre payante, D-25) ; les fonctions non livrées portent « En construction » ou
 « Bientôt » ; les aperçus sont illustratifs (données inventées, `MockBadge`). Pas de pages légales (mentions,
 confidentialité) : à ajouter avant l'ouverture au public.
 

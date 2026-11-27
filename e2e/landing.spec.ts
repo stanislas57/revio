@@ -5,12 +5,7 @@ test.describe("landing page", () => {
   test("has its sections and a single main heading", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
-    for (const name of [
-      /quatre idées/i,
-      /à quoi ça ressemble/i,
-      /gratuit pour commencer/i,
-      /questions fréquentes/i,
-    ]) {
+    for (const name of [/quatre idées/i, /à quoi ça ressemble/i, /questions fréquentes/i]) {
       await expect(page.getByRole("heading", { level: 2, name })).toBeVisible();
     }
   });
@@ -212,16 +207,13 @@ test.describe("landing hero", () => {
     expect(looping).toBe(0);
   });
 
-  test("the session preview ends on +115 XP (65 min + the daily goal) and the offer shows no price", async ({
-    page,
-  }) => {
+  test("the session preview ends on +115 XP (65 min + the daily goal)", async ({ page }) => {
     await page.goto("/");
     const preview = page.locator("#apercu");
     await preview.scrollIntoViewIfNeeded();
     await expect(preview.getByLabel("+115")).toBeVisible();
     await expect(preview).toContainText("65 min de révision : +65 XP");
     await expect(preview).toContainText("Objectif du jour atteint : +50 XP");
-    await expect(page.locator("#offre")).toContainText("Envisagé");
   });
 
   test("Rejoindre la bêta, Accès bêta and Se connecter lead to the login page", async ({ page }) => {
