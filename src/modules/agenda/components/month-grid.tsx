@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { eachDay, formatLongDate, formatWeekdayShort, weekdayIndex } from "../domain/dates";
+import { cn } from "@/lib/utils";
+import { eachDay, formatMonth, formatWeekdayShort, weekdayIndex } from "../domain/dates";
 import type { AgendaItem } from "../domain/types";
 
 type Props = {
@@ -16,47 +17,56 @@ const DOT: Record<AgendaItem["kind"], string> = {
   class: "bg-sky-500",
   unavailable: "bg-muted-foreground",
   other: "bg-amber-500",
-  exam: "bg-destructive",
+  exam: "bg-revio-primary",
 };
 
-/** Month overview: one cell per day with coloured dots; a day links to its day view. */
+/**
+ * Month overview: one cell per day with its number, coloured dots, a dark circle for today and a violet one for a
+ * day with a test; a day links to its day view.
+ */
 export function MonthGrid({ from, to, month, today, byDay }: Props) {
   const days = eachDay(from, to);
   return (
-    <div role="group" aria-label="Mois" className="overflow-hidden rounded-md border">
-      <div className="grid grid-cols-7 border-b bg-muted/40 text-center text-xs font-medium">
+    <div role="group" aria-label="Mois" className="rounded-3xl border bg-card p-2 sm:p-3">
+      <div className="grid grid-cols-7 text-center text-xs font-semibold text-muted-foreground uppercase">
         {days.slice(0, 7).map((d) => (
-          <div key={d} className="p-1.5 capitalize">
-            {formatWeekdayShort(d)}
+          <div key={d} className="p-1.5">
+            {formatWeekdayShort(d).slice(0, 3)}
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 gap-y-1">
         {days.map((d) => {
           const items = byDay.get(d) ?? [];
           const inMonth = d.startsWith(month);
+          const exam = items.some((i) => i.kind === "exam");
+          const isToday = d === today;
           return (
             <Link
               key={d}
               href={`?vue=jour&date=${d}`}
-              aria-label={`${formatLongDate(d)}, ${items.length} élément${items.length > 1 ? "s" : ""}`}
-              className={`flex min-h-14 flex-col gap-1 border-r border-b p-1.5 text-xs hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring sm:min-h-20 ${
-                inMonth ? "" : "text-muted-foreground opacity-60"
-              } ${weekdayIndex(d) === 6 ? "border-r-0" : ""}`}
+              className={cn(
+                "flex min-h-14 flex-col items-center gap-1 rounded-2xl p-1 text-xs outline-none hover:bg-muted/60 focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:min-h-16",
+                !inMonth && "text-muted-foreground",
+                weekdayIndex(d) >= 5 && inMonth && "font-medium",
+              )}
             >
               <span
-                className={`w-fit rounded-full px-1.5 tabular-nums ${
-                  d === today ? "bg-primary font-semibold text-primary-foreground" : ""
-                }`}
+                className={cn(
+                  "grid size-8 place-items-center rounded-full text-sm font-bold tabular-nums",
+                  isToday ? "bg-foreground text-background" : exam && "bg-revio-primary text-white",
+                )}
               >
                 {Number(d.slice(8))}
               </span>
-              <span className="flex flex-wrap gap-0.5">
+              <span className="flex flex-wrap justify-center gap-0.5">
                 {items.slice(0, 6).map((i) => (
-                  <span key={i.key} className={`size-1.5 rounded-full ${DOT[i.kind]}`} aria-hidden />
+                  <span key={i.key} className={`size-2 rounded-full ${DOT[i.kind]}`} aria-hidden />
                 ))}
               </span>
-              {items.length > 0 && <span className="hidden truncate sm:block">{items[0]?.title}</span>}
+              <span className="sr-only">
+                {` ${formatMonth(d)}${isToday ? ", aujourd'hui" : ""}, ${items.length} élément${items.length > 1 ? "s" : ""}`}
+              </span>
             </Link>
           );
         })}

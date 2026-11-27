@@ -76,3 +76,10 @@ export const formatMonth = (iso: string) => fmt({ month: "long", year: "numeric"
 export const formatWeekdayShort = (iso: string) => fmt({ weekday: "short" }, iso);
 /** "3 déc." */
 export const formatDayMonth = (iso: string) => fmt({ day: "numeric", month: "short" }, iso);
+/** "23 au 29 novembre", or "27 nov. au 3 déc." when the week spans two months. */
+export function formatWeekRange(from: string, to: string): string {
+  if (from.slice(0, 7) === to.slice(0, 7)) {
+    return `${Number(from.slice(8))} au ${fmt({ day: "numeric", month: "long" }, to)}`;
+  }
+  return `${formatDayMonth(from)} au ${formatDayMonth(to)}`;
+}
