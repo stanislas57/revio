@@ -12,9 +12,9 @@ test("onboarding: one question per screen, then the answers are in « Mes inform
   await expect(page.getByText(`Bienvenue, ${username} !`)).toBeVisible();
   await expect(page.getByRole("progressbar", { name: "Question 1 sur 3" })).toBeVisible();
 
-  // 1. School: "Continuer" waits for a choice.
+  // 1. School: every question is optional, so "Continuer" is clickable even before a choice.
   const next = page.getByRole("button", { name: "Continuer" });
-  await expect(next).toBeDisabled();
+  await expect(next).toBeEnabled();
   await page.getByLabel("Nom ou ville").fill("Université Avignon");
   await page.getByRole("button", { name: /Avignon Université/ }).click();
   await next.click();
@@ -66,11 +66,11 @@ test("onboarding: one question per screen, then the answers are in « Mes inform
   }
 });
 
-test("onboarding: every question can be skipped, with the keyboard too, and Retour goes back", async ({
+test("onboarding: every question can be left empty, with the keyboard too, and Retour goes back", async ({
   page,
 }) => {
   await newAccountBeforeOnboarding(page, "onbskip");
-  await page.getByRole("button", { name: "Passer cette question" }).click();
+  await page.getByRole("button", { name: "Continuer" }).click();
 
   // Arrow keys move the choice in the grid; Retour goes back to the school.
   const levels = page.getByRole("radiogroup", { name: "En quelle année es-tu ?" });
@@ -81,9 +81,9 @@ test("onboarding: every question can be skipped, with the keyboard too, and Reto
   await page.getByRole("button", { name: "Retour" }).click();
   await expect(page.getByRole("progressbar", { name: "Question 1 sur 3" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Passer cette question" }).click();
-  await page.getByRole("button", { name: "Passer cette question" }).click();
-  await page.getByRole("button", { name: "Passer cette question" }).click();
+  await page.getByRole("button", { name: "Continuer" }).click();
+  await page.getByRole("button", { name: "Continuer" }).click();
+  await page.getByRole("button", { name: "Terminer" }).click();
   await expect(page.getByRole("heading", { name: "Personnalise Revio" })).toHaveCount(0);
 
   await page.goto("/profil");

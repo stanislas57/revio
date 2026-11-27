@@ -123,13 +123,22 @@ export default async function ProfilPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-10">
-            <section id="ecole" aria-labelledby="ecole-title" className="scroll-mt-20 space-y-4">
-              <h3 id="ecole-title" className="text-xl font-extrabold">
-                Mon école
-              </h3>
-              <SchoolPicker current={education.school} />
-            </section>
-            <EducationDetailsForm studyLevel={education.studyLevel} gender={education.gender} />
+            {education.unavailable ? (
+              <p role="status" className="text-sm text-muted-foreground">
+                Tes informations d&apos;études ne sont pas disponibles pour le moment. Rien n&apos;est perdu :
+                réessaie un peu plus tard.
+              </p>
+            ) : (
+              <>
+                <section id="ecole" aria-labelledby="ecole-title" className="scroll-mt-20 space-y-4">
+                  <h3 id="ecole-title" className="text-xl font-extrabold">
+                    Mon école
+                  </h3>
+                  <SchoolPicker current={education.school} />
+                </section>
+                <EducationDetailsForm studyLevel={education.studyLevel} gender={education.gender} />
+              </>
+            )}
           </CardContent>
         </Card>
 

@@ -43,3 +43,7 @@ set -a && . ./.env.local && set +a && npm run test:live
 ```
 
 `scripts/check-live.mjs` rejoue, avec la seule clé publishable, les contrôles de l'agenda, du planning, des réglages de confidentialité (statut en direct, visibilité par défaut), du classement, des statistiques, des trophées, des notifications, des scénarios du simulateur et de la suppression de compte sur le projet réellement branché. Il crée **deux comptes jetables** (`check-live-*@example.test`, mot de passe aléatoire jamais affiché) et les supprime à la fin avec `delete_my_account()`. La confirmation d'e-mail doit être désactivée. Il sert aussi à valider une migration juste après un `db push`. Le même script tourne sur le faux serveur : `--url http://127.0.0.1:54399 --key local-fake-key`.
+
+## Simuler une base à laquelle il manque une migration
+
+Pour vérifier que l'onboarding ne bloque jamais l'accès au compte, le faux serveur (toujours avec `--test-clock`) expose `POST /__test/break-education {"username": "…", "mode": "missing-columns" | "all" | "none"}`. Pour cet utilisateur seulement : `missing-columns` fait échouer les lectures de `study_level` / `gender` (erreur `42703`) et les écritures qui les portent (erreur `PGRST204`), comme sur une base où `20261126130000_education_details.sql` n'est pas appliquée ; `all` fait échouer toute requête sur `user_education`. Voir `e2e/onboarding-failure.spec.ts`.

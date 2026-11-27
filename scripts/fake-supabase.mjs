@@ -19,6 +19,10 @@
 //   --data persists the database in a folder (omit for a fresh in-memory DB).
 //   --test-clock enables POST /__test/advance-clock {"minutes": n, "username"?: "…"}: it moves the start of the
 //   running study sessions (of that user only, when given) n minutes into the past, so a test can finish a "long" session without waiting.
+//   It also enables POST /__test/break-education {"username": "…", "mode": "missing-columns" | "all" | "none"}: for
+//   that user only, the `user_education` table behaves as on a database where the study_level / gender migration
+//   was never applied ("missing-columns": reads of those columns and writes carrying them fail with the real
+//   PostgREST errors) or as if it were down ("all": every request fails).
 //   Off by default; it exists only in this fake server (the app has no test hook at all).
 // Then in .env.local: NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:<port>
 //                     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=local-fake-key
@@ -275,7 +279,28 @@ function buildPaging(url) {
 
 const PG_STATUS = { 42501: 403, 23505: 409, 23503: 409, 23514: 400, "22P02": 400, 42703: 400, "42P01": 404 };
 
+// user id -> "missing-columns" | "all" (test hook /__test/break-education, only with --test-clock)
+const BROKEN_EDUCATION = new Map();
+
+function assertEducationWorks(method, table, url, body, claims) {
+  const mode = table === "user_education" && claims?.sub ? BROKEN_EDUCATION.get(claims.sub) : undefined;
+  if (!mode) return;
+  if (mode === "all") throw new RestError(500, "XX000", "simulated outage of user_education");
+  const columns = /study_level|gender/;
+  if (method === "GET" || method === "HEAD") {
+    if (columns.test(url.searchParams.get("select") ?? ""))
+      throw new RestError(400, "42703", "column user_education.study_level does not exist");
+  } else if ([body].flat().some((row) => row && Object.keys(row).some((k) => columns.test(k)))) {
+    throw new RestError(
+      400,
+      "PGRST204",
+      "Could not find the 'gender' column of 'user_education' in the schema cache",
+    );
+  }
+}
+
 async function handleRest(method, table, url, body, headers, claims) {
+  assertEducationWorks(method, table, url, body, claims);
   const prefer = String(headers["prefer"] ?? "");
   const returning = prefer.includes("return=representation");
   const params = [];
@@ -437,6 +462,17 @@ const server = createServer(async (req, res) => {
         [Math.round(minutes), username],
       );
       return send(res, 200, { shifted: moved.affectedRows ?? 0 });
+    }
+    if (TEST_CLOCK && url.pathname === "/__test/break-education" && method === "POST") {
+      const mode = body?.mode;
+      if (!["missing-columns", "all", "none"].includes(mode) || typeof body?.username !== "string")
+        throw new RestError(400, "FAKE001", "username and mode (missing-columns | all | none) are required");
+      const found = await db.query(`select id from public.profiles where username = $1`, [body.username]);
+      const id = found.rows[0]?.id;
+      if (!id) throw new RestError(404, "FAKE002", "unknown username");
+      if (mode === "none") BROKEN_EDUCATION.delete(id);
+      else BROKEN_EDUCATION.set(id, mode);
+      return send(res, 200, { id, mode });
     }
     if (url.pathname === "/health") return send(res, 200, { ok: true });
     return send(res, 404, { message: `Fake Supabase: ${method} ${url.pathname} not supported` });
