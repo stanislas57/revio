@@ -268,6 +268,18 @@ ok(
   "unknown time zone rejected",
   !!(await as(A, `insert into user_settings (timezone) values ('Mars/Olympus')`)).error,
 );
+ok(
+  "nav layout accepts sidebar and top, rejects anything else",
+  !(await as(B, `update user_settings set nav_layout='top'`)).error &&
+    !(await as(B, `update user_settings set nav_layout='sidebar'`)).error &&
+    !!(await as(B, `update user_settings set nav_layout='bottom'`)).error,
+);
+ok(
+  "nobody else reads or changes a nav layout",
+  (await as(B, `update user_settings set nav_layout='top' returning user_id`)).rows?.length === 1 &&
+    (await as(A, `select nav_layout from user_settings`)).rows?.length === 0 &&
+    (await as(A, `update user_settings set nav_layout='sidebar' returning user_id`)).rows?.length === 0,
+);
 
 // streak milestone: 6 past days + today = 7 days → +100, once
 for (let k = 6; k >= 1; k--) {

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { DesktopSidebar } from "@/components/revio/desktop-sidebar";
 import { MobileDock, type NavItem as RevioNavItem } from "@/components/revio/mobile-dock";
+import { TopNav } from "@/components/revio/top-nav";
 import { activeNavHref, NAV_ITEMS } from "./nav-items";
 
 export type ShellProfile = {
@@ -48,6 +49,29 @@ export function ShellDock() {
       activeHref={activeNavHref(pathname, MOBILE_ITEMS)}
       reviseHref={FOCUS}
       reviseActive={activeNavHref(pathname, [{ href: FOCUS }]) === FOCUS}
+    />
+  );
+}
+
+/** "Barre horizontale en haut" layout: every entry (Focus included) in one bar, scrolling sideways on mobile. */
+export function ShellTopNav({
+  profile,
+  actions,
+  levelName,
+}: {
+  profile: ShellProfile;
+  actions: ReactNode;
+  levelName: string;
+}) {
+  const pathname = usePathname();
+  return (
+    <TopNav
+      items={SIDEBAR_ITEMS}
+      activeHref={activeNavHref(pathname, SIDEBAR_ITEMS)}
+      homeHref="/accueil"
+      level={{ number: profile.level, name: levelName }}
+      actions={actions}
+      className="sticky top-0 z-40"
     />
   );
 }
