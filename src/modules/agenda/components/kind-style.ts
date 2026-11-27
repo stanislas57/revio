@@ -11,9 +11,9 @@ export function cardClass(kind: Kind, tint = 0): string {
     case "class":
       return tint % 2 === 0 ? "bg-brand-soft text-foreground" : "bg-revio-social/20 text-foreground";
     case "study":
-      return "bg-revio-midnight text-white dark:bg-primary dark:text-primary-foreground";
+      return "bg-revio-deep text-white";
     case "exam":
-      return "bg-revio-primary text-white";
+      return "bg-[image:var(--revio-exam-gradient)] text-white";
     case "unavailable":
       return "border border-dashed bg-muted text-foreground";
     case "other":

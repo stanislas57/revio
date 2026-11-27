@@ -126,10 +126,7 @@ export function AgendaDay({ date, today, nowMinutes, items, conflicts, events, s
                   </div>
                   {now && (
                     <div className="space-y-1">
-                      <div
-                        aria-hidden
-                        className="h-2 overflow-hidden rounded-pill bg-black/10 dark:bg-white/20"
-                      >
+                      <div aria-hidden className="h-2 overflow-hidden rounded-pill bg-white/50">
                         <div
                           className="h-full rounded-pill bg-revio-social-text"
                           style={{ width: `${now.percent}%` }}

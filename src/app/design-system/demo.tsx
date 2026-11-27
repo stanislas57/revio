@@ -85,6 +85,7 @@ const PALETTE = [
   { name: "Cream White", token: "--revio-landing", hex: "#F8F8F3", use: "Fond de la landing page" },
   { name: "Cloud White", token: "--revio-cloud", hex: "#F7F7FB", use: "Fond de l'application" },
   { name: "Midnight Black", token: "--revio-midnight", hex: "#181921", use: "Titres et texte" },
+  { name: "Deep Violet", token: "--revio-deep", hex: "#332A8F", use: "Surfaces sombres (remplace le noir)" },
   { name: "Soft Purple", token: "--revio-primary-light", hex: "#EEEBFF", use: "Sélections, fonds légers" },
   { name: "Border Grey", token: "--revio-border", hex: "#EAE9F0", use: "Bordures et séparateurs" },
   { name: "Success Green", token: "--revio-success", hex: "#22C55E", use: "Réussite et validation" },

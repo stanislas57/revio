@@ -2,8 +2,8 @@ import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { label: "Cours", className: "bg-brand-soft" },
-  { label: "Révision", className: "bg-revio-midnight dark:bg-primary" },
-  { label: "Contrôle", className: "bg-revio-primary" },
+  { label: "Révision", className: "bg-revio-deep" },
+  { label: "Contrôle", className: "bg-[image:var(--revio-exam-gradient)]" },
   { label: "Indisponible", className: "border border-dashed bg-muted" },
 ] as const;
 

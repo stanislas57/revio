@@ -185,6 +185,18 @@ Numérotée D-24 par erreur jusqu'au 27/11/2026 (doublon avec la charte bêta), 
   mineur (pas de pub ciblée ni de traçage de mineurs). L'offre Vercel Hobby (usage non commercial) est à revoir
   dès qu'une pub rapporte de l'argent.
 
+### D-27 — Violet profond à la place du noir, ADN « organique » commun (décidée par Charles le 27/11/2026, sans relecture de Stan)
+
+- **Plus de noir comme surface.** Le noir (`--revio-midnight`) ne sert plus que de **couleur de texte** (titres, texte sur les
+  remplissages citron, rose, orange). Les surfaces sombres (onglet actif, pastille d'aujourd'hui, créneaux de révision)
+  passent au **Violet profond** `#332A8F` (`--revio-deep`, texte blanc 11,24:1 ; `#4A3DBB` en thème sombre, texte blanc 7,85:1).
+- **Contrôles et examens** : dégradé violet Revio vers rose profond (`--revio-exam-gradient`, texte blanc 5,27:1 au minimum).
+- **Même ADN partout** (issu du design « Emploi du temps organique ») : soulignement ondulé rose sous chaque titre de page
+  (`WavyUnderline`), cartes aux coins irréguliers (`Card`), deux formes douces en fond de page (`PageBlobs`), pastille
+  organique du menu actif. Aucune nouvelle police : Inter seule (D-24).
+- Le menu passe à quatre entrées avec une catégorie **Notes** (décision de Charles, sans accord préalable de Stan) : elle arrive
+  avec la PR qui apporte les écrans Notes, pas avant.
+
 ## Ouvertes
 
 Revues lors de l'audit du 27/11/2026.

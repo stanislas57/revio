@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { RevioLogo } from "@/components/revio/logo";
+import { PageBlobs } from "@/components/revio/page-blobs";
 import { cn } from "@/lib/utils";
 import { ShellDock, ShellSidebar, ShellTopNav, type ShellProfile } from "./main-nav";
 import { useNavLayout } from "./nav-layout-provider";
@@ -55,14 +56,17 @@ export function ShellFrame({
             <div className="flex items-center gap-1">{mobileActions}</div>
           </header>
         )}
-        <main
-          className={cn(
-            "mx-auto w-full max-w-5xl flex-1 px-4 py-6 text-center md:px-8 md:py-8",
-            !top && "pb-28",
-          )}
-        >
-          {children}
-        </main>
+        <div className="relative flex-1 overflow-x-clip">
+          <PageBlobs />
+          <main
+            className={cn(
+              "relative mx-auto w-full max-w-5xl px-4 py-6 text-center md:px-8 md:py-8",
+              !top && "pb-28",
+            )}
+          >
+            {children}
+          </main>
+        </div>
       </div>
 
       {!top && (

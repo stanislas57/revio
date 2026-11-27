@@ -31,7 +31,7 @@ export function DayStrip({
                 className={cn(
                   "flex min-h-16 flex-col items-center justify-center gap-0.5 rounded-2xl py-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
                   selected
-                    ? "bg-foreground text-background shadow-md"
+                    ? "bg-revio-deep text-white shadow-md"
                     : exam
                       ? "bg-revio-social/20 text-foreground"
                       : "bg-brand-soft text-foreground",

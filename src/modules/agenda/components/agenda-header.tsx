@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { ChunkyButton } from "@/components/revio/chunky-button";
+import { WavyUnderline } from "@/components/revio/wavy-underline";
 import { cn } from "@/lib/utils";
 import { formatLongDate, formatMonth, formatWeekRange } from "../domain/dates";
 import { shiftDate } from "../domain/range";
@@ -42,15 +43,7 @@ export function AgendaHeader({
           {period(view, date, from, to)}
         </p>
         <h1 className="text-4xl leading-tight font-extrabold tracking-tight">Emploi du temps</h1>
-        <svg width="180" height="14" viewBox="0 0 180 14" aria-hidden="true" className="text-revio-social">
-          <path
-            d="M2 8 C 20 1, 38 15, 58 8 S 96 1, 116 8 S 154 15, 178 7"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
-        </svg>
+        <WavyUnderline />
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -67,7 +60,7 @@ export function AgendaHeader({
               className={cn(
                 "flex min-h-11 items-center rounded-full px-4 text-sm font-semibold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
                 v === view
-                  ? "[border-radius:22px_16px_20px_18px/18px_22px_16px_20px] bg-foreground text-background"
+                  ? "[border-radius:22px_16px_20px_18px/18px_22px_16px_20px] bg-revio-deep text-white"
                   : "text-brand-soft-foreground hover:bg-card/60",
               )}
             >

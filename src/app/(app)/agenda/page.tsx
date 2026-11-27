@@ -98,8 +98,6 @@ export default async function AgendaPage({
           </div>
         )}
 
-        <PlanCard hasRecommended={data.events.some((e) => e.planStatus === "recommended")} />
-
         <Card id="ajouter" className="scroll-mt-20">
           <CardHeader>
             <CardTitle>Ajouter à l&apos;agenda</CardTitle>
@@ -120,6 +118,8 @@ export default async function AgendaPage({
             </details>
           </CardContent>
         </Card>
+
+        <PlanCard hasRecommended={data.events.some((e) => e.planStatus === "recommended")} />
       </div>
     </>
   );
