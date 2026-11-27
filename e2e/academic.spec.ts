@@ -20,12 +20,13 @@ test("academic flow: subject, grade, exam, simulator, delete", async ({ page }) 
   await page.getByLabel("Pseudo").fill(`acad_${Math.random().toString(36).slice(2, 10)}`);
   await page.getByRole("button", { name: "Continuer" }).click();
   await skipOnboarding(page);
+
+  // Convention Revio is always stated, on « Mes notes ».
+  await page.goto("/notes");
   await expect(page.getByText(/convention Revio/).first()).toBeVisible();
 
-  // Convention Revio is always stated.
-  await expect(page.getByText(/convention Revio/).first()).toBeVisible();
-
-  // Validation is done server side too: a coefficient above 100 is refused.
+  // Validation is done server side too: a coefficient above 100 is refused (on « Importer · ajouter »).
+  await page.goto("/notes/importer#ajouter-matiere");
   await page.getByLabel("Matière", { exact: true }).fill("Maths");
   await page.getByLabel("Coefficient").fill("500");
   await page.getByRole("button", { name: "Ajouter la matière" }).click();
@@ -33,6 +34,8 @@ test("academic flow: subject, grade, exam, simulator, delete", async ({ page }) 
 
   await page.getByLabel("Coefficient").fill("3");
   await page.getByRole("button", { name: "Ajouter la matière" }).click();
+  await expect(page.getByLabel("Matière", { exact: true })).toHaveValue("");
+  await page.goto("/notes");
   const card = page.locator("[data-slot=card]", { hasText: "Maths" }).filter({ hasText: "Coef. 3" });
   await expect(card).toBeVisible();
 
@@ -61,20 +64,24 @@ test("academic flow: subject, grade, exam, simulator, delete", async ({ page }) 
     .locator("form", { has: page.locator("#target") })
     .getByRole("button", { name: "Enregistrer" })
     .click();
-  await expect(page.getByText(/Il manque 2,00 points/)).toBeVisible();
+  await expect(page.getByText(/Objectif 14,00 : il manque 2,00 points/)).toBeVisible();
 
   // Exam.
   await page.getByLabel("Examen", { exact: true }).fill("Partiel de maths");
   await page.getByLabel("Date", { exact: true }).fill("2099-01-15");
   await page.getByRole("button", { name: "Ajouter l'examen" }).click();
-  await expect(page.getByText("Partiel de maths")).toBeVisible();
+  // The exam is in the list, and it is the next one in the summary card.
+  await expect(page.getByRole("listitem").filter({ hasText: "Partiel de maths" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Prochain examen" })).toContainText("Partiel de maths");
 
-  // Simulator: one more grade at coefficient 1 to reach 14 overall → (12*3 + x)/4 >= 14 → x >= 20.
+  // Simulator (its own page): one more grade at coefficient 1 to reach 14 overall → (12*3 + x)/4 >= 14 → x >= 20.
+  await page.goto("/notes/simulateur");
   await expect(
     page.getByRole("status").filter({ hasText: /pour atteindre|Impossible|garanti/ }),
   ).toBeVisible();
 
   // Delete subject needs a confirmation.
+  await page.goto("/notes");
   await card.getByRole("button", { name: "Supprimer", exact: true }).click();
   await card.getByRole("button", { name: "Confirmer" }).click();
   await expect(page.getByText("Aucune matière pour l'instant")).toBeVisible();

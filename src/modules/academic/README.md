@@ -5,3 +5,11 @@ Tables : `subjects`, `grades` (privées, propriétaire uniquement).
 
 État : domaine pur testé (moyennes, groupes UE/semestre, simulateur, priorités, tableau de bord). Migration `20261125010000_academic_module.sql`. Écrans sur l'onglet Accueil : tableau de bord, matières, notes (ajout/édition/suppression), examens, objectif, simulateur « quelle note me faut-il », import d'un modèle d'exemple. Server Actions validées par Zod (`schemas.ts`), `requireUser()` partout. Testé sur le faux serveur local (`e2e/academic.spec.ts`, `E2E_CONNECTED=1`), pas encore sur un vrai Supabase (S-03).
 Règle : la convention de calcul est générique, jamais présentée comme officielle d'un établissement.
+
+## Où sont les écrans (D-27)
+
+Les écrans de notes ont quitté l'Accueil pour la catégorie **Notes** du menu : `/notes` (Mes notes : moyenne, prochain examen,
+matières, priorités, examens), `/notes/simulateur` (simulateur et scénarios), `/notes/temps` (répartir mon temps),
+`/notes/importer` (importer un relevé, ajouter une matière). Aucune règle de calcul ne change : seuls l'emplacement et
+l'habillage (violet profond, cartes teintées, frise des examens) sont nouveaux. L'Accueil garde une carte « Mes notes » qui
+mène à `/notes`. Toujours affiché : les moyennes suivent la **convention Revio**, pas la règle officielle d'un établissement.

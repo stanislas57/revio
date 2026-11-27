@@ -7,8 +7,9 @@ type OrganicCardProps<T extends ElementType> = {
   as?: T;
   /** A soft gradient halo (violet, pink, lime) that pulses slowly behind the card. */
   halo?: boolean;
-  /** `primary`: a Revio Purple card with white text (level, highlights). */
-  tone?: "default" | "primary";
+  /** `primary`: a Revio Purple card with white text (level, highlights); `deep`: Deep Violet (D-27, the former
+   *  black); `exam`: the purple-to-pink gradient of tests and exams. */
+  tone?: "default" | "primary" | "deep" | "exam";
   className?: string;
   children?: ReactNode;
 } & Omit<ComponentPropsWithoutRef<T>, "as" | "className" | "children">;
@@ -31,7 +32,7 @@ export function OrganicCard<T extends ElementType = "div">({
     <Tag
       className={cn(
         "organic-card flex flex-col items-center gap-3 p-6 text-center",
-        tone === "primary" ? "text-white" : "text-card-foreground",
+        tone === "default" ? "text-card-foreground" : "text-white",
         className,
       )}
       {...props}
@@ -41,7 +42,10 @@ export function OrganicCard<T extends ElementType = "div">({
         aria-hidden
         className={cn(
           "organic-surface shadow-md",
-          tone === "primary" ? "bg-revio-primary" : "border bg-card",
+          tone === "primary" && "bg-revio-primary",
+          tone === "deep" && "bg-revio-deep",
+          tone === "exam" && "bg-[image:var(--revio-exam-gradient)]",
+          tone === "default" && "border bg-card",
         )}
       />
       {children}

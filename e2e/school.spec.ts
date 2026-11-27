@@ -45,11 +45,11 @@ test("a too short search asks for more letters, a nonsense one finds nothing", a
   await expect(page.getByText("Aucun établissement trouvé.")).toBeVisible();
 });
 
-test("the summary cards of the home screen lead to their section", async ({ page }) => {
+test("the summary cards of the notes lead to their section", async ({ page }) => {
   await newAccount(page, "liens");
-  await page.goto("/accueil");
+  await page.goto("/notes");
   await page.getByRole("link", { name: "Modifier mon objectif" }).click();
-  await expect(page).toHaveURL(/\/accueil#target$/);
+  await expect(page).toHaveURL(/\/notes#target$/);
   await page.goto("/profil");
   await page.getByRole("link", { name: "Voir mes statistiques détaillées" }).click();
   await expect(page).toHaveURL(/\/profil\/statistiques/);

@@ -5,6 +5,7 @@ import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { NativeSelect } from "@/components/ui/native-select";
 import type { UpcomingExam } from "../domain/dashboard";
 import { formatShortDate } from "../domain/dates";
@@ -33,19 +34,40 @@ export function ExamsCard({ exams, subjects }: { exams: UpcomingExam[]; subjects
         {exams.length === 0 ? (
           <p className="text-sm text-muted-foreground">Aucun examen à venir.</p>
         ) : (
-          <ul className="divide-y rounded-md border">
-            {exams.map((e) => (
-              <li key={e.id} className="flex items-center justify-between gap-2 p-3 text-sm">
-                <div className="min-w-0">
+          <ul className="space-y-3">
+            {exams.map((e, i) => (
+              <li
+                key={e.id}
+                className={cn(
+                  "flex items-center gap-3 rounded-3xl p-3 text-left text-sm",
+                  i === 0 ? "bg-revio-deep text-white" : "border bg-card",
+                )}
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "grid size-12 shrink-0 place-items-center rounded-full text-center text-base leading-none font-extrabold",
+                    i === 0
+                      ? "bg-[image:var(--revio-exam-gradient)] text-white"
+                      : "bg-brand-soft text-brand-soft-foreground",
+                  )}
+                >
+                  <span>
+                    <span className="block text-[10px] font-semibold">J-</span>
+                    {e.inDays}
+                  </span>
+                </span>
+                <div className="min-w-0 flex-1">
                   <p className="font-medium break-words">{e.title}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className={cn("text-xs", i === 0 ? "text-white/90" : "text-muted-foreground")}>
                     {formatShortDate(e.examOn)} · {when(e.inDays)}
                     {e.subjectName ? ` · ${e.subjectName}` : ""}
                   </p>
                 </div>
                 <Button
-                  size="icon"
-                  variant="ghost"
+                  size="icon-lg"
+                  variant="secondary"
+                  className="shadow-none"
                   aria-label={`Supprimer l'examen ${e.title}`}
                   disabled={pending}
                   onClick={() =>

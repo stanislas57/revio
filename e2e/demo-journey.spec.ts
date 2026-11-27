@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { addSubject } from "./support/notes";
 import { skipOnboarding } from "./support/new-account";
 
 // Main demo journey (docs/DEMO.md) on the local fake Supabase. Skipped otherwise.
@@ -29,10 +30,7 @@ test("demo journey: friends, live study, private grades", async ({ browser }) =>
   await signUpWithUsername(b, bob);
 
   // Alice has a private grade.
-  await a.goto("/accueil");
-  await a.getByLabel("Matière", { exact: true }).fill("Droit secret");
-  await a.getByRole("button", { name: "Ajouter la matière" }).click();
-  await expect(a.getByText("Droit secret").first()).toBeVisible();
+  await addSubject(a, "Droit secret");
 
   // Friend request from Alice, accepted by Bob.
   await a.goto("/social");

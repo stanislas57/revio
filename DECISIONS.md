@@ -194,8 +194,9 @@ Numérotée D-24 par erreur jusqu'au 27/11/2026 (doublon avec la charte bêta), 
 - **Même ADN partout** (issu du design « Emploi du temps organique ») : soulignement ondulé rose sous chaque titre de page
   (`WavyUnderline`), cartes aux coins irréguliers (`Card`), deux formes douces en fond de page (`PageBlobs`), pastille
   organique du menu actif. Aucune nouvelle police : Inter seule (D-24).
-- Le menu passe à quatre entrées avec une catégorie **Notes** (décision de Charles, sans accord préalable de Stan) : elle arrive
-  avec la PR qui apporte les écrans Notes, pas avant.
+- Le menu passe à **quatre entrées** (Accueil, Social, Notes, Agenda) avec une catégorie **Notes** (décision de Charles, sans
+  accord préalable de Stan), en place avec la PR des écrans Notes. Le profil, les statistiques et le classement n'ont plus
+  d'entrée : carte du menu et avatar pour le profil, lien du profil pour les statistiques, lien de Social pour le classement.
 
 ## Ouvertes
 
