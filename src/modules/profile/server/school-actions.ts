@@ -6,6 +6,7 @@ import { fail, succeed, toActionError } from "@/lib/action-errors";
 import { requireUser } from "@/lib/auth";
 import type { ActionResult } from "@/lib/contracts";
 import { mySchoolSchema, schoolSearchSchema, type School, type SchoolSearchInput } from "../domain/schools";
+import { logEducationError } from "./education-log";
 import { schoolRowSchema, toSchool } from "./school";
 
 function firstIssue(error: z.ZodError) {
@@ -22,7 +23,10 @@ export async function searchSchools(input: SchoolSearchInput): Promise<ActionRes
     p_kind: parsed.data.kind,
     p_limit: 20,
   });
-  if (error) return fail(toActionError(error));
+  if (error) {
+    logEducationError("search schools", error);
+    return fail(toActionError(error));
+  }
   const rows = z.array(schoolRowSchema).safeParse(data ?? []);
   if (!rows.success) return fail({ code: "internal", message: "Réponse inattendue. Réessaie." });
   return succeed(rows.data.map(toSchool));
@@ -39,7 +43,10 @@ export async function saveMySchool(input: { schoolId: string | null }): Promise<
       { user_id: user.id, school_id: parsed.data.schoolId, onboarding_done: true },
       { onConflict: "user_id" },
     );
-  if (error) return fail(toActionError(error, { "23503": "École inconnue." }));
+  if (error) {
+    logEducationError("save school", error);
+    return fail(toActionError(error, { "23503": "École inconnue." }));
+  }
   refresh();
   return succeed(null);
 }
@@ -50,7 +57,10 @@ export async function skipOnboarding(): Promise<ActionResult<null>> {
   const { error } = await supabase
     .from("user_education")
     .upsert({ user_id: user.id, onboarding_done: true }, { onConflict: "user_id" });
-  if (error) return fail(toActionError(error));
+  if (error) {
+    logEducationError("skip onboarding", error);
+    return fail(toActionError(error));
+  }
   refresh();
   return succeed(null);
 }

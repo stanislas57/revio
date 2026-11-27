@@ -10,6 +10,7 @@ import {
   type EducationAnswers,
   type EducationDetails,
 } from "../domain/education";
+import { logEducationError } from "./education-log";
 
 function invalid(message?: string) {
   return fail<never>({ code: "validation", message: message ?? "Données invalides." });
@@ -30,7 +31,10 @@ export async function saveOnboardingAnswers(input: EducationAnswers): Promise<Ac
     },
     { onConflict: "user_id" },
   );
-  if (error) return fail(toActionError(error, { "23503": "École inconnue." }));
+  if (error) {
+    logEducationError("save onboarding answers", error);
+    return fail(toActionError(error, { "23503": "École inconnue." }));
+  }
   refresh();
   return succeed(null);
 }
@@ -49,7 +53,10 @@ export async function saveEducationDetails(input: EducationDetails): Promise<Act
     },
     { onConflict: "user_id" },
   );
-  if (error) return fail(toActionError(error));
+  if (error) {
+    logEducationError("save education details", error);
+    return fail(toActionError(error));
+  }
   refresh();
   return succeed(null);
 }

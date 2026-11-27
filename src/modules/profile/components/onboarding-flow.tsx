@@ -15,7 +15,9 @@ import {
   type Gender,
   type StudyLevel,
 } from "../domain/education";
+import { ONBOARDING_SAVE_ERROR } from "../domain/onboarding";
 import { saveOnboardingAnswers } from "../server/education-actions";
+import { continueWithoutSaving } from "../server/onboarding-bypass";
 import { skipOnboarding } from "../server/school-actions";
 import { SchoolPicker } from "./school-picker";
 
@@ -23,9 +25,10 @@ const QUESTIONS = ["Où étudies-tu ?", "En quelle année es-tu ?", "Tu es…"] 
 
 /**
  * The onboarding, right after the username (Duolingo-like): one question per screen, a progress bar, big choice
- * tiles and a big "Continuer". Every question can be skipped, "Plus tard" skips them all; nothing is saved
- * before the end, then the app opens. The answers stay editable in Profil > Mes informations, and only the
- * user sees them.
+ * tiles and a big "Continuer". Every question is optional, so the main button is always clickable; "Plus tard"
+ * (top of every screen) skips them all; nothing is saved before the end, then the app opens. If saving fails the
+ * person is never stuck: a message and "Continuer sans enregistrer" open the app anyway. The answers stay
+ * editable in Profil > Mes informations, and only the user sees them.
  */
 export function OnboardingFlow({ email, username }: { email: string; username: string }) {
   const router = useRouter();
@@ -43,15 +46,37 @@ export function OnboardingFlow({ email, username }: { email: string; username: s
     if (moved.current) stepRef.current?.focus();
   }, [step]);
 
-  const answered = [schoolId !== null, studyLevel !== null, gender !== null][step];
   const last = step === QUESTIONS.length - 1;
 
-  function finish() {
+  /** Runs a save; any failure (error result or a request that never reached the server) shows the way out. */
+  function attempt(action: () => ReturnType<typeof skipOnboarding>) {
     setError(null);
     start(async () => {
-      const res = await saveOnboardingAnswers({ schoolId, studyLevel, gender });
-      if (res.ok) router.refresh();
-      else setError(res.error.message);
+      try {
+        const res = await action();
+        if (res.ok) router.refresh();
+        else setError(ONBOARDING_SAVE_ERROR);
+      } catch {
+        setError(ONBOARDING_SAVE_ERROR);
+      }
+    });
+  }
+
+  function finish() {
+    attempt(() => saveOnboardingAnswers({ schoolId, studyLevel, gender }));
+  }
+
+  function openAppWithoutSaving() {
+    start(async () => {
+      try {
+        const res = await continueWithoutSaving();
+        if (!res.ok) throw new Error(res.error.message);
+        router.replace("/accueil");
+        router.refresh();
+      } catch {
+        // The cookie could not be set (request lost): try the app anyway, the message stays reachable on failure.
+        router.replace("/accueil");
+      }
     });
   }
 
@@ -71,13 +96,7 @@ export function OnboardingFlow({ email, username }: { email: string; username: s
           variant="ghost"
           className="h-11"
           disabled={pending}
-          onClick={() =>
-            start(async () => {
-              const res = await skipOnboarding();
-              if (res.ok) router.refresh();
-              else setError(res.error.message);
-            })
-          }
+          onClick={() => attempt(skipOnboarding)}
         >
           Plus tard
         </Button>
@@ -134,13 +153,22 @@ export function OnboardingFlow({ email, username }: { email: string; username: s
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-destructive">
-          {error}
-        </p>
+        <div role="alert" className="space-y-3">
+          <p className="text-sm text-destructive">{error}</p>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11"
+            disabled={pending}
+            onClick={openAppWithoutSaving}
+          >
+            Continuer sans enregistrer
+          </Button>
+        </div>
       )}
 
       <footer className="space-y-3 border-t pt-6">
-        <ChunkyButton block disabled={pending || !answered} onClick={next}>
+        <ChunkyButton block disabled={pending} onClick={next}>
           {pending ? "Enregistrement…" : last ? "Terminer" : "Continuer"}
         </ChunkyButton>
         <div className="flex flex-wrap items-center justify-center gap-4">
@@ -158,9 +186,6 @@ export function OnboardingFlow({ email, username }: { email: string; username: s
               <ArrowLeft aria-hidden /> Retour
             </Button>
           )}
-          <Button type="button" variant="ghost" className="h-11" disabled={pending} onClick={next}>
-            Passer cette question
-          </Button>
         </div>
       </footer>
 

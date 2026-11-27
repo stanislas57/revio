@@ -4,6 +4,7 @@ import type { requireUser } from "@/lib/auth";
 import { GENDERS, STUDY_LEVELS, type Gender, type StudyLevel } from "../domain/education";
 import type { School } from "../domain/schools";
 import { SCHOOL_KINDS } from "../domain/schools";
+import { logEducationError } from "./education-log";
 
 type Client = Awaited<ReturnType<typeof requireUser>>["supabase"];
 
@@ -34,19 +35,30 @@ export type MyEducation = {
   studyLevel: StudyLevel | null;
   gender: Gender | null;
   onboardingDone: boolean;
+  /** The read failed (database error): nothing is known, which is NOT the same as « onboarding not done ». */
+  unavailable: boolean;
 };
 
 const studyLevelSchema = z.enum(STUDY_LEVELS).nullable().catch(null);
 const genderSchema = z.enum(GENDERS).nullable().catch(null);
 
-/** The caller's school, study level, gender and whether the onboarding is done (owner-only table). */
+/**
+ * The caller's school, study level, gender and whether the onboarding is done (owner-only table).
+ * A read error (for example a column the database does not have yet) is reported with `unavailable: true` and
+ * logged; it is never turned into « onboarding not done », which would shut the person out of the app.
+ */
 export async function loadMyEducation(supabase: Client, userId: string): Promise<MyEducation> {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("user_education")
     .select("school_id, study_level, gender, onboarding_done")
     .eq("user_id", userId)
     .maybeSingle();
-  if (!data) return { school: null, studyLevel: null, gender: null, onboardingDone: false };
+  if (error) {
+    logEducationError("read user_education", error);
+    return { school: null, studyLevel: null, gender: null, onboardingDone: false, unavailable: true };
+  }
+  if (!data)
+    return { school: null, studyLevel: null, gender: null, onboardingDone: false, unavailable: false };
   let school: School | null = null;
   if (typeof data.school_id === "string") {
     const { data: row } = await supabase
@@ -62,5 +74,6 @@ export async function loadMyEducation(supabase: Client, userId: string): Promise
     studyLevel: studyLevelSchema.parse(data.study_level ?? null),
     gender: genderSchema.parse(data.gender ?? null),
     onboardingDone: data.onboarding_done === true,
+    unavailable: false,
   };
 }
