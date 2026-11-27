@@ -24,11 +24,17 @@ export function SchoolPicker({
   current,
   idPrefix = "school",
   onSaved,
+  onSelect,
 }: {
   current: School | null;
   idPrefix?: string;
   /** Called after a successful save (the first-run card uses it to disappear). */
   onSaved?: () => void;
+  /**
+   * Selection only (the onboarding): choosing a result calls this instead of offering "Enregistrer"; the caller
+   * saves the choice with the other answers.
+   */
+  onSelect?: (school: School | null) => void;
 }) {
   const [kind, setKind] = useState<SchoolKind | "">("");
   const [query, setQuery] = useState("");
@@ -126,7 +132,10 @@ export function SchoolPicker({
               <li key={s.id}>
                 <button
                   type="button"
-                  onClick={() => setSelected(s)}
+                  onClick={() => {
+                    setSelected(s);
+                    onSelect?.(s);
+                  }}
                   aria-pressed={selected?.id === s.id}
                   className="flex min-h-11 w-full flex-col items-center px-3 py-2 text-center text-sm outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-pressed:bg-muted"
                 >
@@ -153,7 +162,7 @@ export function SchoolPicker({
         )}
       </p>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className={onSelect ? "hidden" : "flex flex-wrap items-center justify-center gap-2"}>
         <Button type="button" className="h-11" disabled={saving || unchanged} onClick={() => save(selected)}>
           {saving ? "Enregistrement…" : "Enregistrer"}
         </Button>

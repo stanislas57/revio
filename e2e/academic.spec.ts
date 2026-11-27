@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 // Connected scenario: needs the local fake Supabase server (scripts/fake-supabase.mjs)
 // and NEXT_PUBLIC_SUPABASE_* set when the app is built. Skipped otherwise (e.g. in CI).
@@ -18,6 +19,7 @@ test("academic flow: subject, grade, exam, simulator, delete", async ({ page }) 
   // The username screen replaces the app until a username is chosen.
   await page.getByLabel("Pseudo").fill(`acad_${Math.random().toString(36).slice(2, 10)}`);
   await page.getByRole("button", { name: "Continuer" }).click();
+  await skipOnboarding(page);
   await expect(page.getByText(/convention Revio/).first()).toBeVisible();
 
   // Convention Revio is always stated.

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { skipOnboarding } from "./support/new-account";
 
 const PAGES = [
   "/profil/trophees",
@@ -32,6 +33,7 @@ test.describe("links between the screens", () => {
     await page.goto("/social");
     await page.getByLabel("Pseudo", { exact: true }).fill(`nav_${Math.random().toString(36).slice(2, 10)}`);
     await page.getByRole("button", { name: /^(Enregistrer|Continuer)$/ }).click();
+    await skipOnboarding(page);
   }
 
   // Trophées, Statistiques and Classement read real data (Stan's PRs #48 to #50); the friend profile is still a sample.

@@ -1,7 +1,14 @@
 import { expect, type Page } from "@playwright/test";
 
-/** Signs up a brand-new account on the local fake server and chooses a username. Returns the username. */
+/** Signs up a brand-new account and chooses a username, then skips the onboarding. Returns the username. */
 export async function newAccount(page: Page, prefix = "e2e"): Promise<string> {
+  const username = await newAccountBeforeOnboarding(page, prefix);
+  await skipOnboarding(page);
+  return username;
+}
+
+/** Signs up a brand-new account on the local fake server and chooses a username: the onboarding is next. */
+export async function newAccountBeforeOnboarding(page: Page, prefix = "e2e"): Promise<string> {
   const username = `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
   await page.goto("/connexion");
   await page.getByRole("button", { name: /Inscris-toi/ }).click();
@@ -14,4 +21,10 @@ export async function newAccount(page: Page, prefix = "e2e"): Promise<string> {
   await page.getByRole("button", { name: "Continuer" }).click();
   await expect(page.getByRole("heading", { name: "Choisis ton pseudo" })).toHaveCount(0);
   return username;
+}
+
+/** The onboarding (school, study level, gender) comes right after the username: "Plus tard" skips it. */
+export async function skipOnboarding(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "Plus tard" }).click();
+  await expect(page.getByRole("heading", { name: "Personnalise Revio" })).toHaveCount(0);
 }
