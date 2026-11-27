@@ -16,11 +16,14 @@ export function ReactionButton({
   count,
   reacted,
   onToggle = toggleReaction,
+  onDark = false,
 }: {
   postId: string;
   count: number;
   reacted: boolean;
   onToggle?: typeof toggleReaction;
+  /** On a Deep Violet card: the sent state is a light outline instead of a pink one. */
+  onDark?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const [state, setOptimistic] = useOptimistic({ count, reacted });
@@ -34,7 +37,9 @@ export function ReactionButton({
         "min-h-11 rounded-pill px-4",
         // The Social Pink kudos pill; once the bravo is sent it becomes a quiet outlined state.
         state.reacted
-          ? "border border-revio-social-text text-revio-social-text"
+          ? onDark
+            ? "border border-white text-white hover:bg-white/10 hover:text-white"
+            : "border border-revio-social-text text-revio-social-text"
           : "bg-revio-social text-revio-midnight hover:bg-revio-social hover:text-revio-midnight hover:opacity-90",
       )}
       onClick={() =>

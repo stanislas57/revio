@@ -26,7 +26,7 @@ type ProgressProps = Common & {
 
 type PresenceProps = Common & {
   variant: "presence";
-  /** A friend is studying right now: green dot. */
+  /** A friend is studying right now: pink dot (as the avatars of Social). */
   live?: boolean;
   gainValue?: never;
   label?: never;
@@ -35,7 +35,7 @@ type PresenceProps = Common & {
 /**
  * The ring (charter: the Focus timer and the progress circles). Violet arc on a soft-purple track.
  * - `progress`: the last segment (the recent gain) in lime, percentage in the centre.
- * - `presence`: around an avatar or a timer, green "live" dot (decorative: the name, the subject and the
+ * - `presence`: around an avatar or a timer, pink "live" dot (decorative: the name, the subject and the
  *   duration are written next to it).
  */
 export function RevioRing(props: ProgressProps | PresenceProps) {
@@ -105,7 +105,7 @@ export function RevioRing(props: ProgressProps | PresenceProps) {
       {presence && props.live && (
         <span
           aria-hidden
-          className="absolute right-0 bottom-0 rounded-full border-[3px] border-background bg-revio-success"
+          className="absolute right-0 bottom-0 rounded-full border-[3px] border-background bg-revio-social"
           style={{ width: Math.max(12, size * 0.23), height: Math.max(12, size * 0.23) }}
         />
       )}

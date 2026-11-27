@@ -222,7 +222,7 @@ export function DesignSystemDemo() {
       <Showcase
         id="anneau"
         title="RevioRing"
-        note="Progression (violet, lime pour le gain récent) et présence (violet, point vert « en direct »)."
+        note="Progression (violet, lime pour le gain récent) et présence (violet, point rose « en direct »)."
       >
         <Row>
           <RevioRing variant="progress" label="Progression du chapitre" value={0.64} gainValue={0.1} />
