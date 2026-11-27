@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AgendaDay } from "@/modules/agenda/components/agenda-day";
 import { AgendaToolbar } from "@/modules/agenda/components/agenda-toolbar";
 import { EventForm } from "@/modules/agenda/components/event-form";
+import { QuickAdd } from "@/modules/agenda/components/quick-add";
 import { MonthGrid } from "@/modules/agenda/components/month-grid";
 import { startOfMonth } from "@/modules/agenda/domain/dates";
 import { expandRange, findConflicts } from "@/modules/agenda/domain/occurrences";
@@ -63,15 +64,24 @@ export default async function AgendaPage({
           </div>
         )}
 
-        <Card>
+        <Card id="ajouter" className="scroll-mt-20">
           <CardHeader>
             <CardTitle>Ajouter à l&apos;agenda</CardTitle>
-            <CardDescription>
-              Heures de ton fuseau ({settings.timezone}). Un événement ne peut pas passer minuit.
-            </CardDescription>
+            <CardDescription>Sans rien taper : choisis, étape par étape.</CardDescription>
           </CardHeader>
-          <CardContent>
-            <EventForm subjects={data.subjects} defaultDate={date} />
+          <CardContent className="space-y-6">
+            <QuickAdd subjects={data.subjects} today={today} />
+            <details className="rounded-2xl border p-4">
+              <summary className="min-h-11 cursor-pointer text-sm font-bold">
+                Saisie détaillée (heure précise, répétition, date libre)
+              </summary>
+              <div className="mt-4 space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Heures de ton fuseau ({settings.timezone}). Un événement ne peut pas passer minuit.
+                </p>
+                <EventForm subjects={data.subjects} defaultDate={date} />
+              </div>
+            </details>
           </CardContent>
         </Card>
       </div>

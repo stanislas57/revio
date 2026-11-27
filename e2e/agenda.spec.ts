@@ -20,6 +20,8 @@ test("agenda: add, repeat, conflict, edit, views, delete", async ({ page }) => {
   await page.goto("/agenda?vue=semaine&date=2026-12-07");
   await expect(page.getByRole("heading", { name: "Agenda" })).toBeVisible();
 
+  // The detailed form is folded under the quick path: open it.
+  await page.getByText("Saisie détaillée").click();
   // Server-side validation: end before start is refused.
   await page.getByLabel("Titre").fill("Révision maths");
   await page.getByLabel("Date").fill("2026-12-07");
