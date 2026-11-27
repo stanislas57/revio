@@ -159,7 +159,7 @@ est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#30304
 - `CLAUDE.md` demande l'accord des deux fondateurs pour une refonte : cette mise à jour est faite sur décision
   de Charles, **sans attendre la confirmation de Stan**. Stan peut la contester dans la PR.
 
-### D-24 — École choisie et import de documents (proposé par Stan le 26/11/2026, à valider par Charles)
+### D-24 — École choisie et import de documents (décidée par Stan le 26/11/2026, sans relecture de Charles)
 
 - **Base d'écoles** : table publique `schools` (5 853 établissements) chargée par migration depuis deux jeux de
   données ouverts, Licence Ouverte Etalab : annuaire de l'éducation (lycées) et principaux établissements
@@ -175,7 +175,7 @@ est retirée). Thème sombre : celui de la charte (`#14141E`, `#20202C`, `#30304
   `serverActions.bodySizeLimit = 5mb` dans `next.config.ts` (fichier de 4 Mo maximum, revérifié côté serveur).
 - **Pas de nouvelle porte d'entrée** : la carte « Personnalise Revio » de l'Accueil est facultative et ne bloque rien.
 
-### D-25 — Tout gratuit pour l'instant, publicité plus tard (proposé par Stan le 27/11/2026, à valider par Charles)
+### D-25 — Tout gratuit pour l'instant, publicité plus tard (décidée par Stan le 27/11/2026, sans relecture de Charles)
 
 - **Pas d'offre payante** : aucun Premium ni Stripe pour le moment. Tout Revio est en accès complet et gratuit.
 - **Publicité** : des pages ou emplacements de pub pourront être intégrés plus tard. Rien n'est branché aujourd'hui.
