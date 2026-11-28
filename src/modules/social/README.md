@@ -28,3 +28,10 @@ Un utilisateur déjà connecté est envoyé sur Social. Partage : QR code (`uqr`
 (`snapchat.com/scan?attachmentUrl=`, lien public non vérifié sur un vrai compte), « Copier le lien ». Instagram et Messenger
 n'ont pas de lien web sans identifiant d'application : ils passent par la feuille de partage, sinon le lien est copié avec
 une note. Limites : le lien n'expire pas (changer de pseudo l'invalide) et il n'est pas à usage unique.
+
+## La page Social (design de l'application)
+
+Carte « En révision maintenant » (amis en séance partagée), fil d'activité en cartes, « Mes amis », demandes, ajout et invitation ;
+à côté du fil, « Classement de la semaine » (les XP de la semaine de toi et de tes amis, jamais une note). Un palier de série
+du fil est une carte violet profond qui invite à un bravo. **Absents faute de données** (aucune table, aucun serveur) : duel
+express, binôme, ligue, groupes, « Ma classe », fiches partagées. Rien n'est simulé : ils n'apparaissent pas.

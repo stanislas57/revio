@@ -24,7 +24,7 @@ export function SectionLinks({ label, links }: { label: string; links: SectionLi
           <li key={href}>
             <Link
               href={href}
-              className="flex min-h-11 items-center gap-3 rounded-lg border px-3 py-2 transition-colors outline-none hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="flex min-h-11 items-center gap-3 rounded-2xl border bg-card px-3 py-2 transition-colors outline-none hover:bg-brand-soft/60 focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <Icon className="size-5 shrink-0 text-brand-text" aria-hidden />
               <span className="min-w-0 flex-1">

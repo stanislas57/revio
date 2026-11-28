@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { LogOut, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { ShellProfile } from "./main-nav";
@@ -36,9 +36,9 @@ function ProfileLink({ profile }: { profile: ShellProfile }) {
     >
       <span
         aria-hidden
-        className="grid size-9 place-items-center rounded-full bg-brand-soft text-xs font-bold text-brand-soft-foreground"
+        className="grid size-9 place-items-center rounded-full bg-brand-soft text-brand-soft-foreground"
       >
-        {profile.initials}
+        <UserRound className="size-5" />
       </span>
     </Link>
   );

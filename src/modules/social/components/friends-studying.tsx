@@ -13,25 +13,31 @@ export function FriendsStudying({ friends }: { friends: LiveFriend[] }) {
 
   if (friends.length === 0) {
     return (
-      <p className="flex items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-3 text-center text-sm text-muted-foreground">
+      <p className="flex items-center justify-center gap-2 rounded-3xl border border-dashed px-4 py-4 text-center text-sm text-muted-foreground">
         <BookOpen className="size-4" aria-hidden /> Aucun ami ne révise en ce moment.
       </p>
     );
   }
 
   return (
-    <div className="space-y-2">
-      <p className="text-sm font-medium">
-        {friends.length} ami{friends.length > 1 ? "s révisent" : " révise"} en ce moment
-      </p>
-      <ul className="flex flex-wrap gap-x-5 gap-y-3 pb-1">
+    <section
+      className="space-y-3 rounded-3xl border bg-card p-4 text-left"
+      aria-label="En révision maintenant"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-xl font-extrabold">En révision maintenant</h2>
+        <p className="rounded-pill bg-revio-social/15 px-3 py-1 text-xs font-bold text-revio-social-text">
+          {friends.length} ami{friends.length > 1 ? "s révisent" : " révise"} en ce moment
+        </p>
+      </div>
+      <ul className="grid gap-3 sm:grid-cols-2">
         {friends.map((f) => {
           const seconds = now === null ? null : elapsedSeconds(f, now + clockOffsetMs(f.serverNow, now));
           const minutes = seconds === null ? 0 : Math.floor(seconds / 60);
           const name = userLabel(f.user);
           const subject = `${f.subjectName ?? "Révision"}${f.status === "paused" ? " (pause)" : ""}`;
           return (
-            <li key={f.sessionId} className="min-w-56 rounded-lg border px-3 py-2">
+            <li key={f.sessionId} className="rounded-2xl bg-brand-soft/70 px-3 py-2">
               {/* One turn of the ring is one hour of study. The subject is only written when the friend shares it. */}
               <AvatarPresence
                 friend={{
@@ -47,6 +53,6 @@ export function FriendsStudying({ friends }: { friends: LiveFriend[] }) {
           );
         })}
       </ul>
-    </div>
+    </section>
   );
 }

@@ -56,7 +56,7 @@ test.describe("links between the screens", () => {
     },
     {
       from: "/social",
-      nav: "Classement et profil d'un ami",
+      nav: "Notifications, classement et exemple de profil",
       link: /^Classement/,
       to: /\/social\/classement$/,
       title: "Classement",
@@ -64,7 +64,7 @@ test.describe("links between the screens", () => {
     },
     {
       from: "/social",
-      nav: "Classement et profil d'un ami",
+      nav: "Notifications, classement et exemple de profil",
       link: /^Exemple de profil d'ami/,
       to: /\/social\/amis\//,
       title: "Profil d'un ami",

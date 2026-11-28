@@ -9,7 +9,7 @@ export function FriendList({ friends }: { friends: Friend[] }) {
   return (
     <ul className="grid gap-2 sm:grid-cols-2">
       {sorted.map((f) => (
-        <li key={f.friendshipId} className="flex items-center gap-3 rounded-lg border px-3 py-2">
+        <li key={f.friendshipId} className="flex items-center gap-3 rounded-2xl border bg-card px-3 py-2">
           <UserAvatar user={f.user} live={f.studyingNow} />
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium break-words">{userLabel(f.user)}</p>
@@ -18,7 +18,7 @@ export function FriendList({ friends }: { friends: Friend[] }) {
                 <Sparkles className="size-3 text-brand-text" aria-hidden /> {f.level.name}
               </span>
               <span className="inline-flex items-center gap-1">
-                <Flame className="size-3 text-orange-500" aria-hidden /> {f.streakDays} j
+                <Flame className="size-3 text-revio-streak-text" aria-hidden /> {f.streakDays} j
               </span>
               <span>{f.studyingNow ? "En révision" : "Pas en séance"}</span>
             </p>
